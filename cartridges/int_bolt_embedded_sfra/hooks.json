@@ -1,0 +1,12 @@
+{
+    "hooks": [
+        {
+            "name": "app.payment.processor.bolt_pay",
+            "script": "./cartridge/scripts/hooks/payment/processor/bolt_pay"
+        },
+        {
+            "name": "app.payment.form.processor.bolt_pay",
+            "script": "./cartridge/scripts/hooks/payment/processor/bolt_pay_form_processor"
+        }
+    ]
+}
