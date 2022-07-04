@@ -1,12 +1,12 @@
-'use strict';
+"use strict";
 
 // API Includes
-var Site = require('dw/system/Site');
-var Logger = require('dw/system/Logger');
-var Resource = require('dw/web/Resource');
+var Site = require("dw/system/Site");
+var Logger = require("dw/system/Logger");
+var Resource = require("dw/web/Resource");
 
 // Script includes
-var COHelpers = require('*/cartridge/scripts/checkout/checkoutHelpers');
+var COHelpers = require("*/cartridge/scripts/checkout/checkoutHelpers");
 
 /**
  * Verify the required information in billing form is provided.
@@ -16,46 +16,51 @@ var COHelpers = require('*/cartridge/scripts/checkout/checkoutHelpers');
  * @returns {Object} an object that has error information or payment information
  */
 function processForm(req, paymentForm, viewFormData) {
-    var formFieldErrors = {};
-    var viewData = viewFormData;
-  
-    // validate billing form
-    if(!req.form.storedPaymentUUID) {
-        var creditCardFormErrors = COHelpers.validateCreditCard(paymentForm);
-        if (Object.keys(creditCardFormErrors).length) {
-            Object.keys(creditCardFormErrors).forEach(function (key) {
-                formFieldErrors[key] = creditCardFormErrors[key];
-            });
-        }
-    }
+  var formFieldErrors = {};
+  var viewData = viewFormData;
 
-    if (Object.keys(formFieldErrors).length) {
-        return {
-            error: true,
-            fieldErrors: formFieldErrors
-        }
-    }
-    var cardNumber = paymentForm.creditCardFields.cardNumber.value;
-    var cardLastFourDigits = cardNumber.length > 4 ? cardNumber.substring(cardNumber.length - 4, cardNumber.length) : '';  
-    var cardBin = cardNumber.length > 6 ? cardNumber.substring(0,6) : '';
+  var billingForm = req.form;
 
-    viewData.paymentMethod = paymentForm.paymentMethod.value;       
-    viewData.paymentInformation = {
-        cardType: paymentForm.creditCardFields.cardType.value,
-        cardToken: paymentForm.creditCardFields.token,
-        cardLastFourDigits: cardLastFourDigits,
-        cardBin: cardBin,
-        expirationMonth: parseInt(paymentForm.creditCardFields.expirationMonth.selectedOption, 10),
-        expirationYear: parseInt(paymentForm.creditCardFields.expirationYear.value, 10),
-        createAccount: paymentForm.boltCreateAccount == 'true'
-    };
+  // validate billing address form
+  var billingFormErrors = COHelpers.validateBillingForm(
+    paymentForm.addressFields
+  );
+  if (Object.keys(billingFormErrors).length) {
+    Object.keys(billingFormErrors).forEach(function (key) {
+      formFieldErrors[key] = billingFormErrors[key];
+    });
+  }
 
+  if (Object.keys(formFieldErrors).length) {
     return {
-        error: false,
-        viewData: viewData
+      error: true,
+      fieldErrors: formFieldErrors,
     };
+  }
+
+  viewData.paymentMethod = {
+    value: paymentForm.paymentMethod.value,
+    htmlName: paymentForm.paymentMethod.value,
+  };
+
+  var expMonthAndYear = billingForm.expiration.split("-");
+
+  viewData.paymentInformation = {
+    cardType: billingForm.network,
+    expirationMonth: parseInt(expMonthAndYear[1], 10),
+    expirationYear: parseInt(expMonthAndYear[0], 10),
+    creditCardToken: billingForm.token,
+    bin: billingForm.bin,
+    lastFourDigits: billingForm.last4,
+    tokenType: billingForm.token_type,
+  };
+
+  return {
+    error: false,
+    viewData: viewData,
+  };
 }
 
 module.exports = {
-    processForm: processForm
+  processForm: processForm,
 };
