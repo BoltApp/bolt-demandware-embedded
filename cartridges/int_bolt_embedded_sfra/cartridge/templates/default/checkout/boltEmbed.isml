@@ -6,5 +6,6 @@
     <isscript>
         var assets = require('*/cartridge/scripts/assets.js');
         assets.addJs('/js/checkAccountExist.js');
+        assets.addJs('/js/tokenization.js');
     </isscript>
 </isif>
