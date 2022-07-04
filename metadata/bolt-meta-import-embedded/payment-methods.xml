@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<payment-settings xmlns="http://www.demandware.com/xml/impex/paymentsettings/2009-09-15">
+  <payment-method method-id="BOLT_PAY">
+    <name xml:lang="x-default">Bolt Payment</name>
+    <enabled-flag>true</enabled-flag>
+    <processor-id>BOLT_PAY</processor-id>
+  </payment-method>
+</payment-settings>

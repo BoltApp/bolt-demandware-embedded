@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata xmlns="http://www.demandware.com/xml/impex/metadata/2006-10-31">
+  <type-extension type-id="SitePreferences">
+    <custom-attribute-definitions>
+      <attribute-definition attribute-id="boltEnable">
+        <display-name xml:lang="x-default">Enable Bolt Pay</display-name>
+        <type>boolean</type>
+        <mandatory-flag>false</mandatory-flag>
+        <externally-managed-flag>false</externally-managed-flag>
+        <default-value>false</default-value>
+      </attribute-definition>
+      <attribute-definition attribute-id="boltAPIKey">
+        <display-name xml:lang="x-default">API Key</display-name>
+        <type>string</type>
+        <mandatory-flag>false</mandatory-flag>
+        <externally-managed-flag>false</externally-managed-flag>
+        <min-length>0</min-length>
+      </attribute-definition>
+      <attribute-definition attribute-id="boltMultiPublishableKey">
+        <display-name xml:lang="x-default">Publishable Key - Multistep</display-name>
+        <type>string</type>
+        <mandatory-flag>false</mandatory-flag>
+        <externally-managed-flag>false</externally-managed-flag>
+        <min-length>0</min-length>
+      </attribute-definition>
+      <attribute-definition attribute-id="boltSigningSecret">
+        <display-name xml:lang="x-default">Signing Secret</display-name>
+        <type>string</type>
+        <mandatory-flag>false</mandatory-flag>
+        <externally-managed-flag>false</externally-managed-flag>
+        <min-length>0</min-length>
+      </attribute-definition>
+      <attribute-definition attribute-id="boltEnvironment">
+        <display-name xml:lang="x-default">Bolt Environment</display-name>
+        <type>enum-of-string</type>
+        <mandatory-flag>false</mandatory-flag>
+        <externally-managed-flag>false</externally-managed-flag>
+        <value-definitions>
+          <value-definition>
+            <display xml:lang="x-default">Sandbox</display>
+            <value>sandbox</value>
+          </value-definition>
+          <value-definition default="true">
+            <display xml:lang="x-default">Production</display>
+            <value>production</value>
+          </value-definition>
+          <value-definition>
+            <display xml:lang="x-default">Internal Bolt Testing (For Bolt Engineering Only)</display>
+            <value>staging</value>
+          </value-definition>
+        </value-definitions>
+      </attribute-definition>
+      <attribute-definition attribute-id="boltMerchantDivisionID">
+        <display-name xml:lang="x-default">Bolt Merchant Division ID</display-name>
+        <type>string</type>
+        <mandatory-flag>false</mandatory-flag>
+        <externally-managed-flag>false</externally-managed-flag>
+        <min-length>0</min-length>
+      </attribute-definition>
+    </custom-attribute-definitions>
+
+    <group-definitions>
+      <attribute-group group-id="Bolt Payment Setting - Embedded">
+        <display-name xml:lang="x-default">Bolt Payment Setting  - Embedded</display-name>
+        <attribute attribute-id="boltEnable"/>
+        <attribute attribute-id="boltAPIKey"/>
+        <attribute attribute-id="boltSigningSecret"/>
+        <attribute attribute-id="boltMerchantDivisionID"/>
+        <attribute attribute-id="boltMultiPublishableKey"/>
+        <attribute attribute-id="boltEnvironment"/>
+      </attribute-group>
+    </group-definitions>
+  </type-extension>
+  <type-extension type-id="OrderPaymentInstrument">
+    <custom-attribute-definitions>
+      <attribute-definition attribute-id="boltCardLastDigits">
+        <display-name xml:lang="x-default">Credit Card Last 4 Digits</display-name>
+        <type>string</type>
+        <mandatory-flag>false</mandatory-flag>
+        <externally-managed-flag>false</externally-managed-flag>
+        <min-length>0</min-length>
+      </attribute-definition>
+      <attribute-definition attribute-id="boltCardBin">
+        <display-name xml:lang="x-default">Credit Card Bin</display-name>
+        <type>string</type>
+        <mandatory-flag>false</mandatory-flag>
+        <externally-managed-flag>false</externally-managed-flag>
+        <min-length>0</min-length>
+      </attribute-definition>
+      <attribute-definition attribute-id="boltCreateAccount">
+        <display-name xml:lang="x-default">Create Bolt Account</display-name>
+        <type>boolean</type>
+        <mandatory-flag>false</mandatory-flag>
+        <externally-managed-flag>false</externally-managed-flag>
+        <default-value>false</default-value>
+      </attribute-definition>
+      <attribute-definition attribute-id="basketId">
+        <display-name xml:lang="x-default">SFCC Basket ID</display-name>
+        <type>string</type>
+        <mandatory-flag>false</mandatory-flag>
+        <externally-managed-flag>false</externally-managed-flag>
+        <min-length>0</min-length>
+      </attribute-definition>
+    </custom-attribute-definitions>
+  </type-extension>
+</metadata>

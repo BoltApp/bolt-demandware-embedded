@@ -1,0 +1,22 @@
+{
+  "extends": ["stylelint-config-recommended-scss", "stylelint-config-standard"],
+  "plugins": ["stylelint-csstree-validator"],
+  "rules": {
+    "csstree/validator": {
+      "ignoreProperties": ["background-color", "color"]
+    },
+    "property-no-unknown": [
+      true,
+      {
+        "ignoreProperties": ["composes"],
+        "ignoreSelectors": [":export"]
+      }
+    ],
+    "selector-pseudo-class-no-unknown": [
+      true,
+      {
+        "ignorePseudoClasses": ["global", "export"]
+      }
+    ]
+  }
+}

@@ -1,0 +1,8 @@
+!.project
+metadata/bolt-meta-import-embedded.zip
+node_modules/
+.idea/
+.DS_Store
+.vscode/
+dw.json
+.nyc_output/
