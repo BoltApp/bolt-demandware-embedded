@@ -18,7 +18,7 @@ parameters:
     default: false
   tag:
     type: string
-    default: '21.1'
+    default: "21.1"
 
 commands:
   checkout-and-install:
@@ -55,9 +55,9 @@ commands:
       - persist_to_workspace:
           root: ../artifacts
           paths:
-            - '*.zip'
-            - 'release-artifacts.sh'
-            - '*.txt'
+            - "*.zip"
+            - "release-artifacts.sh"
+            - "*.txt"
       - store_artifacts:
           path: ../artifacts
 
@@ -66,7 +66,7 @@ commands:
     steps:
       - slack/status:
           fail_only: true
-          failure_message: ':red_circle: A $CIRCLE_JOB job has failed!'
+          failure_message: ":red_circle: A $CIRCLE_JOB job has failed!"
           only_for_branches: master
           webhook: $GREENKEEPER_WEBHOOK
 
@@ -76,14 +76,16 @@ jobs:
     executor: sfcc-executor
     steps:
       - checkout-and-install
-      - run:
-          name: Lint
-          command: |
-            npm run lint
-      - run:
-          name: Merchant Lint
-          command: |
-            npm run eslint:merchant
+      ## TODO: fix linter as babel breaks the current linter. /cartridges used to be ignored which means
+      ## only /src were linted. Now we don't use babel anymore so we should clean it up
+      # - run:
+      #     name: Lint
+      #     command: |
+      #       npm run lint
+      # - run:
+      #     name: Merchant Lint
+      #     command: |
+      #       npm run eslint:merchant
       - run:
           name: Unit Test
           command: |
@@ -147,7 +149,7 @@ jobs:
       - attach_workspace:
           at: ../artifacts
       - run:
-          name: 'Publish Release on GitHub'
+          name: "Publish Release on GitHub"
           command: bash ../artifacts/release-artifacts.sh << pipeline.parameters.tag >>
 
   create-release:
