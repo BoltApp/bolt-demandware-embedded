@@ -15,12 +15,14 @@ exports.getSitePreferences = function () {
   var boltMultiPublishableKey = site.getCustomPreferenceValue('boltMultiPublishableKey') || '';
   var boltApiUrl = this.getBoltApiServiceURL();
   var boltCdnUrl = boltConnectURL();
+  var boltApiKey = site.getCustomPreferenceValue('boltAPIKey') || '';
   return {
     boltEnable: Site.getCurrent().getCustomPreferenceValue('boltEnable'),
     boltMerchantDivisionID: Site.getCurrent().getCustomPreferenceValue('boltMerchantDivisionID') || '',
     boltApiUrl: boltApiUrl,
     boltCdnUrl: boltCdnUrl,
     boltMultiPublishableKey: boltMultiPublishableKey,
+    boltApiKey: boltApiKey,
   };
 };
 

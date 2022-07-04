@@ -1,8 +1,9 @@
 /**
  * Endpoint Constants
  */
-exports.AUTH_CARD_URL = '/merchant/transactions/authorize';
-
+exports.AUTH_CARD_URL = '/v1/merchant/transactions/authorize';
+exports.CHECH_ACCOUNT_EXIST = '/v1/account/exists?email=';
+exports.OAUTH_TOKEN = '/v1/oauth/token';
 /**
  * Payment Method
  */
