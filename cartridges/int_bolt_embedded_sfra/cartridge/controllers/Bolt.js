@@ -27,7 +27,7 @@ server.get('accountExists', server.middleware.https, function (req, res, next) {
     next();
 });
 
-server.get('authenticateUser', server.middleware.https, function (req, res, next) {
+server.get('fetchOauthToken', server.middleware.https, function (req, res, next) {
     var config = preferences.getSitePreferences();
     var response = oauth.fetchToken(req.querystring.code, req.querystring.scope, config.boltMultiPublishableKey, config.boltApiKey)
 
