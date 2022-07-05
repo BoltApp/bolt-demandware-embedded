@@ -57,6 +57,10 @@ function handle(currentBasket, paymentInformation, paymentMethodID, req) {
       paymentInformation.expirationYear
     );
     paymentInstrument.setCreditCardToken(paymentInformation.creditCardToken);
+    paymentInstrument.custom.basketId = currentBasket.UUID;
+    paymentInstrument.custom.boltCardLastDigits =
+      paymentInformation.lastFourDigits;
+    paymentInstrument.custom.boltCardBin = paymentInformation.bin;
   });
 
   return { fieldErrors: {}, serverErrors: [], error: false };
