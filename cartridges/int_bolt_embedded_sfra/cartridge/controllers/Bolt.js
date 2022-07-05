@@ -8,7 +8,7 @@ var LogUtils = require('~/cartridge/scripts/util/boltLogUtils');
 var log = LogUtils.getLogger('CheckAccount');
 var httpUtils = require('~/cartridge/scripts/services/httpUtils');
 var constants = require('~/cartridge/scripts/util/constants');
-var oauth = require('~/cartridge/scripts/services/utils/oauth');
+var oauth = require('~/cartridge/scripts/services/oauth');
 var preferences = require('~/cartridge/scripts/util/preferences');
 
 server.get('accountExists', server.middleware.https, function (req, res, next) {
