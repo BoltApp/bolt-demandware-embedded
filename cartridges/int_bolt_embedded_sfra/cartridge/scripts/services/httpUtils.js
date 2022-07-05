@@ -21,12 +21,13 @@ var log = logUtils.getLogger('HttpUtils');
  * @param {Object} request - request object
  * @returns {ServiceResponse} service response
  */
- exports.restAPIClient = function (method, endPoint, request) {
-  const service = LocalServiceRegistry.createService('bolt.http', {
+ exports.restAPIClient = function (method, endPoint, request, requestContentType) {
+   const contentType = requestContentType || 'application/json';
+   const service = LocalServiceRegistry.createService('bolt.http', {
     createRequest(service, args) {
       service.URL = args.endPointUrl;
       service.setRequestMethod(args.method);
-      service.addHeader('Content-Type', 'application/json');
+      service.addHeader('Content-Type', contentType);
       service.addHeader('X-Api-Key', args.boltAPIKey);
       service.addHeader('Content-Length', args.request.length);
       service.addHeader('X-Nonce', new Date().getTime());
@@ -118,7 +119,7 @@ function getConfiguration() {
   var site = Site.getCurrent();
   var boltSigningSecret = site.getCustomPreferenceValue('boltSigningSecret') || '';
   var boltAPIKey = site.getCustomPreferenceValue('boltAPIKey') || '';
-
+  
   if (boltAPIKey === '' || boltSigningSecret === '') {
     log.error('Error: Bolt Business Manager configurations are missing.');
   }
@@ -128,6 +129,6 @@ function getConfiguration() {
   return {
     boltSigningSecret: boltSigningSecret,
     boltAPIKey: boltAPIKey,
-    boltAPIBaseURL: baseAPIUrl + '/v1',
+    boltAPIBaseURL: baseAPIUrl,
   };
 }
