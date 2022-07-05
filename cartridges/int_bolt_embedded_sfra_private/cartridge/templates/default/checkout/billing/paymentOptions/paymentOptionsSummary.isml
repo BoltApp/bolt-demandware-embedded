@@ -1,0 +1,7 @@
+<div class="payment-details">
+    <isloop items="${pdict.order.billing.payment.selectedPaymentInstruments}" var="payment">
+        <isif condition="${payment.paymentMethod === 'BOLT_PAY'}" />
+        <isinclude template="checkout/billing/paymentOptions/bolt/paymentSummary" />
+        </isif>
+    </isloop>
+</div>

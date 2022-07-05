@@ -1,0 +1,9 @@
+<div class="tab-pane bolt-content" id="bolt-content" role="tabpanel">
+    <div class="bolt-pay">
+        <fieldset class="payment-form-fields">
+            <input type="hidden" class="form-control" name="${pdict.forms.billingForm.paymentMethod.htmlName}"
+                value="${paymentOption.ID}">
+        </fieldset>
+        <div id="div-to-inject-field-into"></div>
+    </div>
+</div>

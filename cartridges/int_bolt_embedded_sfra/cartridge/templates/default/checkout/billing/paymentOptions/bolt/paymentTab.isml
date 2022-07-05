@@ -1,0 +1,6 @@
+<li class="nav-item" data-method-id="${paymentOption.ID}">
+    <a class="nav-link bolt-tab" data-toggle="tab" href="#bolt-content" role="tab">
+        <img src="${URLUtils.staticURL('/images/credit.png')}" height="32" alt="${paymentOption.name}"
+            title="${paymentOption.name}">
+    </a>
+</li>

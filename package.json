@@ -10,7 +10,7 @@
     "test": "sgmf-scripts --test",
     "test:unit": "nyc --reporter=text --check-coverage --lines 63.5 mocha --require test/unit/sinon-chai.js test/unit/**/*.js",
     "test:integration": "sgmf-scripts --integration 'test/integration/**/*.js'",
-    "build": "npm run transpile && npm run compile",
+    "build": "npm run compile",
     "compile": "sgmf-scripts --compile js && sgmf-scripts --compile css",
     "eslint": "npm run eslint:base -- .",
     "eslint:base": "eslint --format unix --ext .jsx,.js --cache --cache-location node_modules/eslintcache/cache --quiet",
