@@ -9,12 +9,12 @@ var constants = require('~/cartridge/scripts/util/constants');
  * @param {string} tokenEndpoint - token endpoint for oauth flow
  * @returns {Object} result
  */
- exports.exchangeToken = function(code, scope, clientId, clientSecret) {
+ exports.fetchToken = function(code, scope, clientId, clientSecret) {
      var payload = "grant_type=authorization_code&code="
          .concat(code, "&scope=")
          .concat(scope, "&client_secret=")
          .concat(clientSecret, "&client_id=")
          .concat(clientId);
-     return httpUtils.restAPIClient('POST', constants.OAUTH_TOKEN, payload, 'application/x-www-form-urlencoded');
+     return httpUtils.restAPIClient('POST', constants.OAUTH_TOKEN_URL, payload, 'application/x-www-form-urlencoded');
   }
   

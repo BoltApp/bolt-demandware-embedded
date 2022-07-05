@@ -119,7 +119,6 @@ function getConfiguration() {
   var site = Site.getCurrent();
   var boltSigningSecret = site.getCustomPreferenceValue('boltSigningSecret') || '';
   var boltAPIKey = site.getCustomPreferenceValue('boltAPIKey') || '';
-  var boltMultiPublishableKey = site.getCustomPreferenceValue('boltMultiPublishableKey') || '';
   
   if (boltAPIKey === '' || boltSigningSecret === '') {
     log.error('Error: Bolt Business Manager configurations are missing.');
@@ -131,6 +130,5 @@ function getConfiguration() {
     boltSigningSecret: boltSigningSecret,
     boltAPIKey: boltAPIKey,
     boltAPIBaseURL: baseAPIUrl,
-    boltMultiPublishableKey: boltMultiPublishableKey,
   };
 }

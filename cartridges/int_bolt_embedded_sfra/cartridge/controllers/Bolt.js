@@ -13,7 +13,7 @@ var preferences = require('~/cartridge/scripts/util/preferences');
 
 server.get('accountExists', server.middleware.https, function (req, res, next) {
     var email = req.querystring.email;
-    var response = httpUtils.restAPIClient('GET', constants.CHECH_ACCOUNT_EXIST + email);
+    var response = httpUtils.restAPIClient('GET', constants.CHECK_ACCOUNT_EXIST_URL + email);
 
     var returnObject = {};
     if(response.status === HttpResult.OK) {
@@ -29,7 +29,7 @@ server.get('accountExists', server.middleware.https, function (req, res, next) {
 
 server.get('authenticateUser', server.middleware.https, function (req, res, next) {
     var config = preferences.getSitePreferences();
-    var response = oauth.exchangeToken(req.querystring.code, req.querystring.scope, config.boltMultiPublishableKey, config.boltApiKey)
+    var response = oauth.fetchToken(req.querystring.code, req.querystring.scope, config.boltMultiPublishableKey, config.boltApiKey)
 
     var returnObject = {};
     if(response.status === HttpResult.OK) {

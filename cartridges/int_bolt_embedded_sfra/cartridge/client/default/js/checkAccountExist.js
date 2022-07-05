@@ -1,7 +1,7 @@
 "use strict";
 
 async function authorizeWithEmail(customerEmail){
-  const boltPublishableKey = $('.bolt-publishable-key').val()
+  const boltPublishableKey = $('.bolt-publishable-key').val();
   const boltEmbedded = Bolt(boltPublishableKey);
   const authorizationComponent = boltEmbedded.create("authorization_component",  {style: {position: "right"}} );
   await authorizationComponent.mount(".card.customer-section") // mount on the div container otherwise the iframe won't render
@@ -13,8 +13,8 @@ async function authorizeWithEmail(customerEmail){
 
 async function authorizeUser(email){
   const authorizeWithEmailResp = await authorizeWithEmail(email);
-  const OauthResp = await authenticateUserWithCode(authorizeWithEmailResp.authorizationCode, authorizeWithEmailResp.scope)
-  console.log(OauthResp)
+  const OauthResp = await authenticateUserWithCode(authorizeWithEmailResp.authorizationCode, authorizeWithEmailResp.scope);
+  console.log(OauthResp);
 }
 
 function authenticateUserWithCode(authCode, scope){
@@ -32,7 +32,7 @@ function authenticateUserWithCode(authCode, scope){
 
 $(document).ready(function () {
   const emailInputLoaded = setInterval(function (){
-    const emailInput = $('#email-guest') // guest email input - rename to bolt specific? 
+    const emailInput = $('#email-guest'); // guest email input - rename to bolt specific?
     if (emailInput){
       clearInterval(emailInputLoaded);
       emailInput.focusout(function(){
@@ -49,7 +49,8 @@ $(document).ready(function () {
             if (data !== null) {
               if (data.hasBoltAccount){
                 const authorizationResponse = authorizeUser(customerEmail);
-                console.log("user authenticated!")
+                console.log("user authenticated!");
+                // TODO: fill in shopper details by sending this code to a controller & fill basket from Backend
               }
             }
           },
