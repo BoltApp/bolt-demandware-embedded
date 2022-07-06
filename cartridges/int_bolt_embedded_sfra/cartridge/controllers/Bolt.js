@@ -1,16 +1,18 @@
 "use strict";
-
+/* API Includes */
 var HttpResult = require('dw/svc/Result');
 var server = require('server');
-/* API Includes */
+var URLUtils = require('dw/web/URLUtils');
 
+// Script includes
 var LogUtils = require('~/cartridge/scripts/util/boltLogUtils');
-var log = LogUtils.getLogger('CheckAccount');
 var httpUtils = require('~/cartridge/scripts/services/httpUtils');
 var constants = require('~/cartridge/scripts/util/constants');
 var oauth = require('~/cartridge/scripts/services/oauth');
 var preferences = require('~/cartridge/scripts/util/preferences');
 var account = require('~/cartridge/scripts/services/account');
+
+var log = LogUtils.getLogger('CheckAccount');
 
 server.get('accountExists', server.middleware.https, function (req, res, next) {
     var email = req.querystring.email;
@@ -57,13 +59,11 @@ server.get('getAccountDetails', server.middleware.https, function (req, res, nex
         returnObject.errorMessage = response.errors;
     }
 
-    res.json(returnObject);
+    var reviewOrderRes = URLUtils.https('CheckoutServices-SubmitPayment');
+
+    res.json(reviewOrderRes);
     next();
 });
 
-server.get('basket', server.middleware.https, function (req, res, next) {
-    res.json(require('dw/order/BasketMgr').getCurrentBasket());
-    next();
-});
 
 module.exports = server.exports();

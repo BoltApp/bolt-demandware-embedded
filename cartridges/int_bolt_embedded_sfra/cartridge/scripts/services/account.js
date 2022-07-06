@@ -14,33 +14,43 @@ exports.addAccountDetailsToBasket = function(shopperDetails){
 
     let boltDefaultAddress;
     // set customer address to basket
-    for (var address in shopperDetails.addresses){
+    shopperDetails.addresses.forEach(function(address){
         if (address.default === true) {
             boltDefaultAddress = address;
-            break;
         }
-    }
+    })
     // set shopper detail to shipping address
     collections.forEach(basket.getShipments(), function (shipment) {
         // TODO: skip email delivery if there is any
+        if(!shipment.getShippingAddress()){
+            Transaction.wrap(function (){
+                shipment.createShippingAddress();
+            })
+        }
         addAccountDetailsToAddress(boltDefaultAddress, shipment.getShippingAddress());
     });
 
-    //const billingAddress = basket.getBillingAddress() ? basket.getBillingAddress() : basket.createBillingAddress();
-    const billingAddress = basket.getBillingAddress()
-    let boltBillingAddress;
-    for (var paymentMethod in shopperDetails.payment_methods){
+    let billingAddress, boltBillingAddress;
+    Transaction.wrap(function (){
+        billingAddress = basket.getBillingAddress() ? basket.getBillingAddress() : basket.createBillingAddress();
+    })
+
+    shopperDetails.payment_methods.forEach(function(paymentMethod){
         if (paymentMethod.default === true) {
-            boltBillingAddress = paymentMethod.billingAddress;
-            break;
+            boltBillingAddress = paymentMethod.billing_address;
         }
-    }
+    });
 
     // adding billing address to bolt account
     addAccountDetailsToAddress(boltBillingAddress, billingAddress);
 
     // adding payment methods to the baskek's custom field
     addPaymentMethodInfoToBasket(basket, shopperDetails.payment_methods)
+
+    // set email to the basket
+    Transaction.wrap(function (){
+        basket.setCustomerEmail(shopperDetails.profile.email);
+    })
 }
 
 
@@ -52,9 +62,7 @@ exports.addAccountDetailsToBasket = function(shopperDetails){
 function addAccountDetailsToAddress(boltAddress, address){
     try{
         Transaction.wrap(function () {
-            // set customer profile to basket
-            address.setEmail(boltAddress.email);
-            address.setPhone(boltAddress.phone);
+            address.setPhone(boltAddress.phone_number);
             address.setFirstName(boltAddress.first_name);
             address.setLastName(boltAddress.last_name);
             address.setAddress1(boltAddress.street_address1);
