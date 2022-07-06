@@ -10,6 +10,7 @@ var httpUtils = require('~/cartridge/scripts/services/httpUtils');
 var constants = require('~/cartridge/scripts/util/constants');
 var oauth = require('~/cartridge/scripts/services/oauth');
 var preferences = require('~/cartridge/scripts/util/preferences');
+var account = require('~/cartridge/scripts/services/account');
 
 server.get('accountExists', server.middleware.https, function (req, res, next) {
     var email = req.querystring.email;
@@ -40,6 +41,28 @@ server.get('fetchOauthToken', server.middleware.https, function (req, res, next)
     }
 
     res.json(returnObject);
+    next();
+});
+
+server.get('getAccountDetails', server.middleware.https, function (req, res, next) {
+    var bearerToken = "Bearer ".concat(req.querystring.bearerToken);
+    var response = httpUtils.restAPIClient("GET", constants.ACCOUNT_DETAILS_URL, null, '', bearerToken)
+
+    var returnObject = {};
+    if(response.status === HttpResult.OK) {
+        var shopperDetails = response.result;
+        account.addAccountDetailsToBasket(shopperDetails);
+        returnObject = shopperDetails;
+    } else {
+        returnObject.errorMessage = response.errors;
+    }
+
+    res.json(returnObject);
+    next();
+});
+
+server.get('basket', server.middleware.https, function (req, res, next) {
+    res.json(require('dw/order/BasketMgr').getCurrentBasket());
     next();
 });
 
