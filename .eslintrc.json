@@ -1,107 +1,15 @@
 {
-  "extends": ["airbnb-base", "plugin:prettier/recommended"],
-  "parser": "@babel/eslint-parser",
-  "plugins": ["@babel"],
-  "parserOptions": {
-    "ecmaVersion": 2020,
-    "sourceType": "module", // es modules gets converted to commonjs via babel
-    "ecmaFeatures": {
-      "modules": true
-    },
-    "babelOptions": {
-      "configFile": "./babel.config.json"
-    }
-  },
-  "globals": {
-    "document": "readonly",
-    "window": "readonly",
-    "location": "readonly",
-    "history": "readonly",
-    "request": "readonly",
-    "response": "readonly",
-    "empty": "readonly",
-    "session": "readonly",
-    "APIException": "readonly"
-  },
-  "settings": {
-    "import/extensions": [".js", ".jsx", ".json", ".ts", ".tsx"]
-  },
-  "reportUnusedDisableDirectives": true,
+  "root": true,
+  "extends": "airbnb-base/legacy",
   "rules": {
-    "import/order": "off", // Fix later
-    "import/no-unresolved": [
-      "error",
-      {
-        "ignore": ["^dw", "^base", "^\\*"]
-      }
-    ],
-    "import/extensions": "off",
-    "import/prefer-default-export": "off",
-    "no-var": "off", // TODO Fix
-    "no-plusplus": "off", // TODO maybe
-    "prefer-destructuring": "off", // TODO fix
-    "import/newline-after-import": "off", // TODO fix
-    "prefer-arrow-callback": "off", // TODO fix
-    "no-restricted-globals": "off",
-    "func-names": "off",
-    "no-use-before-define": "off",
-    "prefer-template": "off",
-    "import/no-dynamic-require": "off",
-    "require-jsdoc": "error",
-    "valid-jsdoc": [
-      "error",
-      {
-        "preferType": { "Boolean": "boolean", "Number": "number", "object": "Object", "String": "string" },
-        "requireReturn": false
-      }
-    ],
-    "vars-on-top": "off",
-    "global-require": "off",
-    "no-continue": "off",
-    "no-shadow": ["error", { "allow": ["err", "callback"] }],
-    "no-mixed-operators": [
-      "error",
-      {
-        "groups": [
-          // omit arithmetic
-          ["&", "|", "^", "~", "<<", ">>", ">>>"],
-          ["==", "!=", "===", "!==", ">", ">=", "<", "<="],
-          ["&&", "||"],
-          ["in", "instanceof"]
-        ],
-        "allowSamePrecedence": true
-      }
-    ],
-    "max-len": ["error", { "code": 120, "ignoreRegExpLiterals": true }],
-    "max-depth": ["error", 4]
-  },
-  "overrides": [
-    {
-      "files": ["test/**"],
-      "rules": {
-        // intentionally off for chai assertions
-        "no-unused-expressions": "off",
-        "import/no-dynamic-require": "off"
-      },
-      "parserOptions": {
-        "requireConfigFile": false,
-        "ecmaVersion": 2020,
-        "sourceType": "module", // es modules gets converted to commonjs via babel
-        "ecmaFeatures": {
-          "modules": true
-        },
-        "babelOptions": {
-          "configFile": "./babel.config.json"
-        }
-      }
-    },
-    {
-      "files": ["test/mocks/**"],
-      "rules": {
-        // keep mocks similar to base implementations code
-        "prefer-rest-params": "off",
-        "prefer-spread": "off"
-      }
-    }
-  ]
+      "import/no-unresolved": "off",
+      "indent": ["error", 4, { "SwitchCase": 1, "VariableDeclarator": 1 }],
+      "func-names": "off",
+      "require-jsdoc": "error",
+      "valid-jsdoc": ["error", { "preferType": { "Boolean": "boolean", "Number": "number", "object": "Object", "String": "string" }, "requireReturn": false}],
+      "vars-on-top": "off",
+      "global-require": "off",
+      "no-shadow": ["error", { "allow": ["err", "callback"]}],
+      "max-len": "off"
+  }
 }
