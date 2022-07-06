@@ -1,12 +1,28 @@
 "use strict";
 
-var paymentComponent;
+var paymentComponent, boltEmbedded, accountCheck, boltCreateAccount;
+
+var accountCheckOptions = {
+  defaultValue: false,
+  version: "compact",
+  listeners: {
+    change: function (value) {
+      boltCreateAccount = value;
+    },
+  },
+};
 
 var renderBoltEmbeddedPaymentFields = function () {
-  if (paymentComponent == null) {
-    let boltEmbedded = Bolt($(".bolt-publishable-key").val());
+  if (paymentComponent == null && boltEmbedded) {
     paymentComponent = boltEmbedded.create("payment_component");
     paymentComponent.mount(document.getElementById("div-to-inject-field-into"));
+  }
+};
+
+var renderBoltCreateAccountCheckField = function () {
+  if (boltEmbedded) {
+    accountCheck = boltEmbedded.create("account_checkbox", accountCheckOptions);
+    accountCheck.mount("#acct-checkbox");
   }
 };
 
@@ -35,11 +51,15 @@ var tokenize = function (event, data) {
   getToken().then(
     function (response) {
       var serializedArray = data.form.serializeArray();
-      Object.keys(response).forEach(function (key) {
+      for (const property in response) {
         serializedArray.push({
-          name: key,
-          value: response[key],
+          name: property,
+          value: response[property],
         });
+      }
+      serializedArray.push({
+        name: "create_bolt_account",
+        value: boltCreateAccount,
       });
       data.callback($.param(serializedArray));
     },
@@ -53,7 +73,9 @@ $("body").ready(function () {
   var isBoltEmbeddedExists = setInterval(function () {
     if (typeof Bolt !== "undefined") {
       clearInterval(isBoltEmbeddedExists);
+      boltEmbedded = Bolt($(".bolt-publishable-key").val());
       initEmbeddedPaymentFields();
+      renderBoltCreateAccountCheckField();
     }
   }, 500);
 });
