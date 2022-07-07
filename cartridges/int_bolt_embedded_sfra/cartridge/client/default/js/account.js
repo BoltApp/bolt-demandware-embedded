@@ -11,6 +11,7 @@ async function authorizeWithEmail(customerEmail){
 
 async function authorizeUser(email){
   const authorizeWithEmailResp = await authorizeWithEmail(email);
+  if (!authorizeWithEmailResp) return;
   const OauthResp = await authenticateUserWithCode(authorizeWithEmailResp.authorizationCode, authorizeWithEmailResp.scope);
   return await getAccountDetails(OauthResp.accessToken);
 }
@@ -49,33 +50,38 @@ function getAccountDetails(oauthToken){
   });
 }
 
+function checkAccountAndFetchDetail(){
+  const emailInput = $('#email-guest');
+  const customerEmail = emailInput.val();
+  const checkBoltAccountUrl = $('.check-bolt-account-exist').val();
+  const reqBody = {
+    email: customerEmail
+  }
+  $.ajax({
+    url: checkBoltAccountUrl,
+    method: 'GET',
+    data: reqBody,
+    success(data) {
+      if (data !== null) {
+        if (data.hasBoltAccount){
+          authorizeUser(customerEmail);
+        }
+      }
+    },
+    error: function (jqXHR, error) {
+      console.log(error);
+    }
+  });
+  emailInput.unbind("focusout");
+}
+
 $(document).ready(function () {
   const emailInputLoaded = setInterval(function (){
     const emailInput = $('#email-guest'); // guest email input - rename to bolt specific?
     if (emailInput){
+      console.log("email input loaded");
       clearInterval(emailInputLoaded);
-      emailInput.focusout(function(){
-        const customerEmail = emailInput.val()
-        const checkBoltAccountUrl = $('.check-bolt-account-exist').val();
-        const reqBody = {
-          email: customerEmail
-        }
-        $.ajax({
-          url: checkBoltAccountUrl,
-          method: 'GET',
-          data: reqBody,
-          success(data) {
-            if (data !== null) {
-              if (data.hasBoltAccount){
-                authorizeUser(customerEmail);
-              }
-            }
-          },
-          error: function (jqXHR, error) {
-            console.log(error);
-          }
-        });
-      })
+      emailInput.focusout(checkAccountAndFetchDetail);
     }
-  }, 100) 
+  }, 100)
 })
