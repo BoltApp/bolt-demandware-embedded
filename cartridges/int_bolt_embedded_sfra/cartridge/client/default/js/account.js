@@ -67,8 +67,7 @@ $(document).ready(function () {
           success(data) {
             if (data !== null) {
               if (data.hasBoltAccount){
-                const authorizationResponse = authorizeUser(customerEmail);
-                // TODO: fill in shopper details by sending this code to a controller & fill basket from Backend
+                authorizeUser(customerEmail);
               }
             }
           },
