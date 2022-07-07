@@ -46,14 +46,22 @@ function processForm(req, paymentForm, viewFormData) {
   var expMonthAndYear = billingForm.expiration.split("-");
 
   viewData.paymentInformation = {
-    cardType: billingForm.network,
+    cardType: billingForm.network || "",
     expirationMonth: parseInt(expMonthAndYear[1], 10),
     expirationYear: parseInt(expMonthAndYear[0], 10),
-    creditCardToken: billingForm.token,
-    bin: billingForm.bin,
-    lastFourDigits: billingForm.last4,
-    tokenType: billingForm.token_type,
+    creditCardToken: billingForm.token || "",
+    bin: billingForm.bin || "",
+    lastFourDigits: billingForm.last4 || "",
+    createAccount: billingForm.create_bolt_account === "true" ? true : false,
   };
+
+  // if returning Bolt shopper selects a stored card, use Bolt payment method ID.
+  if (
+    session.custom.authenticatedBoltShopper &&
+    req.form.selectedBoltPaymentID
+  ) {
+    viewData.selectedBoltPaymentID = req.form.selectedBoltPaymentID;
+  }
 
   return {
     error: false,

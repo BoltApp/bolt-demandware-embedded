@@ -58,9 +58,17 @@ function handle(currentBasket, paymentInformation, paymentMethodID, req) {
     );
     paymentInstrument.setCreditCardToken(paymentInformation.creditCardToken);
     paymentInstrument.custom.basketId = currentBasket.UUID;
-    paymentInstrument.custom.boltCardLastDigits =
-      paymentInformation.lastFourDigits;
     paymentInstrument.custom.boltCardBin = paymentInformation.bin;
+
+    if (
+      session.custom.authenticatedBoltShopper &&
+      paymentInformation.selectedBoltPaymentID
+    ) {
+      paymentInstrument.custom.selectedBoltPaymentID =
+        paymentInformation.selectedBoltPaymentID;
+    }
+    paymentInstrument.custom.boltCreateAccount =
+      paymentInformation.createAccount;
   });
 
   return { fieldErrors: {}, serverErrors: [], error: false };
@@ -122,25 +130,6 @@ function getAuthRequest(order, paymentInstrument) {
     return { error: true, errorMsg: "SFCC basket ID not found." };
   }
 
-  var creditCardInfo = {
-    token: paymentInstrument.getCreditCardToken(),
-    last4: paymentInstrument.custom.boltCardLastDigits,
-    bin: paymentInstrument.custom.boltCardBin,
-    number: "",
-    expiration:
-      StringUtils.formatNumber(
-        paymentInstrument.getCreditCardExpirationYear(),
-        "0000"
-      ) +
-      "-" +
-      StringUtils.formatNumber(
-        paymentInstrument.getCreditCardExpirationMonth(),
-        "00"
-      ),
-    postal_code: order.getBillingAddress().getPostalCode(),
-    token_type: constants.BOLT_TOKEN_TYPE,
-  };
-
   var userIdentifier = {
     email: order.getCustomerEmail(),
     phone: order.getBillingAddress().getPhone(),
@@ -152,7 +141,6 @@ function getAuthRequest(order, paymentInstrument) {
 
   var request = {
     basketId: paymentInstrument.custom.basketId,
-    credit_card: creditCardInfo,
     division_id:
       Site.getCurrent().getCustomPreferenceValue("boltMerchantDivisionID") ||
       "",
@@ -161,6 +149,33 @@ function getAuthRequest(order, paymentInstrument) {
     user_identity: userIdentity,
     create_bolt_account: paymentInstrument.custom.boltCreateAccount,
   };
+
+  // use Bolt payment ID for Bolt
+  if (
+    session.custom.authenticatedBoltShopper &&
+    paymentInstrument.custom.selectedBoltPaymentID
+  ) {
+    request.credit_card_id = paymentInstrument.custom.selectedBoltPaymentID;
+  } else {
+    request.credit_card = {
+      token: paymentInstrument.getCreditCardToken(),
+      last4: paymentInstrument.getCreditCardNumberLastDigits(),
+      bin: paymentInstrument.custom.boltCardBin,
+      number: "",
+      expiration:
+        StringUtils.formatNumber(
+          paymentInstrument.getCreditCardExpirationYear(),
+          "0000"
+        ) +
+        "-" +
+        StringUtils.formatNumber(
+          paymentInstrument.getCreditCardExpirationMonth(),
+          "00"
+        ),
+      postal_code: order.getBillingAddress().getPostalCode(),
+      token_type: constants.BOLT_TOKEN_TYPE,
+    };
+  }
 
   return {
     authRequest: request,
