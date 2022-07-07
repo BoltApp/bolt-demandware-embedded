@@ -7,16 +7,13 @@ async function authorizeWithEmail(customerEmail){
   await authorizationComponent.mount(".card.customer-section") // mount on the div container otherwise the iframe won't render
   
   const authorizationResponse = await authorizationComponent.authorize({"email":customerEmail});
-  console.log(authorizationResponse);
   return authorizationResponse;
 }
 
 async function authorizeUser(email){
   const authorizeWithEmailResp = await authorizeWithEmail(email);
   const OauthResp = await authenticateUserWithCode(authorizeWithEmailResp.authorizationCode, authorizeWithEmailResp.scope);
-  console.log(OauthResp);
   const accountDetails = await getAccountDetails(OauthResp.accessToken);
-  console.log(accountDetails);
 }
 
 function authenticateUserWithCode(authCode, scope){
@@ -33,7 +30,6 @@ function authenticateUserWithCode(authCode, scope){
 }
 
 function getAccountDetails(oauthToken){
-  console.log("oauth token", oauthToken);
   const accountDetailUrl = $('.get-bolt-account-details').val();
   const reqBody = {
     bearerToken: oauthToken
@@ -43,7 +39,6 @@ function getAccountDetails(oauthToken){
     method: 'GET',
     data: reqBody,
     success: function(data) {
-      console.log("redirecting to placing order!");
       window.location.href = data.redirectUrl;
     }
   });
