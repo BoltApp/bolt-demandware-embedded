@@ -59,10 +59,16 @@ function handle(currentBasket, paymentInformation, paymentMethodID, req) {
     paymentInstrument.setCreditCardToken(paymentInformation.creditCardToken);
     paymentInstrument.custom.basketId = currentBasket.UUID;
     paymentInstrument.custom.boltCardBin = paymentInformation.bin;
-    
-    if (session.custom.authenticatedBoltShopper && paymentInformation.selectedBoltPaymentID) {
-      paymentInstrument.custom.selectedBoltPaymentID = paymentInformation.selectedBoltPaymentID;
+
+    if (
+      session.custom.authenticatedBoltShopper &&
+      paymentInformation.selectedBoltPaymentID
+    ) {
+      paymentInstrument.custom.selectedBoltPaymentID =
+        paymentInformation.selectedBoltPaymentID;
     }
+    paymentInstrument.custom.boltCreateAccount =
+      paymentInformation.createAccount;
   });
 
   return { fieldErrors: {}, serverErrors: [], error: false };
@@ -145,8 +151,11 @@ function getAuthRequest(order, paymentInstrument) {
   };
 
   // use Bolt payment ID for Bolt
-  if (session.custom.authenticatedBoltShopper && paymentInstrument.custom.selectedBoltPaymentID) {
-    request.credit_card_id = paymentInstrument.custom.selectedBoltPaymentID
+  if (
+    session.custom.authenticatedBoltShopper &&
+    paymentInstrument.custom.selectedBoltPaymentID
+  ) {
+    request.credit_card_id = paymentInstrument.custom.selectedBoltPaymentID;
   } else {
     request.credit_card = {
       token: paymentInstrument.getCreditCardToken(),
@@ -167,7 +176,7 @@ function getAuthRequest(order, paymentInstrument) {
       token_type: constants.BOLT_TOKEN_TYPE,
     };
   }
-  
+
   return {
     authRequest: request,
     error: false,
