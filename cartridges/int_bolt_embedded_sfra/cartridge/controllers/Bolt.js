@@ -14,7 +14,7 @@ var account = require('~/cartridge/scripts/services/account');
 
 var log = LogUtils.getLogger('CheckAccount');
 
-server.get('accountExists', server.middleware.https, function (req, res, next) {
+server.get('AccountExists', server.middleware.https, function (req, res, next) {
     var email = req.querystring.email;
     var response = httpUtils.restAPIClient('GET', constants.CHECK_ACCOUNT_EXIST_URL + email);
 
@@ -31,7 +31,7 @@ server.get('accountExists', server.middleware.https, function (req, res, next) {
     next();
 });
 
-server.get('fetchOauthToken', server.middleware.https, function (req, res, next) {
+server.get('FetchOauthToken', server.middleware.https, function (req, res, next) {
     var config = preferences.getSitePreferences();
     var response = oauth.fetchToken(req.querystring.code, req.querystring.scope, config.boltMultiPublishableKey, config.boltApiKey)
 
@@ -49,7 +49,7 @@ server.get('fetchOauthToken', server.middleware.https, function (req, res, next)
     next();
 });
 
-server.get('getAccountDetails', server.middleware.https, function (req, res, next) {
+server.get('GetAccountDetails', server.middleware.https, function (req, res, next) {
     var bearerToken = "Bearer ".concat(req.querystring.bearerToken);
     var response = httpUtils.restAPIClient("GET", constants.ACCOUNT_DETAILS_URL, null, '', bearerToken)
 

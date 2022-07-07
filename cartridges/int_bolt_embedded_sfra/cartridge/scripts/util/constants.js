@@ -25,8 +25,3 @@ exports.BOLT_CARTRIDGE_VERSION = "21.4.22";
  * HTTP Method
  */
 exports.HTTP_METHOD_POST = "POST";
-
-/**
- * Shipping methods
- */
-exports.DEFAULT_SHIPPING_METHOD_ID = "me";

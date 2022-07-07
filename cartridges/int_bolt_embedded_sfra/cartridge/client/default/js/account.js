@@ -25,6 +25,9 @@ function authenticateUserWithCode(authCode, scope){
     url: authenticateUserUrl,
     method: 'GET',
     data: reqBody,
+    error: function (jqXHR, error) {
+      console.log(error);
+    }
   });
 }
 
@@ -39,6 +42,9 @@ function getAccountDetails(oauthToken){
     data: reqBody,
     success: function(data) {
       window.location.href = data.redirectUrl;
+    },
+    error: function (jqXHR, error) {
+      console.log(error);
     }
   });
 }
@@ -66,6 +72,9 @@ $(document).ready(function () {
               }
             }
           },
+          error: function (jqXHR, error) {
+            console.log(error);
+          }
         });
       })
     }
