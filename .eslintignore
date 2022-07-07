@@ -1,7 +1,5 @@
-cartridges/*
 @types/*
 
-**/cartridges/app_storefront_base/cartridge/client/**/*.js
 **/cartridge/templates/*
 **/cartridge/static/*
 **/*.scss
