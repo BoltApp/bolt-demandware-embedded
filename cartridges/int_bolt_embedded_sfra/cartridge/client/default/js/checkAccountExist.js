@@ -17,7 +17,6 @@ async function authorizeUser(email){
   console.log(OauthResp);
   const accountDetails = await getAccountDetails(OauthResp.accessToken);
   console.log(accountDetails);
-  //redirectToSubmitPayment();
 }
 
 function authenticateUserWithCode(authCode, scope){
@@ -49,17 +48,6 @@ function getAccountDetails(oauthToken){
     }
   });
 }
-
-// function redirectToSubmitPayment(){
-//   const accountDetailUrl = $('.redirect-submit-payment').val();
-//   return $.ajax({
-//     url: accountDetailUrl,
-//     method: 'GET',
-//     data:{
-//         stage: "placeOrder#placeOrder"
-//     }
-//   });
-// }
 
 $(document).ready(function () {
   const emailInputLoaded = setInterval(function (){

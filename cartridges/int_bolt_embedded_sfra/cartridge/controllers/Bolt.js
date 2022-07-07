@@ -64,15 +64,4 @@ server.get('getAccountDetails', server.middleware.https, function (req, res, nex
     next();
 });
 
-server.get('getBasket', server.middleware.https, function (req, res, next) {
-    var BasketMgr = require('dw/order/BasketMgr');
-    var curbasket = BasketMgr.getCurrentBasket();
-    var returnObject = {
-        basketID: curbasket.UUID
-    };
-    res.json(returnObject);
-    next();
-});
-
-
 module.exports = server.exports();
