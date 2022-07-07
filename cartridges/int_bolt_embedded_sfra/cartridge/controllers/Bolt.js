@@ -54,14 +54,23 @@ server.get('getAccountDetails', server.middleware.https, function (req, res, nex
     if(response.status === HttpResult.OK) {
         var shopperDetails = response.result;
         account.addAccountDetailsToBasket(shopperDetails);
-        returnObject = shopperDetails;
+        returnObject.success = true;
+        returnObject.redirectUrl = URLUtils.https("Checkout-Begin") + "?stage=placeOrder#placeOrder";
     } else {
         returnObject.errorMessage = response.errors;
     }
 
-    var reviewOrderRes = URLUtils.https('CheckoutServices-SubmitPayment');
+    res.json(returnObject);
+    next();
+});
 
-    res.json(reviewOrderRes);
+server.get('getBasket', server.middleware.https, function (req, res, next) {
+    var BasketMgr = require('dw/order/BasketMgr');
+    var curbasket = BasketMgr.getCurrentBasket();
+    var returnObject = {
+        basketID: curbasket.UUID
+    };
+    res.json(returnObject);
     next();
 });
 

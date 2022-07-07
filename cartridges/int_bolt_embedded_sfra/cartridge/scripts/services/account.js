@@ -1,7 +1,10 @@
 var BasketMgr = require('dw/order/BasketMgr');
+var ShippingMgr = require('dw/order/ShippingMgr');
 var Transaction = require('dw/system/Transaction');
+
 var LogUtils = require('~/cartridge/scripts/util/boltLogUtils');
 var collections = require('*/cartridge/scripts/util/collections');
+var constants = require('~/cartridge/scripts/util/constants');
 var log = LogUtils.getLogger('CheckAccount');
 
 /**
@@ -27,22 +30,13 @@ exports.addAccountDetailsToBasket = function(shopperDetails){
                 shipment.createShippingAddress();
             })
         }
+        if(!shipment.getShippingMethod()){
+            Transaction.wrap(function (){
+                shipment.setShippingMethod(ShippingMgr.getDefaultShippingMethod());
+            })
+        }
         addAccountDetailsToAddress(boltDefaultAddress, shipment.getShippingAddress());
     });
-
-    let billingAddress, boltBillingAddress;
-    Transaction.wrap(function (){
-        billingAddress = basket.getBillingAddress() ? basket.getBillingAddress() : basket.createBillingAddress();
-    })
-
-    shopperDetails.payment_methods.forEach(function(paymentMethod){
-        if (paymentMethod.default === true) {
-            boltBillingAddress = paymentMethod.billing_address;
-        }
-    });
-
-    // adding billing address to bolt account
-    addAccountDetailsToAddress(boltBillingAddress, billingAddress);
 
     // adding payment methods to the baskek's custom field
     addPaymentMethodInfoToBasket(basket, shopperDetails.payment_methods)
@@ -84,7 +78,57 @@ function addAccountDetailsToAddress(boltAddress, address){
  * @param boltPaymentMethods - payment methods from bolt account
  */
 function addPaymentMethodInfoToBasket(basket, boltPaymentMethods){
+    let billingAddress, boltBillingAddress, boltPaymentMethod;
+    Transaction.wrap(function (){
+        billingAddress = basket.getBillingAddress() ? basket.getBillingAddress() : basket.createBillingAddress();
+    })
+
+    boltPaymentMethods.forEach(function(paymentMethod){
+        if (paymentMethod.default === true) {
+            boltBillingAddress = paymentMethod.billing_address;
+            boltPaymentMethod = paymentMethod;
+        }
+    });
+
+    // adding billing address to bolt account
+    addAccountDetailsToAddress(boltBillingAddress, billingAddress);
+
     Transaction.wrap(function(){
         basket.getCustom().boltPaymentMethods = JSON.stringify(boltPaymentMethods)
     });
+
+    // TODO: do we need to call tokenize?
+    // what is the cart type here? visa / mastercard? or just 'card'
+    Transaction.wrap(function () {
+        var paymentInstruments = basket.getPaymentInstruments(
+            constants.BOLT_PAY
+        );
+        collections.forEach(paymentInstruments, function (item) {
+            basket.removePaymentInstrument(item);
+        });
+
+        // hard coding to BOLT_PAY as this is a bolt logged in shopper
+        var paymentInstrument = basket.createPaymentInstrument(
+            constants.BOLT_PAY,
+            basket.totalGrossPrice
+        );
+        paymentInstrument.setCreditCardNumber(
+            constants.CC_MASKED_DIGITS + boltPaymentMethod.last4
+        );
+        paymentInstrument.setCreditCardType(boltPaymentMethod.network);
+        paymentInstrument.setCreditCardExpirationMonth(
+            boltPaymentMethod.exp_month
+        );
+        paymentInstrument.setCreditCardExpirationYear(
+            boltPaymentMethod.exp_year
+        );
+        //paymentInstrument.setCreditCardToken(paymentInformation.creditCardToken);
+        paymentInstrument.custom.basketId = basket.UUID;
+        paymentInstrument.custom.boltCardLastDigits =
+            boltPaymentMethod.last4;
+        //paymentInstrument.custom.boltCardBin = paymentInformation.bin;
+        paymentInstrument.custom.boltPaymentMethodId = boltPaymentMethod.id;
+    });
+
+
 }

@@ -2,10 +2,12 @@
     <input type="hidden" class="check-bolt-account-exist" value="${URLUtils.https('Bolt-accountExists')}" />
     <input type="hidden" class="authenticate-bolt-user" value="${URLUtils.https('Bolt-fetchOauthToken')}" />
     <input type="hidden" class="get-bolt-account-details" value="${URLUtils.https('Bolt-getAccountDetails')}" />
+    <input type="hidden" class="redirect-submit-payment" value="${URLUtils.https('Checkout-Begin')}" />
     <input type="hidden" class="bolt-publishable-key" value="${pdict.config.boltMultiPublishableKey}" />
     <script id="bolt-embedded" type="text/javascript" src="${pdict.config.boltCdnUrl}/embed.js" defer> </script>
     <isscript>
         var assets = require('*/cartridge/scripts/assets.js');
         assets.addJs('/js/checkAccountExist.js');
+        assets.addJs('/js/tokenization.js');
     </isscript>
 </isif>

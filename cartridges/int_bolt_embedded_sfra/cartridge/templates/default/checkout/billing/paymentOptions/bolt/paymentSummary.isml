@@ -1,0 +1,9 @@
+<div class="credit-card-type">
+    <span>${payment.type}</span>
+</div>
+<div class="credit-card-number">
+    <span>${payment.lastFour}</span>
+</div>
+<div class="credit-card-expiration-date">
+    <span>${payment.expirationMonth}/${payment.expirationYear}</span>
+</div>
