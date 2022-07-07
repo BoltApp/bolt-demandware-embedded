@@ -15,14 +15,13 @@ var log = LogUtils.getLogger('CheckAccount');
 exports.addAccountDetailsToBasket = function(shopperDetails){
     const basket = BasketMgr.getCurrentBasket();
 
+    // set shopper detail to shipping address
     let boltDefaultAddress;
-    // set customer address to basket
     shopperDetails.addresses.forEach(function(address){
         if (address.default === true) {
             boltDefaultAddress = address;
         }
-    })
-    // set shopper detail to shipping address
+    });
     collections.forEach(basket.getShipments(), function (shipment) {
         // TODO: skip email delivery if there is any
         if(!shipment.getShippingAddress()){
@@ -93,12 +92,11 @@ function addPaymentMethodInfoToBasket(basket, boltPaymentMethods){
     // adding billing address to bolt account
     addAccountDetailsToAddress(boltBillingAddress, billingAddress);
 
+    // store all payment methods in the basket so that it can be later chosen by the customer
     Transaction.wrap(function(){
         basket.getCustom().boltPaymentMethods = JSON.stringify(boltPaymentMethods)
     });
 
-    // TODO: do we need to call tokenize?
-    // what is the cart type here? visa / mastercard? or just 'card'
     Transaction.wrap(function () {
         var paymentInstruments = basket.getPaymentInstruments(
             constants.BOLT_PAY
@@ -122,10 +120,11 @@ function addPaymentMethodInfoToBasket(basket, boltPaymentMethods){
         paymentInstrument.setCreditCardExpirationYear(
             boltPaymentMethod.exp_year
         );
-        //paymentInstrument.setCreditCardToken(paymentInformation.creditCardToken);
+
         paymentInstrument.custom.basketId = basket.UUID;
         paymentInstrument.custom.boltCardLastDigits =
             boltPaymentMethod.last4;
+        // TODO: don't have this inof at this point, do we need to add it later
         //paymentInstrument.custom.boltCardBin = paymentInformation.bin;
         paymentInstrument.custom.boltPaymentMethodId = boltPaymentMethod.id;
     });
