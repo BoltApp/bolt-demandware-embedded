@@ -57,7 +57,7 @@ function processForm(req, paymentForm, viewFormData) {
 
   // if returning Bolt shopper selects a stored card, use Bolt payment method ID.
   if (
-    session.custom.authenticatedBoltShopper &&
+    session.privacy.isAuthenticatedboltShopper &&
     req.form.selectedBoltPaymentID
   ) {
     viewData.selectedBoltPaymentID = req.form.selectedBoltPaymentID;

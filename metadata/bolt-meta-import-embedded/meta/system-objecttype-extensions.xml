@@ -94,6 +94,24 @@
         <externally-managed-flag>false</externally-managed-flag>
         <min-length>0</min-length>
       </attribute-definition>
+      <attribute-definition attribute-id="boltPaymentMethodId">
+        <display-name xml:lang="x-default">Bolt Payment Method ID</display-name>
+        <type>string</type>
+        <mandatory-flag>false</mandatory-flag>
+        <externally-managed-flag>false</externally-managed-flag>
+        <min-length>0</min-length>
+      </attribute-definition>
+    </custom-attribute-definitions>
+  </type-extension>
+
+  <type-extension type-id="Basket">
+    <custom-attribute-definitions>
+      <attribute-definition attribute-id="boltPaymentMethods">
+        <display-name xml:lang="x-default">Bolt Payment Methods</display-name>
+        <type>string</type>
+        <mandatory-flag>false</mandatory-flag>
+        <externally-managed-flag>false</externally-managed-flag>
+      </attribute-definition>
     </custom-attribute-definitions>
   </type-extension>
 </metadata>

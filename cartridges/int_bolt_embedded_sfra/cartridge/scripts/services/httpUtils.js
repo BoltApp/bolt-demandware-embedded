@@ -18,14 +18,11 @@ var log = logUtils.getLogger("HttpUtils");
  * @param {string} method - web service method
  * @param {string} endPoint - Bolt API url
  * @param {Object} request - request object
+ * @param {string} requestContentType - content type, ex: "application/x-www-form-urlencoded"
+ * @param {string} authenticationHeader - bearer header for authentication
  * @returns {ServiceResponse} service response
  */
-exports.restAPIClient = function (
-  method,
-  endPoint,
-  request,
-  requestContentType
-) {
+exports.restAPIClient = function (method, endPoint, request, requestContentType, authenticationHeader) {
   const contentType = requestContentType || "application/json";
   const service = LocalServiceRegistry.createService("bolt.http", {
     createRequest(service, args) {
@@ -36,11 +33,10 @@ exports.restAPIClient = function (
       service.addHeader("Content-Length", args.request.length);
       service.addHeader("X-Nonce", new Date().getTime());
       service.addHeader("X-Bolt-Source-Name", constants.BOLT_SOURCE_NAME);
-      service.addHeader(
-        "X-Bolt-Source-Version",
-        constants.BOLT_CARTRIDGE_VERSION
-      );
-
+      service.addHeader("X-Bolt-Source-Version", constants.BOLT_CARTRIDGE_VERSION);
+      if (authenticationHeader){
+        service.addHeader("Authorization", authenticationHeader);
+      }
       return args.request;
     },
     parseResponse: serviceParseResponse,

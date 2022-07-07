@@ -5,16 +5,14 @@ async function authorizeWithEmail(customerEmail){
   const boltEmbedded = Bolt(boltPublishableKey);
   const authorizationComponent = boltEmbedded.create("authorization_component",  {style: {position: "right"}} );
   await authorizationComponent.mount(".card.customer-section") // mount on the div container otherwise the iframe won't render
-  
-  const authorizationResponse = await authorizationComponent.authorize({"email":customerEmail});
-  console.log(authorizationResponse);
-  return authorizationResponse;
+
+  return await authorizationComponent.authorize({"email":customerEmail});;
 }
 
 async function authorizeUser(email){
   const authorizeWithEmailResp = await authorizeWithEmail(email);
   const OauthResp = await authenticateUserWithCode(authorizeWithEmailResp.authorizationCode, authorizeWithEmailResp.scope);
-  console.log(OauthResp);
+  return await getAccountDetails(OauthResp.accessToken);
 }
 
 function authenticateUserWithCode(authCode, scope){
@@ -27,6 +25,27 @@ function authenticateUserWithCode(authCode, scope){
     url: authenticateUserUrl,
     method: 'GET',
     data: reqBody,
+    error: function (jqXHR, error) {
+      console.log(error);
+    }
+  });
+}
+
+function getAccountDetails(oauthToken){
+  const accountDetailUrl = $('.get-bolt-account-details').val();
+  const reqBody = {
+    bearerToken: oauthToken
+  }
+  return $.ajax({
+    url: accountDetailUrl,
+    method: 'GET',
+    data: reqBody,
+    success: function(data) {
+      window.location.href = data.redirectUrl;
+    },
+    error: function (jqXHR, error) {
+      console.log(error);
+    }
   });
 }
 
@@ -48,11 +67,13 @@ $(document).ready(function () {
           success(data) {
             if (data !== null) {
               if (data.hasBoltAccount){
-                const authorizationResponse = authorizeUser(customerEmail);
-                // TODO: fill in shopper details by sending this code to a controller & fill basket from Backend
+                authorizeUser(customerEmail);
               }
             }
           },
+          error: function (jqXHR, error) {
+            console.log(error);
+          }
         });
       })
     }

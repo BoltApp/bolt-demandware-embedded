@@ -61,7 +61,7 @@ function handle(currentBasket, paymentInformation, paymentMethodID, req) {
     paymentInstrument.custom.boltCardBin = paymentInformation.bin;
 
     if (
-      session.custom.authenticatedBoltShopper &&
+      session.privacy.isAuthenticatedboltShopper &&
       paymentInformation.selectedBoltPaymentID
     ) {
       paymentInstrument.custom.selectedBoltPaymentID =
@@ -152,7 +152,7 @@ function getAuthRequest(order, paymentInstrument) {
 
   // use Bolt payment ID for Bolt
   if (
-    session.custom.authenticatedBoltShopper &&
+    session.privacy.isAuthenticatedboltShopper &&
     paymentInstrument.custom.selectedBoltPaymentID
   ) {
     request.credit_card_id = paymentInstrument.custom.selectedBoltPaymentID;
