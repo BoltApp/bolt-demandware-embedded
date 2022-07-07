@@ -64,9 +64,7 @@ function checkAccountAndFetchDetail(){
     success(data) {
       if (data !== null) {
         if (data.hasBoltAccount){
-          authorizeUser(customerEmail).then(function(){
-            emailInput.removeEventListener("focusout")
-          })
+          authorizeUser(customerEmail);
         }
       }
     },
