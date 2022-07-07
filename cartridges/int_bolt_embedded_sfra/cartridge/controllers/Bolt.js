@@ -21,6 +21,7 @@ server.get('accountExists', server.middleware.https, function (req, res, next) {
     var returnObject = {};
     if(response.status === HttpResult.OK) {
         returnObject.hasBoltAccount = response.result.has_bolt_account;
+        session.privacy.isAuthenticatedboltShopper = true;
     } else {
         returnObject.hasBoltAccount = false;
         returnObject.errorMessage = response.errors;

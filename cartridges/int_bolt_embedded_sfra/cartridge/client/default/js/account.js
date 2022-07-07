@@ -5,15 +5,14 @@ async function authorizeWithEmail(customerEmail){
   const boltEmbedded = Bolt(boltPublishableKey);
   const authorizationComponent = boltEmbedded.create("authorization_component",  {style: {position: "right"}} );
   await authorizationComponent.mount(".card.customer-section") // mount on the div container otherwise the iframe won't render
-  
-  const authorizationResponse = await authorizationComponent.authorize({"email":customerEmail});
-  return authorizationResponse;
+
+  return await authorizationComponent.authorize({"email":customerEmail});;
 }
 
 async function authorizeUser(email){
   const authorizeWithEmailResp = await authorizeWithEmail(email);
   const OauthResp = await authenticateUserWithCode(authorizeWithEmailResp.authorizationCode, authorizeWithEmailResp.scope);
-  const accountDetails = await getAccountDetails(OauthResp.accessToken);
+  return await getAccountDetails(OauthResp.accessToken);
 }
 
 function authenticateUserWithCode(authCode, scope){
