@@ -38,6 +38,8 @@ server.get('fetchOauthToken', server.middleware.https, function (req, res, next)
     if(response.status === HttpResult.OK) {
         returnObject.accessToken = response.result.access_token;
         returnObject.refreshToken = response.result.refresh_token;
+        session.privacy.boltOauthToken = response.result.access_token;
+        session.privacy.boltRefreshToken = response.result.refresh_token;
     } else {
         returnObject.errorMessage = response.errors;
     }
