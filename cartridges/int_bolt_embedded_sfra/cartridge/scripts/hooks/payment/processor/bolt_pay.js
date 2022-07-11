@@ -140,7 +140,9 @@ function getAuthRequest(order, paymentInstrument) {
   };
 
   var request = {
-    basketId: paymentInstrument.custom.basketId,
+    cart: {
+      order_reference: paymentInstrument.custom.basketId,
+    },
     division_id:
       Site.getCurrent().getCustomPreferenceValue("boltMerchantDivisionID") ||
       "",
