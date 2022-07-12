@@ -85,3 +85,22 @@ $(document).ready(function () {
     }
   }, 100)
 })
+
+$('#bolt-logout').click(function(){
+  var url = $('#bolt-logout').attr('data-bolt-logout-url');
+  $.ajax({
+      url: url,
+      method: 'POST',
+      success: function (data) {
+        if(data.redirectUrl){
+          window.location.href = data.redirectUrl;
+        }
+      },
+      error: function (err) {
+        if (err.responseJSON.message) {
+          $('.error-message').show();
+          $('.error-message-text').text(err.responseJSON.message);
+      }
+      }
+  });
+});

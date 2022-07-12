@@ -3,7 +3,6 @@
 var base = module.superModule;
 var collections = require('*/cartridge/scripts/util/collections');
 
-var base = module.superModule;
 /**
  * Creates an array of objects containing selected payment information
  * @param {dw.util.ArrayList<dw.order.PaymentInstrument>} selectedPaymentInstruments - ArrayList
@@ -26,7 +25,7 @@ function getSelectedPaymentInstruments(selectedPaymentInstruments) {
         } else if (paymentInstrument.paymentMethod === 'GIFT_CERTIFICATE') {
             results.giftCertificateCode = paymentInstrument.giftCertificateCode;
             results.maskedGiftCertificateCode = paymentInstrument.maskedGiftCertificateCode;
-        } else if (paymentInstrument.paymentMethod === 'BOLT_PAY'){
+        } else if (paymentInstrument.paymentMethod === 'BOLT_PAY') {
             results.lastFour = paymentInstrument.creditCardNumberLastDigits;
             results.expirationYear = paymentInstrument.creditCardExpirationYear;
             results.expirationMonth = paymentInstrument.creditCardExpirationMonth;
@@ -35,7 +34,7 @@ function getSelectedPaymentInstruments(selectedPaymentInstruments) {
         }
 
         return results;
-  });
+    });
 }
 
 /**
@@ -46,9 +45,9 @@ function getSelectedPaymentInstruments(selectedPaymentInstruments) {
  * @constructor
  */
 function Payment(currentBasket, currentCustomer, countryCode) {
-  base.call(this, currentBasket, currentCustomer, countryCode);
-  var paymentInstruments = currentBasket.paymentInstruments;
-  this.selectedPaymentInstruments = paymentInstruments ? getSelectedPaymentInstruments(paymentInstruments) : null;
+    base.call(this, currentBasket, currentCustomer, countryCode);
+    var paymentInstruments = currentBasket.paymentInstruments;
+    this.selectedPaymentInstruments = paymentInstruments ? getSelectedPaymentInstruments(paymentInstruments) : null;
 }
 
 module.exports = Payment;
