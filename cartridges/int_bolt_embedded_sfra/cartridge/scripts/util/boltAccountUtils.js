@@ -46,6 +46,7 @@ var clearBillingInformationInBasket = function (basket) {
     // Reset billing address information
     Transaction.wrap(function () {
         basket.createBillingAddress();
+        basket.custom.boltPaymentMethods = null;
     });
     // Clear all BOLT_PAY payments
     var boltPaymentInstruments = basket.getPaymentInstruments('BOLT_PAY');
