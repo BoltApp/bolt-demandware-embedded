@@ -73,6 +73,8 @@ function checkAccountAndFetchDetail(){
     }
   });
   emailInput.unbind("focusout");
+
+  // populate bolt stored payment methods from the basket to the front end
 }
 
 $(document).ready(function () {
