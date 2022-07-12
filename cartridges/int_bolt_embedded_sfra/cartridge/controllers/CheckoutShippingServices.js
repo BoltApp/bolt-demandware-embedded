@@ -11,6 +11,7 @@ var boltHttpUtils = require('~/cartridge/scripts/services/httpUtils');
 var constants = require('~/cartridge/scripts/util/constants');
 var logUtils = require('~/cartridge/scripts/util/boltLogUtils');
 var log = logUtils.getLogger('Shipping');
+var AddressModel = require('*/cartridge/models/address');
 
 server.extend(module.superModule);
 
@@ -57,5 +58,23 @@ server.prepend('SubmitShipping', server.middleware.https, csrfProtection.validat
     return next();
 });
 
-
+/**
+ * Set billing address data with default shipping address if no
+ * billing matching address id is set.
+ */
+server.append('SubmitShipping', function (req, res, next) {
+    this.on('route:BeforeComplete', function (req, res) { // eslint-disable-line no-shadow
+        var BasketMgr = require('dw/order/BasketMgr');
+        var currentBasket = BasketMgr.getCurrentBasket();
+        var order = res.viewData.order;
+        if (order.billing && empty(order.billing.matchingAddressId) && currentBasket.getDefaultShipment()) {
+            order.billing.matchingAddressId = currentBasket.getDefaultShipment().UUID;
+            order.billing.billingAddress = new AddressModel(currentBasket.getDefaultShipment().getShippingAddress());
+            res.json({
+                order: order
+            });
+        }
+    });
+    next();
+});
 module.exports = server.exports();
