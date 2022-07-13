@@ -13,11 +13,9 @@ server.append('Begin', function (req, res, next) {
     var configuration = BoltPreferences.getSitePreferences();
     var basket = BasketMgr.getCurrentBasket();
     var boltStoredPaymentMethods = session.privacy.boltOauthToken ? JSON.parse(basket.custom.boltPaymentMethods) : null;
-    var selectedPaymentInstrument = session.privacy.boltOauthToken ? basket.getPaymentInstruments(constants.BOLT_PAY) : null;
     res.render('checkout/checkout', {
         config: configuration,
         boltStoredPaymentMethods: boltStoredPaymentMethods,
-        selectedPaymentInstrument: selectedPaymentInstrument
     });
     next();
 });
