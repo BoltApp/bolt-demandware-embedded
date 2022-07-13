@@ -84,7 +84,8 @@
                     <input
                          id="use-existing-card-radio-button"
                          type="radio" class="form-check-input"
-                         value="${pdict.selectedPaymentInstrument.id}"
+                         value="${pdict.selectedPaymentInstrument[0].id}"
+                         name="paymentMethodSelection"
                          checked />
 
                     <fieldset class="bolt-stored-payment-options">
@@ -101,19 +102,18 @@
 
                         </fieldset>
                     </fieldset>
-                </div>
 
-               <div class="form-group">
                    <input
                        id="add-a-new-card-radio-button"
                        type="radio" class="form-check-input"
+                       name="paymentMethodSelection"
                        />
 
-                   <label class="form-control-label" for="boltStoredPaymentSelection">
+                   <label class="form-control-label" for="new-card-payment">
                        Add a new card
                    </label>
 
-                   <fieldset style="display: none;">
+                   <fieldset class="new-credit-card-form d-none">
                        <isinclude template="checkout/billing/paymentOptions" />
                    </fieldset>
                </div>

@@ -1,5 +1,5 @@
-<select id="boltStoredPaymentSelector"
-        class="boltPaymentSelector form-control">
+<select id="bolt-stored-payment-selector"
+        class="bolt-payment-selector form-control">
     <isif condition="${pdict.boltStoredPaymentMethods}">
         <isloop items="${pdict.boltStoredPaymentMethods}" var="paymentMethod">
             <option value="${paymentMethod.last4}"
