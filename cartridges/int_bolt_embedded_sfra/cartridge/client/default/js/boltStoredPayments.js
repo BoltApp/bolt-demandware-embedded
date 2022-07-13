@@ -25,6 +25,7 @@ $(document).ready(function () {
         if (boltPaySelector) {
             clearInterval(boltPaySelectorLoaded);
             boltPaySelector.change(function () {
+                // adding bolt pay id to payment content so that it's sent to auth when clicking "Place Order"
                 const boltPayID = $("#bolt-stored-payment-selector option:selected").val();
                 $('.final-payment-method-id').value = boltPayID;
             });
