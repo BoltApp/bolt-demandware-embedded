@@ -73,6 +73,13 @@
   </type-extension>
   <type-extension type-id="OrderPaymentInstrument">
     <custom-attribute-definitions>
+      <attribute-definition attribute-id="boltCardLastDigits">
+        <display-name xml:lang="x-default">Credit Card Last 4 Digits</display-name>
+        <type>string</type>
+        <mandatory-flag>false</mandatory-flag>
+        <externally-managed-flag>false</externally-managed-flag>
+        <min-length>0</min-length>
+      </attribute-definition>
       <attribute-definition attribute-id="boltCardBin">
         <display-name xml:lang="x-default">Credit Card Bin</display-name>
         <type>string</type>
