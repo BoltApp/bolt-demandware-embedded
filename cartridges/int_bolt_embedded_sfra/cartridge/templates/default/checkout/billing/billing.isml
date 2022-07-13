@@ -84,7 +84,6 @@
                     <input
                          id="use-existing-card-radio-button"
                          type="radio" class="form-check-input"
-                         value="${pdict.selectedPaymentInstrument[0].id}"
                          name="paymentMethodSelection"
                          checked />
 

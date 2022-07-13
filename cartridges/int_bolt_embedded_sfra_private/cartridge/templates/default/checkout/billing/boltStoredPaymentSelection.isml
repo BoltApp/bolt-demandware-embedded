@@ -3,7 +3,6 @@
     <isif condition="${pdict.boltStoredPaymentMethods}">
         <isloop items="${pdict.boltStoredPaymentMethods}" var="paymentMethod">
             <option value="${paymentMethod.last4}"
-                ${paymentMethod.last4 === pdict.selectedPaymentInstrument.custom.boltCardLastDigits ? 'selected' : ''}
                 data-exp-month="${paymentMethod.exp_month||''}" data-exp-year="${paymentMethod.exp_year||''}"
                 data-last4="${paymentMethod.last4||''}">
                 ${paymentMethod.network||''} - ending ${paymentMethod.last4||''} expires ${paymentMethod.exp_month||''}/${paymentMethod.exp_year||''}
