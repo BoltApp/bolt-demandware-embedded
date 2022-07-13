@@ -3,6 +3,7 @@
         <fieldset class="payment-form-fields">
             <input type="hidden" class="form-control" name="${pdict.forms.billingForm.paymentMethod.htmlName}"
                 value="${paymentOption.ID}">
+            <input type="hidden" class="final-payment-method-id">
         </fieldset>
         <div id="div-to-inject-field-into"></div>
         <div id="acct-checkbox"></div>

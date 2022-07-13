@@ -8,8 +8,6 @@ $(document).ready(function () {
                 if(this.checked){
                     $('#bolt-stored-payment-selector').removeClass('d-none');
                     $('.new-credit-card-form').addClass('d-none');
-
-                    // TODO: make a network call to set payment instrument on basket
                 }
             });
 
@@ -17,9 +15,18 @@ $(document).ready(function () {
                 if(this.checked){
                     $('#bolt-stored-payment-selector').addClass('d-none');
                     $('.new-credit-card-form').removeClass('d-none');
-
-                    // TODO: investigate if we need to make a call to set payment instrument on basket
                 }
+            });
+        }
+    }, 100);
+
+    const boltPaySelectorLoaded = setInterval(function (){
+        const boltPaySelector = $('#bolt-stored-payment-selector');
+        if (boltPaySelector) {
+            clearInterval(boltPaySelectorLoaded);
+            boltPaySelector.change(function () {
+                const boltPayID = $("#bolt-stored-payment-selector option:selected").val();
+                $('.final-payment-method-id').value = boltPayID;
             });
         }
     }, 100);
