@@ -122,8 +122,6 @@ function addPaymentMethodInfoToBasket(basket, boltPaymentMethods){
         );
 
         paymentInstrument.custom.basketId = basket.UUID;
-        paymentInstrument.custom.boltCardLastDigits =
-            boltPaymentMethod.last4;
         // TODO: don't have this info at this point, do we need to add it later
         //paymentInstrument.custom.boltCardBin = paymentInformation.bin;
         paymentInstrument.custom.boltPaymentMethodId = boltPaymentMethod.id;
