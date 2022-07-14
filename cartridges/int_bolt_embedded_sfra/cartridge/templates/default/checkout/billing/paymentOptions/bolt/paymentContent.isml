@@ -1,11 +1,58 @@
 <div class="tab-pane bolt-content" id="bolt-content" role="tabpanel">
-    <div class="bolt-pay">
-        <fieldset class="payment-form-fields">
-            <input type="hidden" class="form-control" name="${pdict.forms.billingForm.paymentMethod.htmlName}"
-                value="${paymentOption.ID}">
-            <input type="hidden" class="final-payment-method-id">
-        </fieldset>
-        <div id="div-to-inject-field-into"></div>
-        <div id="acct-checkbox"></div>
-    </div>
+    <isif condition="${pdict.boltStoredPaymentMethods}">
+        <!-------------------------------------------------------------------------->
+        <!-- Bolt Stored Payment Options Radio Button                             -->
+        <!-------------------------------------------------------------------------->
+        <div class="form-group">
+            <input
+                 id="use-existing-card-radio-button"
+                 type="radio" class="form-check-input"
+                 name="paymentMethodSelection"
+                 checked />
+
+            <fieldset class="bolt-stored-payment-options">
+                <!-------------------------------------------------------------------------->
+                <!-- Bolt Stored Payment Options Selector                                 -->
+                <!-------------------------------------------------------------------------->
+                <fieldset class="bolt-stored-payment-options-selector-block">
+
+                        <label class="form-control-label" for="boltStoredPaymentSelection">
+                            Select an Existing Card
+                        </label>
+
+                        <isinclude template="checkout/billing/boltStoredPaymentSelection" />
+
+                </fieldset>
+            </fieldset>
+
+           <input
+               id="add-a-new-card-radio-button"
+               type="radio" class="form-check-input"
+               name="paymentMethodSelection"
+               />
+
+           <label class="form-control-label" for="new-card-payment">
+               Add a new card
+           </label>
+           <div class="bolt-pay d-none">
+                <fieldset class="payment-form-fields">
+                    <input type="hidden" class="form-control" name="${pdict.forms.billingForm.paymentMethod.htmlName}"
+                        value="${paymentOption.ID}">
+                    <input type="hidden" class="final-payment-method-id">
+                </fieldset>
+                <div id="div-to-inject-field-into"></div>
+                <div id="acct-checkbox"></div>
+           </div>
+        </div>
+    <iselse>
+        <div class="bolt-pay">
+            <fieldset class="payment-form-fields">
+                <input type="hidden" class="form-control" name="${pdict.forms.billingForm.paymentMethod.htmlName}"
+                    value="${paymentOption.ID}">
+                <input type="hidden" class="final-payment-method-id">
+            </fieldset>
+            <div id="div-to-inject-field-into"></div>
+            <div id="acct-checkbox"></div>
+       </div>
+   </isif>
 </div>

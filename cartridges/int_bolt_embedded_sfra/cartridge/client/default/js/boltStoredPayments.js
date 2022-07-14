@@ -7,14 +7,14 @@ $(document).ready(function () {
             useExistingCardBtn.click(function () {
                 if(this.checked){
                     $('#bolt-stored-payment-selector').removeClass('d-none');
-                    $('#new-credit-card-form').addClass('d-none');
+                    $('.bolt-pay').addClass('d-none');
                 }
             });
 
             addNewCardBtn.click(function() {
                 if(this.checked){
                     $('#bolt-stored-payment-selector').addClass('d-none');
-                    $('#new-credit-card-form').removeClass('d-none');
+                    $('.bolt-pay').removeClass('d-none');
                 }
             });
         }

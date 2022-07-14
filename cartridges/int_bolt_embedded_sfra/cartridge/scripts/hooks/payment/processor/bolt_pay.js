@@ -57,7 +57,7 @@ function handle(currentBasket, paymentInformation, paymentMethodID, req) {
         paymentInstrument.setCreditCardExpirationYear(
             paymentInformation.expirationYear
         );
-        paymentInstrument.setCredidToken(paymentInformation.creditCardToken);
+        paymentInstrument.setCreditCardToken(paymentInformation.creditCardToken);
         paymentInstrument.custom.basketId = currentBasket.UUID;
         paymentInstrument.custom.boltCardBin = paymentInformation.bin;
 
