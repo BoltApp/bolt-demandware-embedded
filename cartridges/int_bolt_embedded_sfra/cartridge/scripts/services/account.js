@@ -10,10 +10,11 @@ var log = LogUtils.getLogger('CheckAccount');
 /**
  * This returns the JSON encoded result for the return value of token exchange endpoint
  * @param {Object} shopperDetails - shopper's profile
- * @returns {Object} result
+ * @returns {Object} result - if we need to redirect to shipping & billing page when there are missing values
  */
 exports.addAccountDetailsToBasket = function(shopperDetails){
     log.info("Shopper Info to add to basket", shopperDetails);
+    let res = {};
     const basket = BasketMgr.getCurrentBasket();
 
     // set shopper detail to shipping address
@@ -35,16 +36,23 @@ exports.addAccountDetailsToBasket = function(shopperDetails){
                 shipment.setShippingMethod(ShippingMgr.getDefaultShippingMethod());
             })
         }
-        addAccountDetailsToAddress(boltDefaultAddress, shipment.getShippingAddress());
+        const addAddressResult = addAccountDetailsToAddress(boltDefaultAddress, shipment.getShippingAddress());
+        if (addAddressResult.missingValue){
+            res.redirectShipping = true;
+        }
     });
 
     // adding payment methods to the baskek's custom field
-    addPaymentMethodInfoToBasket(basket, shopperDetails.payment_methods)
+    const addPaymentResult = addPaymentMethodInfoToBasket(basket, shopperDetails.payment_methods)
+    if(addPaymentResult.missingValue){
+        res.redirectBilling = true;
+    }
 
     // set email to the basket
     Transaction.wrap(function (){
         basket.setCustomerEmail(shopperDetails.profile.email);
     })
+    return res;
 }
 
 
@@ -52,6 +60,7 @@ exports.addAccountDetailsToBasket = function(shopperDetails){
  * Adding the account details to the address on basket
  * @param boltAddress - address from bolt account
  * @param address - address on the basket
+ * @return res - if there are missing values in the input
  */
 function addAccountDetailsToAddress(boltAddress, address){
     var phone = boltAddress.phone_number || '';
@@ -72,7 +81,14 @@ function addAccountDetailsToAddress(boltAddress, address){
         address.setCountryCode(country_code);
         address.setPostalCode(postal_code);
     });
-
+    if (checkEmptyValue([phone, first_name, last_name, address1, city, state_code, country_code, postal_code])){
+        return {
+            missingValue: true
+        }
+    }
+    return {
+        missingValue: false
+    }
 }
 
 /**
@@ -81,9 +97,11 @@ function addAccountDetailsToAddress(boltAddress, address){
  * from the bolt account are only for users to select. They aren't all used for payments
  * @param basket - the sfcc basket
  * @param boltPaymentMethods - payment methods from bolt account
+ * @return res - if there are missing values in the input
  */
 function addPaymentMethodInfoToBasket(basket, boltPaymentMethods){
     let billingAddress, boltBillingAddress, boltPaymentMethod;
+    let res = {};
     Transaction.wrap(function (){
         billingAddress = basket.getBillingAddress() ? basket.getBillingAddress() : basket.createBillingAddress();
     })
@@ -96,8 +114,10 @@ function addPaymentMethodInfoToBasket(basket, boltPaymentMethods){
     });
 
     // adding billing address to bolt account
-    addAccountDetailsToAddress(boltBillingAddress, billingAddress);
-
+    var addBillingAddressResult = addAccountDetailsToAddress(boltBillingAddress, billingAddress);
+    if (addBillingAddressResult.missingValue){
+        res.missingValue = true;
+    }
     // store all payment methods in the basket so that it can be later chosen by the customer
     Transaction.wrap(function(){
         basket.getCustom().boltPaymentMethods = JSON.stringify(boltPaymentMethods)
@@ -134,5 +154,12 @@ function addPaymentMethodInfoToBasket(basket, boltPaymentMethods){
         paymentInstrument.custom.boltPaymentMethodId = boltPaymentMethodID;
     });
 
+    if(checkEmptyValue([creditCardNumber, network, exp_month, exp_year])){
+        res.missingValue = true;
+    }
+    return res;
+}
 
+function checkEmptyValue(list){
+    return list.includes('');
 }
