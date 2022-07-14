@@ -1,0 +1,70 @@
+<isif condition="${pdict.boltStoredPaymentMethods}">
+    <!-------------------------------------------------------------------------->
+    <!-- Bolt Stored Payment Options Radio Button                             -->
+    <!-------------------------------------------------------------------------->
+    <div class="form-group">
+        <input
+             id="use-existing-card-radio-button"
+             type="radio" class="form-check-input"
+             name="paymentMethodSelection"
+             checked />
+
+        <fieldset class="bolt-stored-payment-options">
+            <!-------------------------------------------------------------------------->
+            <!-- Bolt Stored Payment Options Selector                                 -->
+            <!-------------------------------------------------------------------------->
+            <fieldset class="bolt-stored-payment-options-selector-block">
+
+                    <label class="form-control-label" for="boltStoredPaymentSelection">
+                        Select an Existing Card
+                    </label>
+
+                    <isinclude template="checkout/billing/boltStoredPaymentSelection" />
+
+            </fieldset>
+        </fieldset>
+
+       <input
+           id="add-a-new-card-radio-button"
+           type="radio" class="form-check-input"
+           name="paymentMethodSelection"
+           />
+
+       <label class="form-control-label" for="new-card-payment">
+           Add a new card
+       </label>
+
+       <div id="new-credit-card-form" class="d-none">
+           <div class="form-nav billing-nav payment-information"
+                data-payment-method-id="CREDIT_CARD"
+                data-is-new-payment="${pdict.customer.registeredUser && pdict.customer.customerPaymentInstruments.length ? false : true}"
+           >
+               <ul class="nav nav-tabs nav-fill payment-options" role="tablist">
+                   <isinclude template="checkout/billing/paymentOptions/paymentOptionsTabs" />
+               </ul>
+           </div>
+           <div class="credit-card-selection-new" >
+               <div class="tab-content">
+                   <isinclude template="checkout/billing/paymentOptions/paymentOptionsContent" />
+               </div>
+           </div>
+       </div>
+
+<iselse>
+
+    <div>
+        <div class="form-nav billing-nav payment-information"
+             data-payment-method-id="CREDIT_CARD"
+             data-is-new-payment="${pdict.customer.registeredUser && pdict.customer.customerPaymentInstruments.length ? false : true}"
+        >
+            <ul class="nav nav-tabs nav-fill payment-options" role="tablist">
+                <isinclude template="checkout/billing/paymentOptions/paymentOptionsTabs" />
+            </ul>
+        </div>
+        <div class="credit-card-selection-new" >
+            <div class="tab-content">
+                <isinclude template="checkout/billing/paymentOptions/paymentOptionsContent" />
+            </div>
+        </div>
+    </div>
+</isif>
