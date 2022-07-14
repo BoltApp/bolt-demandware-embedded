@@ -54,20 +54,25 @@ exports.addAccountDetailsToBasket = function(shopperDetails){
  * @param address - address on the basket
  */
 function addAccountDetailsToAddress(boltAddress, address){
-    try{
-        Transaction.wrap(function () {
-            address.setPhone(boltAddress.phone_number);
-            address.setFirstName(boltAddress.first_name);
-            address.setLastName(boltAddress.last_name);
-            address.setAddress1(boltAddress.street_address1);
-            address.setCity(boltAddress.locality);
-            address.setStateCode(boltAddress.region_code);
-            address.setCountryCode(boltAddress.country_code);
-            address.setPostalCode(boltAddress.postal_code);
-        });
-    } catch(e){
-        log.error(e.message);
-    }
+    var phone = boltAddress.phone_number || '';
+    var first_name = boltAddress.first_name || '';
+    var last_name = boltAddress.last_name || '';
+    var address1 = boltAddress.street_address1 || '';
+    var city = boltAddress.locality || '';
+    var state_code = boltAddress.region_code || '';
+    var country_code = boltAddress.country_code || '';
+    var postal_code = boltAddress.postal_code || '';
+    Transaction.wrap(function () {
+        address.setPhone(phone);
+        address.setFirstName(first_name);
+        address.setLastName(last_name);
+        address.setAddress1(address1);
+        address.setCity(city);
+        address.setStateCode(state_code);
+        address.setCountryCode(country_code);
+        address.setPostalCode(postal_code);
+    });
+
 }
 
 /**
@@ -98,6 +103,12 @@ function addPaymentMethodInfoToBasket(basket, boltPaymentMethods){
         basket.getCustom().boltPaymentMethods = JSON.stringify(boltPaymentMethods)
     });
 
+    var creditCardNumber = boltPaymentMethod.last4 ? constants.CC_MASKED_DIGITS + boltPaymentMethod.last4 : '';
+    var network = boltPaymentMethod.network || '';
+    var exp_month = boltPaymentMethod.exp_month || '';
+    var exp_year = boltPaymentMethod.exp_year || '';
+    var boltPaymentMethodID = boltPaymentMethod.id || '';
+
     Transaction.wrap(function () {
         var paymentInstruments = basket.getPaymentInstruments(
             constants.BOLT_PAY
@@ -111,21 +122,16 @@ function addPaymentMethodInfoToBasket(basket, boltPaymentMethods){
             constants.BOLT_PAY,
             basket.totalGrossPrice
         );
-        paymentInstrument.setCreditCardNumber(
-            constants.CC_MASKED_DIGITS + boltPaymentMethod.last4
-        );
-        paymentInstrument.setCreditCardType(boltPaymentMethod.network);
-        paymentInstrument.setCreditCardExpirationMonth(
-            boltPaymentMethod.exp_month
-        );
-        paymentInstrument.setCreditCardExpirationYear(
-            boltPaymentMethod.exp_year
-        );
+
+        paymentInstrument.setCreditCardNumber(creditCardNumber);
+        paymentInstrument.setCreditCardType(network);
+        paymentInstrument.setCreditCardExpirationMonth(exp_month);
+        paymentInstrument.setCreditCardExpirationYear(exp_year);
 
         paymentInstrument.custom.basketId = basket.UUID;
         // TODO: don't have this info at this point, do we need to add it later
         //paymentInstrument.custom.boltCardBin = paymentInformation.bin;
-        paymentInstrument.custom.boltPaymentMethodId = boltPaymentMethod.id;
+        paymentInstrument.custom.boltPaymentMethodId = boltPaymentMethodID;
     });
 
 
