@@ -13,6 +13,7 @@ var log = LogUtils.getLogger('CheckAccount');
  * @returns {Object} result
  */
 exports.addAccountDetailsToBasket = function(shopperDetails){
+    log.info("Shopper Info to add to basket", shopperDetails);
     const basket = BasketMgr.getCurrentBasket();
 
     // set shopper detail to shipping address
