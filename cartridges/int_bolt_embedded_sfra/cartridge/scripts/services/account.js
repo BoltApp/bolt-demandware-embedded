@@ -13,7 +13,7 @@ var log = LogUtils.getLogger('CheckAccount');
  * @returns {Object} result - if we need to redirect to shipping & billing page when there are missing values
  */
 exports.addAccountDetailsToBasket = function(shopperDetails){
-    log.info("Shopper Info to add to basket", shopperDetails);
+    log.info("Shopper Info to add to basket {0}", shopperDetails);
     let res = {};
     const basket = BasketMgr.getCurrentBasket();
 
