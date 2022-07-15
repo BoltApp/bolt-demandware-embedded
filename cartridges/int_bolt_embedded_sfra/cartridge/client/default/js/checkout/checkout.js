@@ -258,7 +258,9 @@ var billingHelpers = require('./billing');
                     });
 
                     const boltPamentATag = $('[data-method-id="BOLT_PAY"] a');
-                    if(boltPamentATag && boltPamentATag.hasClass('active')){
+                    const boltPaymentFields = $('bolt-pay');
+                    const canDoTokenization = boltPamentATag && boltPamentATag.hasClass('active') && !boltPaymentFields.hasClass('d-done');
+                    if(canDoTokenization){
                         paymentInfoForm = await triggerEvent(
                             'checkout:tokenize',
                             $(paymentInfoSelector),

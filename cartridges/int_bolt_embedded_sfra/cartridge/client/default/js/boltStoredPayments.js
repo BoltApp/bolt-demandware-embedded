@@ -15,6 +15,7 @@ $(document).ready(function () {
                 if(this.checked){
                     $('#bolt-stored-payment-selector').addClass('d-none');
                     $('.bolt-pay').removeClass('d-none');
+                    $('.final-payment-method-id').val('');
                 }
             });
         }

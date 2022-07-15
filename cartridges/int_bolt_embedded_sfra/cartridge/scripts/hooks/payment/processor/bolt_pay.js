@@ -35,7 +35,7 @@ function handle(currentBasket, paymentInformation, paymentMethodID, req) {
             error: true
         };
     }
-
+    var paymentInstrument;
     Transaction.wrap(function () {
         var paymentInstruments = currentBasket.getPaymentInstruments(
             constants.BOLT_PAY
@@ -43,10 +43,7 @@ function handle(currentBasket, paymentInformation, paymentMethodID, req) {
         collections.forEach(paymentInstruments, function (item) {
             currentBasket.removePaymentInstrument(item);
         });
-        var paymentInstrument = currentBasket.createPaymentInstrument(
-            paymentMethodID,
-            currentBasket.totalGrossPrice
-        );
+        paymentInstrument = currentBasket.createPaymentInstrument(paymentMethodID, currentBasket.totalGrossPrice);
         paymentInstrument.setCreditCardNumber(
             constants.CC_MASKED_DIGITS + paymentInformation.lastFourDigits
         );
@@ -60,10 +57,11 @@ function handle(currentBasket, paymentInformation, paymentMethodID, req) {
         paymentInstrument.setCreditCardToken(paymentInformation.creditCardToken);
         paymentInstrument.custom.basketId = currentBasket.UUID;
         paymentInstrument.custom.boltCardBin = paymentInformation.bin;
-
+        paymentInstrument.custom.boltTokenType = paymentInformation.token_type;
         if (boltAccountUtils.loginAsBoltUser() && paymentInformation.selectedBoltPaymentID) {
             paymentInstrument.custom.selectedBoltPaymentID = paymentInformation.selectedBoltPaymentID;
         }
+        paymentInstrument.custom.boltSaveCard = paymentInformation.save_to_bolt;
         paymentInstrument.custom.boltCreateAccount = paymentInformation.createAccount;
     });
 
@@ -112,6 +110,11 @@ function authorize(orderNumber, paymentInstrument, paymentProcessor) {
             : orderNumber;
         paymentInstrument.getPaymentTransaction().setTransactionID(transactionRef);
     });
+
+    // save card to bolt account
+    if (boltAccountUtils.loginAsBoltUser() && paymentInstrument.custom.boltSaveCard === true) {
+        boltAccountUtils.saveCardToBolt(order, paymentInstrument);
+    }
 
     return { error: false };
 }

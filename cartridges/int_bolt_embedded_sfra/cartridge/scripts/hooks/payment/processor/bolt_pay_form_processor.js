@@ -53,6 +53,8 @@ function processForm(req, paymentForm, viewFormData) {
         creditCardToken: billingForm.token || '',
         bin: billingForm.bin || '',
         lastFourDigits: billingForm.last4 || '',
+        token_type: billingForm.token_type || '',
+        save_to_bolt: billingForm.save_card_to_bolt_val === 'true',
         createAccount: billingForm.create_bolt_account === 'true'
     };
 
