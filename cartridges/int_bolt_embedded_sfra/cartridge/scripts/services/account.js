@@ -24,23 +24,29 @@ exports.addAccountDetailsToBasket = function(shopperDetails){
             boltDefaultAddress = address;
         }
     });
-    collections.forEach(basket.getShipments(), function (shipment) {
-        // TODO: skip email delivery if there is any
-        if(!shipment.getShippingAddress()){
-            Transaction.wrap(function (){
-                shipment.createShippingAddress();
-            })
-        }
-        if(!shipment.getShippingMethod()){
-            Transaction.wrap(function (){
-                shipment.setShippingMethod(ShippingMgr.getDefaultShippingMethod());
-            })
-        }
-        const addAddressResult = addAccountDetailsToAddress(boltDefaultAddress, shipment.getShippingAddress());
-        if (addAddressResult.missingValue){
-            res.redirectShipping = true;
-        }
-    });
+
+    if (boltDefaultAddress){
+        collections.forEach(basket.getShipments(), function (shipment) {
+            // TODO: skip email delivery if there is any
+            if(!shipment.getShippingAddress()){
+                Transaction.wrap(function (){
+                    shipment.createShippingAddress();
+                })
+            }
+            if(!shipment.getShippingMethod()){
+                Transaction.wrap(function (){
+                    shipment.setShippingMethod(ShippingMgr.getDefaultShippingMethod());
+                })
+            }
+            const addAddressResult = addAccountDetailsToAddress(boltDefaultAddress, shipment.getShippingAddress());
+            if (addAddressResult.missingValue){
+                res.redirectShipping = true;
+            }
+        });
+    } else {
+        log.error("default shipping address is missing from shopper details!");
+        res.redirectShipping = true;
+    }
 
     // adding payment methods to the baskek's custom field
     const addPaymentResult = addPaymentMethodInfoToBasket(basket, shopperDetails.payment_methods)
@@ -112,6 +118,12 @@ function addPaymentMethodInfoToBasket(basket, boltPaymentMethods){
             boltPaymentMethod = paymentMethod;
         }
     });
+
+    if (!boltBillingAddress || !boltPaymentMethod){
+        log.error("Payment method is missing from shopper details!");
+        res.missingValue = true;
+        return res;
+    }
 
     // adding billing address to bolt account
     var addBillingAddressResult = addAccountDetailsToAddress(boltBillingAddress, billingAddress);
