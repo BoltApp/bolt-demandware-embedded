@@ -1,14 +1,16 @@
+<isscript>
+    var boltAccountUtils = require('~/cartridge/scripts/util/boltAccountUtils');
+    var loginAsBoltUser = boltAccountUtils.loginAsBoltUser();
+</isscript>
+
 <div class="tab-pane bolt-content" id="bolt-content" role="tabpanel">
     <isif condition="${pdict.boltStoredPaymentMethods}">
         <!-------------------------------------------------------------------------->
         <!-- Bolt Stored Payment Options Radio Button                             -->
         <!-------------------------------------------------------------------------->
         <div class="form-group">
-            <input
-                 id="use-existing-card-radio-button"
-                 type="radio" class="form-check-input"
-                 name="paymentMethodSelection"
-                 checked />
+            <input id="use-existing-card-radio-button" type="radio" class="form-check-input"
+                name="paymentMethodSelection" checked />
 
             <fieldset class="bolt-stored-payment-options">
                 <!-------------------------------------------------------------------------->
@@ -16,43 +18,39 @@
                 <!-------------------------------------------------------------------------->
                 <fieldset class="bolt-stored-payment-options-selector-block">
 
-                        <label class="form-control-label" for="boltStoredPaymentSelection">
-                            Select an Existing Card
-                        </label>
+                    <label class="form-control-label" for="boltStoredPaymentSelection">
+                        <span>${Resource.msg('select.existing.card', 'bolt', null)}</span>
+                    </label>
 
-                        <isinclude template="checkout/billing/boltStoredPaymentSelection" />
+                    <isinclude template="checkout/billing/boltStoredPaymentSelection" />
 
                 </fieldset>
             </fieldset>
 
-           <input
-               id="add-a-new-card-radio-button"
-               type="radio" class="form-check-input"
-               name="paymentMethodSelection"
-               />
+            <input id="add-a-new-card-radio-button" type="radio" class="form-check-input"
+                name="paymentMethodSelection" />
 
-           <label class="form-control-label" for="new-card-payment">
-               Add a new card
-           </label>
-           <div class="bolt-pay d-none">
-                <fieldset class="payment-form-fields">
-                    <input type="hidden" class="form-control" name="${pdict.forms.billingForm.paymentMethod.htmlName}"
-                        value="${paymentOption.ID}">
-                    <input type="hidden" class="final-payment-method-id">
-                </fieldset>
-                <div id="div-to-inject-field-into"></div>
-                <div id="acct-checkbox"></div>
-           </div>
-        </div>
-    <iselse>
-        <div class="bolt-pay">
-            <fieldset class="payment-form-fields">
-                <input type="hidden" class="form-control" name="${pdict.forms.billingForm.paymentMethod.htmlName}"
-                    value="${paymentOption.ID}">
-                <input type="hidden" class="final-payment-method-id">
-            </fieldset>
-            <div id="div-to-inject-field-into"></div>
+            <label class="form-control-label" for="new-card-payment">
+                <span>${Resource.msg('add.new.card', 'bolt', null)}</span>
+            </label>
+    </isif>
+    <div class="bolt-pay ${loginAsBoltUser ? 'd-none' : ''}">
+        <fieldset class="payment-form-fields">
+            <input type="hidden" class="form-control" name="${pdict.forms.billingForm.paymentMethod.htmlName}"
+                value="${paymentOption.ID}">
+            <input type="hidden" class="final-payment-method-id">
+            <isif condition="${loginAsBoltUser}">
+                <input name="save_card_to_bolt_val" id="save_card_to_bolt_val" type="hidden" value="true" />
+            </isif>
+        </fieldset>
+        <div id="div-to-inject-field-into"></div>
+        <isif condition="${loginAsBoltUser}">
+            <div id="save-card-container">
+                <input name="save_card_to_bolt" id="save_card_to_bolt" type="checkbox" checked />
+                <label for="save_card_to_bolt"><span>${Resource.msg('save.card', 'bolt', null)}</span></label>
+            </div>
+        <iselse/>
             <div id="acct-checkbox"></div>
-       </div>
-   </isif>
+        </isif>
+    </div>
 </div>
