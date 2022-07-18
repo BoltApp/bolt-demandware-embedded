@@ -10,6 +10,7 @@ var Site = require('dw/system/Site');
 var HttpResult = require('dw/svc/Result');
 
 // Script includes
+var tempBoltRequest = require('~/cartridge/scripts/hooks/payment/processor/temp_bolt_request');
 var collections = require('*/cartridge/scripts/util/collections');
 var boltHttpUtils = require('~/cartridge/scripts/services/httpUtils');
 var constants = require('~/cartridge/scripts/util/constants');
@@ -86,11 +87,11 @@ function handle(currentBasket, paymentInformation, paymentMethodID, req) {
 }
 
 /**
- * Send authorize request to Bolt
+ * Call Bolt's merchant authorize endpoint
  * @param {string} orderNumber - order number
  * @param {dw.order.PaymentInstrument} paymentInstrument - payment instrument to authorize
  * @param {dw.order.PaymentProcessor} paymentProcessor -  payment processor of current payment method
- * @return {Object} returns an response object
+ * @return {Object} returns a response object
  */
 function authorize(orderNumber, paymentInstrument, paymentProcessor) {
     Transaction.wrap(function () {
@@ -144,7 +145,7 @@ function authorize(orderNumber, paymentInstrument, paymentProcessor) {
 
 /**
  * Create Authorization Request Body
- * @param {string} order - SFCC order object
+ * @param {dw.order.Order} order - SFCC order object
  * @param {dw.order.PaymentInstrument} paymentInstrument - payment instrument to authorize
  * @return {Object} returns an response object
  */
@@ -167,9 +168,7 @@ function getAuthRequest(order, paymentInstrument) {
     };
 
     var request = {
-        cart: {
-            order_reference: paymentInstrument.custom.basketId
-        },
+        cart: tempBoltRequest.createBoltCart(order, paymentInstrument.custom.basketId),
         division_id:
       Site.getCurrent().getCustomPreferenceValue('boltMerchantDivisionID')
       || '',
