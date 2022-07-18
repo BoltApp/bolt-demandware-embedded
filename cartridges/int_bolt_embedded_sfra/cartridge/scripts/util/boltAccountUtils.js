@@ -95,11 +95,11 @@ exports.loginAsBoltUser = function () {
 
 /**
  * Save new credit card information to Bolt
- * @param {dw.order.LineItemCtnr} lineItemCtnr - SFCC line item container object
+ * @param {dw.order.Order} order - SFCC order object
  * @param {dw.order.PaymentInstrument} paymentInstrument - SFCC payment instrument object
  * @returns {Object} status - indicate if save card process is success or not
  */
-exports.saveCardToBolt = function (lineItemCtnr, paymentInstrument) {
+exports.saveCardToBolt = function (order, paymentInstrument) {
     if (empty(session.privacy.boltOauthToken)) {
         let errorMsg = 'Bolt Oauth Token is missing';
         log.error(errorMsg);
@@ -109,7 +109,7 @@ exports.saveCardToBolt = function (lineItemCtnr, paymentInstrument) {
         };
     }
 
-    var billingAddress = lineItemCtnr.getBillingAddress();
+    var billingAddress = order.getBillingAddress();
     var bearerToken = 'Bearer '.concat(session.privacy.boltOauthToken);
     var expMonth = paymentInstrument.getCreditCardExpirationMonth().toString();
 
