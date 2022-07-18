@@ -58,9 +58,15 @@ server.get('GetAccountDetails', server.middleware.https, function (req, res, nex
     var returnObject = {};
     if (response.status === HttpResult.OK) {
         var shopperDetails = response.result;
-        account.addAccountDetailsToBasket(shopperDetails);
+        var addAccountDetailsResult = account.addAccountDetailsToBasket(shopperDetails);
+        if (addAccountDetailsResult.redirectShipping){
+            returnObject.redirectUrl = URLUtils.https('Checkout-Begin').append('stage', 'shipping').toString();
+        } else if (addAccountDetailsResult.redirectBilling){
+            returnObject.redirectUrl = URLUtils.https('Checkout-Begin').append('stage', 'payment').toString();
+        } else {
+            returnObject.redirectUrl = URLUtils.https('Checkout-Begin').append('stage', 'placeOrder').toString();
+        }
         returnObject.success = true;
-        returnObject.redirectUrl = URLUtils.https('Checkout-Begin') + '?stage=placeOrder#placeOrder';
     } else {
         returnObject.errorMessage = response.errors;
     }
