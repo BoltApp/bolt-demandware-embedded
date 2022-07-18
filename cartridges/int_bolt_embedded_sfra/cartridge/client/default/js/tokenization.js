@@ -20,7 +20,7 @@ var renderBoltEmbeddedPaymentFields = function () {
 };
 
 var renderBoltCreateAccountCheckField = function () {
-  if (boltEmbedded) {
+  if (boltEmbedded && $('#acct-checkbox').length > 0 ) {
     accountCheck = boltEmbedded.create("account_checkbox", accountCheckOptions);
     accountCheck.mount("#acct-checkbox");
   }

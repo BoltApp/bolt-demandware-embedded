@@ -104,3 +104,11 @@ $('#bolt-logout').click(function(){
       }
   });
 });
+
+$("#save_card_to_bolt").on('change', function() {
+  if ($(this).is(':checked')) {
+    $("#save_card_to_bolt_val").attr('value', 'true');
+  } else {
+    $("#save_card_to_bolt_val").attr('value', 'false');
+  }
+});
