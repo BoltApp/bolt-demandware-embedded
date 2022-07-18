@@ -33,6 +33,7 @@ var clearShippingInformationInBasket = function (basket) {
     });
     // Re-calculate basket since shipping price adjustment might be removed
     Transaction.wrap(function () {
+        basket.custom.boltShippingAddress = null;
         basketCalculationHelpers.calculateTotals(basket);
     });
 };
@@ -87,3 +88,42 @@ exports.clearShopperDataInBasket = function () {
 exports.loginAsBoltUser = function () {
     return session.privacy.boltOauthToken !== null;
 };
+
+/**
+ * Update Bolt address in basket after saving address to Bolt
+ * @param {string} boltAddressId  - current bolt address id, will be empty if shopper is adding a new address to Bolt
+ * @param {Object} newAddress - new added or updated address returned from Bolt
+ * @returns 
+ */
+exports.updateBasketBoltaddress = function (boltAddressId, newAddress) {
+    if (!newAddress) return;
+
+    try {
+        var currentBasket = BasketMgr.getCurrentBasket();
+        var boltShippingAddress = currentBasket.custom.boltShippingAddress ? JSON.parse(currentBasket.custom.boltShippingAddress) : new Object();
+        
+        // update bolt address ID after editing existing address
+        if (boltAddressId) {
+            for (let i=0; i<boltShippingAddress.length; i++) {
+                if (boltShippingAddress[i].id == boltAddressId) {
+                    boltShippingAddress[i] = newAddress;
+                    break;
+                }
+            }
+        } else {
+            // add new added bolt address to basket
+            boltShippingAddress.push(newAddress);
+        }
+
+        Transaction.wrap(function () {
+            currentBasket.custom.boltShippingAddress = JSON.stringify(boltShippingAddress);
+        });
+
+        return {error: false};
+    } catch (e) {
+        return {
+            error: true,
+            errorMsg: e.message
+        };
+    }
+}

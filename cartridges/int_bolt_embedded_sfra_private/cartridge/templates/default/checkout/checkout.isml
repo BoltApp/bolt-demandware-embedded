@@ -20,7 +20,7 @@
     <h1 class="page-title">
         ${Resource.msg('title.checkout', 'checkout', null)}
     </h1>
-    <div id="checkout-main" class="container data-checkout-stage <isif condition=" ${pdict.order.usingMultiShipping && pdict.order.shipping.length > 1}">multi-ship</isif>" data-customer-type="${pdict.customer.registeredUser ? 'registered' : 'guest'}" data-checkout-stage="${pdict.currentStage}"
+    <div id="checkout-main" class="container data-checkout-stage <isif condition=" ${pdict.order.usingMultiShipping && pdict.order.shipping.length > 1}">multi-ship</isif>" data-customer-type="${session.privacy.boltOauthToken !== null ? 'boltShopper' : (pdict.customer.registeredUser ? 'registered' : 'guest')}" data-checkout-stage="${pdict.currentStage}"
         data-checkout-get-url="${URLUtils.https('CheckoutServices-Get')}">
         <!----------------------------------------------------------------------------------->
         <!-- Help and Phone -->

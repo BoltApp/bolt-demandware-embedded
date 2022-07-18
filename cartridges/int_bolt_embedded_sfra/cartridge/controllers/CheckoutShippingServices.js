@@ -4,10 +4,13 @@
 var server = require('server');
 var HttpResult = require("dw/svc/Result");
 var Resource = require('dw/web/Resource');
+var BasketMgr = require('dw/order/BasketMgr');
+var Transaction = require('dw/system/Transaction');
 
 /* Script Modules */
 var csrfProtection = require('*/cartridge/scripts/middleware/csrf');
 var boltHttpUtils = require('~/cartridge/scripts/services/httpUtils');
+var boltAccountUtils = require('~/cartridge/scripts/util/boltAccountUtils');
 var constants = require('~/cartridge/scripts/util/constants');
 var logUtils = require('~/cartridge/scripts/util/boltLogUtils');
 var log = logUtils.getLogger('Shipping');
@@ -22,39 +25,65 @@ server.extend(module.superModule);
  * @param {returns} - json
  */
 server.prepend('SubmitShipping', server.middleware.https, csrfProtection.validateAjaxRequest, function (req, res, next) {
-    var form = server.forms.getForm('shipping');
-
-    // shopper doesn't have a Bolt account or save address to Bolt checkbox is not checked
-    if (!session.privacy.isAuthenticatedboltShopper || !form.saveToBolt) {
+    // shopper doesn't have a Bolt account
+    if (!boltAccountUtils.loginAsBoltUser()) {
         return next();
     }
-    
-    // TO DO: use edit address endpoint for selected existing address
+
+    var addressform = server.forms.getForm('shipping').shippingAddress.addressFields;
+    var currentBasket = BasketMgr.getCurrentBasket();
+    var shippingAddress = currentBasket.getDefaultShipment().getShippingAddress();
+    var boltAddressId = addressform.boltAddressId.value;
+
+    Transaction.wrap(function () {
+        shippingAddress.custom.boltAddressId = boltAddressId || "";
+    });
+
+    // skip Bolt address update if checkbox is not checked
+    if (!addressform.saveToBolt.checked) {
+        return next();
+    }
+
+    var addressUrl = constants.SHOPPER_ADDRESS_URL;
+    // edit stored Bolt address
+    if (boltAddressId) {
+        addressUrl += "/" + boltAddressId;
+    }
+
     var request = {
-        street_address1: form.shippingAddress.addressFields.address1.value || "",
-        street_address2: form.shippingAddress.addressFields.address2.value || "",
-        locality: form.shippingAddress.addressFields.city.value || "",
-        region: form.shippingAddress.addressFields.states.stateCode.value || "",
-        postal_code: form.shippingAddress.addressFields.postalCode.value || "",
-        country_code: form.shippingAddress.addressFields.country.value || "",
-        first_name: form.shippingAddress.addressFields.firstName.value || "",
-        last_name: form.shippingAddress.addressFields.lastName.value || "",
-        phone: form.shippingAddress.addressFields.phone.value || ""
+        street_address1: addressform.address1.value || "",
+        street_address2: addressform.address2.value || "",
+        locality: addressform.city.value || "",
+        region: addressform.states.stateCode.value || "",
+        postal_code: addressform.postalCode.value || "",
+        country_code: addressform.country.value || "",
+        first_name: addressform.firstName.value || "",
+        last_name: addressform.lastName.value || "",
+        phone: addressform.phone.value || ""
     }
     var bearerToken = "Bearer ".concat(session.privacy.boltOauthToken);
 
     // send save address request to Bolt
-    var response = boltHttpUtils.restAPIClient(constants.HTTP_METHOD_POST, constants.SHOPPER_ADDRESS_URL, JSON.stringify(request), '', bearerToken);
+    var response = boltHttpUtils.restAPIClient(constants.HTTP_METHOD_POST, addressUrl, JSON.stringify(request), '', bearerToken);
+    var errorMsg = Resource.msg('error.save.address', 'bolt', null)
     if (response.status && response.status === HttpResult.ERROR) {
-        let errorMsg = Resource.msg('error.save.address', 'bolt', null)
         log.error(errorMsg + (!empty(response.errors) && !empty(response.errors[0].message) ? response.errors[0].message : "") );
         res.json({
             error: true,
             fieldErrors: [],
             serverErrors: [errorMsg]
         });
+    } else {
+        var rs = boltAccountUtils.updateBasketBoltaddress(boltAddressId, response.result)
+        if (rs.error) {
+            res.json({
+                error: true,
+                fieldErrors: [],
+                serverErrors: [rs.errorMsg || errorMsg]
+            });
+        }
     }
-
+ 
     return next();
 });
 
@@ -64,7 +93,6 @@ server.prepend('SubmitShipping', server.middleware.https, csrfProtection.validat
  */
 server.append('SubmitShipping', function (req, res, next) {
     this.on('route:BeforeComplete', function (req, res) { // eslint-disable-line no-shadow
-        var BasketMgr = require('dw/order/BasketMgr');
         var currentBasket = BasketMgr.getCurrentBasket();
         var order = res.viewData.order;
         if (order.billing && empty(order.billing.matchingAddressId) && currentBasket.getDefaultShipment()) {

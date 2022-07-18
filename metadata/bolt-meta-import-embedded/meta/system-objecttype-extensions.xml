@@ -112,6 +112,25 @@
         <mandatory-flag>false</mandatory-flag>
         <externally-managed-flag>false</externally-managed-flag>
       </attribute-definition>
+      <attribute-definition attribute-id="boltShippingAddress">
+        <display-name xml:lang="x-default">Bolt Shopper Stored Shipping Addresses</display-name>
+        <type>string</type>
+        <mandatory-flag>false</mandatory-flag>
+        <externally-managed-flag>false</externally-managed-flag>
+        <min-length>0</min-length>
+    </attribute-definition>
+    </custom-attribute-definitions>
+  </type-extension>
+
+  <type-extension type-id="OrderAddress">
+    <custom-attribute-definitions>
+      <attribute-definition attribute-id="boltAddressId">
+        <display-name xml:lang="x-default">Bolt Stored Address Id</display-name>
+        <type>string</type>
+        <mandatory-flag>false</mandatory-flag>
+        <externally-managed-flag>false</externally-managed-flag>
+        <min-length>0</min-length>
+      </attribute-definition>
     </custom-attribute-definitions>
   </type-extension>
 </metadata>

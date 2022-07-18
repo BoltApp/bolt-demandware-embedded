@@ -23,6 +23,14 @@ exports.addAccountDetailsToBasket = function(shopperDetails){
             boltDefaultAddress = address;
         }
     });
+
+    if (shopperDetails.addresses) {
+        var shopperAddresses = JSON.stringify(shopperDetails.addresses);
+        Transaction.wrap(function (){
+            basket.custom.boltShippingAddress = shopperAddresses;
+        })
+    }
+
     collections.forEach(basket.getShipments(), function (shipment) {
         // TODO: skip email delivery if there is any
         if(!shipment.getShippingAddress()){
@@ -35,7 +43,14 @@ exports.addAccountDetailsToBasket = function(shopperDetails){
                 shipment.setShippingMethod(ShippingMgr.getDefaultShippingMethod());
             })
         }
-        addAccountDetailsToAddress(boltDefaultAddress, shipment.getShippingAddress());
+
+        // save Bolt address ID to shipping address
+        var shippingAddress = shipment.getShippingAddress();
+        Transaction.wrap(function (){
+            shippingAddress.custom.boltAddressId = boltDefaultAddress.id;
+        });
+
+        addAccountDetailsToAddress(boltDefaultAddress, shippingAddress);
     });
 
     // adding payment methods to the baskek's custom field
