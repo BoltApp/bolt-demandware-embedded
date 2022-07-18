@@ -18,8 +18,6 @@
     "eslint:merchant": "npm run eslint -- --fix --config ./src/cartridges/int_bolt_extensions/cartridge/scripts/merchant-custom/f21/.lint.json",
     "lint": "npm run lint:css && npm run eslint",
     "lint:css": "sgmf-scripts --lint css",
-    "transpile": "babel ./src/cartridges  -d ./cartridges --copy-files",
-    "transpile:watch": "npm run transpile -- --watch",
     "upload:embedded_sfra": "sgmf-scripts --uploadCartridge int_bolt_embedded_sfra",
     "upload:embedded_sfra_private": "sgmf-scripts --uploadCartridge int_bolt_embedded_sfra_private",
     "upload:all": "npm run upload:embedded_sfra && npm run upload:embedded_sfra_private ",
