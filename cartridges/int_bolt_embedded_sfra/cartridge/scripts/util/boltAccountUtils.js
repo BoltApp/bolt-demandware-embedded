@@ -13,7 +13,7 @@ var basketCalculationHelpers = require('*/cartridge/scripts/helpers/basketCalcul
 var boltHttpUtils = require('~/cartridge/scripts/services/httpUtils');
 var constants = require('~/cartridge/scripts/util/constants');
 var logUtils = require('~/cartridge/scripts/util/boltLogUtils');
-var log = logUtils.getLogger('Shipping');
+var log = logUtils.getLogger('BoltAccount');
 
 /**
  * Clear shipping information in basket
@@ -94,45 +94,6 @@ exports.loginAsBoltUser = function () {
     return session.privacy.boltOauthToken !== null;
 };
 
-/**
- * Update Bolt address in basket after saving address to Bolt
- * @param {string} boltAddressId  - current bolt address id, will be empty if shopper is adding a new address to Bolt
- * @param {Object} newAddress - new added or updated address returned from Bolt
- * @returns 
- */
-exports.updateBasketBoltaddress = function (boltAddressId, newAddress) {
-    if (!newAddress) return;
-
-    try {
-        var currentBasket = BasketMgr.getCurrentBasket();
-        var boltShippingAddress = currentBasket.custom.boltShippingAddress ? JSON.parse(currentBasket.custom.boltShippingAddress) : new Object();
-        
-        // update bolt address ID after editing existing address
-        if (boltAddressId) {
-            for (let i=0; i<boltShippingAddress.length; i++) {
-                if (boltShippingAddress[i].id == boltAddressId) {
-                    boltShippingAddress[i] = newAddress;
-                    break;
-                }
-            }
-        } else {
-            // add new added bolt address to basket
-            boltShippingAddress.push(newAddress);
-        }
-
-        Transaction.wrap(function () {
-            currentBasket.custom.boltShippingAddress = JSON.stringify(boltShippingAddress);
-        });
-
-        return {error: false};
-    } catch (e) {
-        return {
-            error: true,
-            errorMsg: e.message
-        };
-    }
-}
-
 /*
  * Save new credit card information to Bolt
  * @param {dw.order.Order} order - SFCC order object
@@ -196,3 +157,36 @@ exports.saveCardToBolt = function (order, paymentInstrument) {
         success: true
     };
 };
+
+exports.saveAddressToBolt = function (shippingAddress) {
+    // add bolt address id to endpoint if shopper is updating existing address
+    var addressUrl = shippingAddress.custom.boltAddressId ? (constants.SHOPPER_ADDRESS_URL + "/" + shippingAddress.custom.boltAddressId) : constants.SHOPPER_ADDRESS_URL;
+
+    var request = {
+        street_address1: shippingAddress.address1 || "",
+        street_address2: shippingAddress.address2 || "",
+        locality: shippingAddress.city || "",
+        region: shippingAddress.stateCode || "",
+        postal_code: shippingAddress.postalCode || "",
+        country_code: shippingAddress.countryCode.value || "",
+        first_name: shippingAddress.firstName || "",
+        last_name: shippingAddress.lastName || "",
+        phone: shippingAddress.phone || ""
+    }
+    var bearerToken = "Bearer ".concat(session.privacy.boltOauthToken);
+
+    // send save address request to Bolt
+    var response = boltHttpUtils.restAPIClient(constants.HTTP_METHOD_POST, addressUrl, JSON.stringify(request), '', bearerToken);
+    var errorMsg = Resource.msg('error.save.address', 'bolt', null)
+    if (response.status && response.status === HttpResult.ERROR) {
+        log.error(errorMsg + (!empty(response.errors) && !empty(response.errors[0].message) ? response.errors[0].message : "") );
+        return {
+            error: true,
+            errorMsg: errorMsg
+        };
+    } 
+
+    return {
+        error: false   
+    };
+}

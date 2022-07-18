@@ -25,6 +25,14 @@ exports.addAccountDetailsToBasket = function(shopperDetails){
         }
     });
 
+    // save bolt shipping addresses in basket
+    if (shopperDetails.addresses) {
+        var shopperAddresses = JSON.stringify(shopperDetails.addresses);
+        Transaction.wrap(function (){
+            basket.custom.boltShippingAddress = shopperAddresses;
+        })
+    }
+
     if (boltDefaultAddress){
         collections.forEach(basket.getShipments(), function (shipment) {
             // TODO: skip email delivery if there is any
