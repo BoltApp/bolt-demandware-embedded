@@ -15,6 +15,7 @@ exports.BOLT_PAY = "BOLT_PAY";
 exports.DIRECT_PAYMENTS = "direct_payments";
 exports.BOLT_TOKEN_TYPE = "bolt";
 exports.CC_MASKED_DIGITS = "************";
+exports.PAYMENT_METHOD_CARD = "card";
 
 /**
  * Cartridge Version

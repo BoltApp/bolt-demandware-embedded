@@ -44,7 +44,7 @@ exports.addAccountDetailsToBasket = function(shopperDetails){
             }
         });
     } else {
-        log.error("default shipping address is missing from shopper details!");
+        log.warn("default shipping address is missing from shopper details!");
         res.redirectShipping = true;
     }
 
@@ -113,14 +113,16 @@ function addPaymentMethodInfoToBasket(basket, boltPaymentMethods){
     })
 
     boltPaymentMethods.forEach(function(paymentMethod){
-        if (paymentMethod.default === true) {
+        // default payment method on bolt account can only be card at this point but might change in the future
+        // for embedded we only integrate with credit card payments
+        if (paymentMethod.default === true && paymentMethod.type === constants.PAYMENT_METHOD_CARD) {
             boltBillingAddress = paymentMethod.billing_address;
             boltPaymentMethod = paymentMethod;
         }
     });
 
     if (!boltBillingAddress || !boltPaymentMethod){
-        log.error("Payment method is missing from shopper details!");
+        log.warn("Payment method is missing from shopper details!");
         res.missingValue = true;
         return res;
     }
