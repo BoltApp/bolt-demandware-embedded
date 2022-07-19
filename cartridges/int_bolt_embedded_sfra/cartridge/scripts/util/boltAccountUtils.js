@@ -13,7 +13,7 @@ var basketCalculationHelpers = require('*/cartridge/scripts/helpers/basketCalcul
 var boltHttpUtils = require('~/cartridge/scripts/services/httpUtils');
 var constants = require('~/cartridge/scripts/util/constants');
 var logUtils = require('~/cartridge/scripts/util/boltLogUtils');
-var log = logUtils.getLogger('Shipping');
+var log = logUtils.getLogger('BoltAccount');
 
 /**
  * Clear shipping information in basket
@@ -39,6 +39,7 @@ var clearShippingInformationInBasket = function (basket) {
     });
     // Re-calculate basket since shipping price adjustment might be removed
     Transaction.wrap(function () {
+        basket.custom.boltShippingAddress = null;
         basketCalculationHelpers.calculateTotals(basket);
     });
 };
@@ -93,7 +94,7 @@ exports.loginAsBoltUser = function () {
     return session.privacy.boltOauthToken !== null;
 };
 
-/**
+/*
  * Save new credit card information to Bolt
  * @param {dw.order.Order} order - SFCC order object
  * @param {dw.order.PaymentInstrument} paymentInstrument - SFCC payment instrument object
@@ -156,3 +157,32 @@ exports.saveCardToBolt = function (order, paymentInstrument) {
         success: true
     };
 };
+
+exports.saveAddressToBolt = function (shippingAddress) {
+    try {
+        // add bolt address id to endpoint if shopper is updating existing address
+        var addressUrl = shippingAddress.custom.boltAddressId ? (constants.SHOPPER_ADDRESS_URL + "/" + shippingAddress.custom.boltAddressId) : constants.SHOPPER_ADDRESS_URL;
+
+        var request = {
+            street_address1: shippingAddress.address1 || "",
+            street_address2: shippingAddress.address2 || "",
+            locality: shippingAddress.city || "",
+            region: shippingAddress.stateCode || "",
+            postal_code: shippingAddress.postalCode || "",
+            country_code: shippingAddress.countryCode.value || "",
+            first_name: shippingAddress.firstName || "",
+            last_name: shippingAddress.lastName || "",
+            phone: shippingAddress.phone || ""
+        }
+        var bearerToken = "Bearer ".concat(session.privacy.boltOauthToken);
+
+        // send save address request to Bolt
+        var response = boltHttpUtils.restAPIClient(constants.HTTP_METHOD_POST, addressUrl, JSON.stringify(request), '', bearerToken);
+        var errorMsg = Resource.msg('error.save.address', 'bolt', null)
+        if (response.status && response.status === HttpResult.ERROR) {
+            log.error(errorMsg + (!empty(response.errors) && !empty(response.errors[0].message) ? response.errors[0].message : "") );
+        }
+    } catch (e) {
+        log.error(e.message);
+    }
+}

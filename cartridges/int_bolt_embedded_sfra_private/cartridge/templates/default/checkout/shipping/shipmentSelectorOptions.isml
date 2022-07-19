@@ -1,0 +1,75 @@
+<option value="new"
+        data-first-name="" data-last-name=""
+        data-address1="" data-address2=""
+        data-city="" data-state-code=""
+        data-country-code="" data-postal-code=""
+        data-phone="">
+    ${Resource.msg('msg.add.new.address', 'checkout', null)}
+</option>
+
+<isif condition="${pdict.order.shipping[0].shippingAddress}">
+    <option class="multi-shipping" disabled>${Resource.msg('msg.shipping.addresses', 'checkout', null)}</option>
+    <isloop items="${pdict.order.shipping}" var="aShippingModel">
+      <isif condition="${aShippingModel.UUID === shippingModel.UUID && aShippingModel.shippingAddress}">
+        <option
+            class="multi-shipping"
+            value="${aShippingModel.UUID}"
+            ${!shippingModel.matchingAddressId && aShippingModel.UUID === shippingModel.UUID ? 'selected="selected"' : '' }
+            data-first-name="${aShippingModel.shippingAddress.firstName||''}" data-last-name="${aShippingModel.shippingAddress.lastName||''}"
+            data-address1="${aShippingModel.shippingAddress.address1||''}" data-address2="${aShippingModel.shippingAddress.address2||''}"
+            data-city="${aShippingModel.shippingAddress.city||''}" data-state-code="${aShippingModel.shippingAddress.stateCode||''}"
+            data-country-code="${aShippingModel.shippingAddress.countryCode.value||''}" data-postal-code="${aShippingModel.shippingAddress.postalCode}"
+            data-phone="${aShippingModel.shippingAddress.phone}" data-is-gift="${aShippingModel.isGift}" data-gift-message="${aShippingModel.giftMessage}"
+        >
+        <isif condition="${aShippingModel.shippingAddress.firstName
+                    && aShippingModel.shippingAddress.lastName
+                    && aShippingModel.shippingAddress.address1
+                    && aShippingModel.shippingAddress.city
+                    && aShippingModel.shippingAddress.stateCode
+                    && aShippingModel.shippingAddress.postalCode}"
+        >
+            ${aShippingModel.shippingAddress.firstName || ''}
+            ${aShippingModel.shippingAddress.lastName || ''}
+            ${aShippingModel.shippingAddress.address1 || ''}
+            ${aShippingModel.shippingAddress.address2 || ''}
+            ${aShippingModel.shippingAddress.city || ''}${!aShippingModel.shippingAddress.city || ','}
+            ${aShippingModel.shippingAddress.stateCode||''}
+            ${aShippingModel.shippingAddress.postalCode||''}
+            ${!aShippingModel.selectedShippingMethod.displayName||'-'}
+            ${aShippingModel.selectedShippingMethod.displayName||''}
+            <iselse/>
+            ${Resource.msg('msg.new.address', 'checkout', null)}
+        </isif>
+        </option>
+       </isif>
+    </isloop>
+</isif>
+
+<isif condition="${isBoltLogin && pdict.boltStoredShippingAddress}">
+    <option disabled>${Resource.msg('msg.account.addresses', 'checkout', null)}</option>
+    <isloop items="${pdict.boltStoredShippingAddress}" var="address">
+        <option value="${'ab_'+address.id}"
+                ${address.id==shippingModel.shippingAddress.custom.boltAddressId ? 'selected="selected"' : '' }
+        data-first-name="${address.first_name||''}" data-last-name="${address.last_name||''}"
+        data-address1="${address.street_address1||''}" data-address2="${address.street_address2||''}"
+        data-city="${address.locality||''}" data-state-code="${address.region_code||''}"
+        data-country-code="${address.country_code||''}" data-postal-code="${address.postal_code||''}"
+        data-phone="${address.phone_number||''}" data-is-gift="${''}" data-gift-message="${''}"
+        data-bolt-address-id="${address.id}">
+        ${address.first_name || ''} ${address.last_name || ''} ${address.street_address1 || ''} ${address.street_address2 || ''} ${address.locality || ''} ', ' ${address.region_code||''} ${address.postal_code||''}
+        </option>
+    </isloop>
+<iselseif condition="${pdict.customer.addresses && pdict.customer.addresses.length > 0}">
+    <option disabled>${Resource.msg('msg.account.addresses', 'checkout', null)}</option>
+    <isloop items="${pdict.customer.addresses}" var="address">
+        <option value="${'ab_'+address.ID}"
+                ${address.ID==shippingModel.matchingAddressId ? 'selected="selected"' : '' }
+        data-first-name="${address.firstName||''}" data-last-name="${address.lastName||''}"
+        data-address1="${address.address1||''}" data-address2="${address.address2||''}"
+        data-city="${address.city||''}" data-state-code="${address.stateCode||''}"
+        data-country-code="${address.countryCode.value||''}" data-postal-code="${address.postalCode||''}"
+        data-phone="${address.phone||''}" data-is-gift="${''}" data-gift-message="${''}">
+        ${address.ID || ''} - ${address.firstName || ''} ${address.lastName || ''} ${address.address1 || ''} ${address.address2 || ''} ${address.city || ''}${!address.city || ','} ${address.stateCode||''} ${address.postalCode||''}
+        </option>
+    </isloop>
+</isif>
