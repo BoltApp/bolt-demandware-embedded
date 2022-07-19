@@ -135,7 +135,7 @@ jobs:
               "\"client-secret\":\"${SFCCCLIENTSECRET}\"," \
               "\"username\":\"${SFCC_QA_ACCOUNT}\"," \
               "\"password\":\"${SFCC_QA_ACCOUNT_PW}\"," \
-              "\"code-version\":\"pavel\"" \
+              "\"code-version\":\"QA\"" \
               "}" > dw.json
       - run:
           name: Upload cartridges to QA sandbox zzgv-018
@@ -185,6 +185,7 @@ workflows:
               only:
                 - master
                 - /adhoc-deploy\/.*/
+                - Derrick/fix-ci
 
       - integration-tests:
           context: sfcc-creds
@@ -203,6 +204,7 @@ workflows:
             branches:
               only:
                 - master
+                - Derrick/fix-ci
 
   sfcc-release-flow:
     when: << pipeline.parameters.run_release_workflow >>
