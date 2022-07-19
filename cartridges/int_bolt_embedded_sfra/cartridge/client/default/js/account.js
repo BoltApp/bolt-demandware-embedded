@@ -2,7 +2,14 @@
 
 async function authorizeWithEmail(customerEmail){
   const boltPublishableKey = $('.bolt-publishable-key').val();
-  const boltEmbedded = Bolt(boltPublishableKey);
+  const defaultLocale = $('.default-locale').val();
+  let boltEmbedded;
+  if (defaultLocale === "fr_CA") {
+    boltEmbedded = Bolt(boltPublishableKey, {language: "fr-ca"});
+  } else {
+    boltEmbedded = Bolt(boltPublishableKey);
+  }
+
   const authorizationComponent = boltEmbedded.create("authorization_component",  {style: {position: "right"}} );
   await authorizationComponent.mount(".card.customer-section") // mount on the div container otherwise the iframe won't render
 

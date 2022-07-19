@@ -3,6 +3,7 @@
     <input type="hidden" class="authenticate-bolt-user" value="${URLUtils.https('Bolt-FetchOauthToken')}" />
     <input type="hidden" class="get-bolt-account-details" value="${URLUtils.https('Bolt-GetAccountDetails')}" />
     <input type="hidden" class="bolt-publishable-key" value="${pdict.config.boltMultiPublishableKey}" />
+    <input type="hidden" class="default-locale" value="${pdict.config.defaultLocale}" />
     <script id="bolt-embedded" type="text/javascript" src="${pdict.config.boltCdnUrl}/embed.js" defer> </script>
     <isscript>
         var assets = require('*/cartridge/scripts/assets.js');
