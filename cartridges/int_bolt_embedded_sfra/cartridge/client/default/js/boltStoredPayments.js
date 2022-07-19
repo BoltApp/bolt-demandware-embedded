@@ -25,12 +25,16 @@ $(document).ready(function () {
         const boltPaySelector = $('#bolt-stored-payment-selector');
         if (boltPaySelector) {
             clearInterval(boltPaySelectorLoaded);
+            setFinalPaymentMethodID();
             boltPaySelector.change(function () {
-                // adding bolt pay id to payment content so that it's sent to auth when clicking "Place Order"
-                const boltPayID = $("#bolt-stored-payment-selector option:selected").val();
-                $('.final-payment-method-id').attr('value', boltPayID);
+                setFinalPaymentMethodID();
             });
         }
     }, 100);
 });
 
+// adding bolt pay id to payment content so that it's sent to auth when clicking "Place Order"
+function setFinalPaymentMethodID(){
+    const boltPayID = $("#bolt-stored-payment-selector option:selected").val();
+    $('.final-payment-method-id').attr('value', boltPayID);
+}
