@@ -56,7 +56,8 @@
             <isif condition="${loginAsBoltUser}">
                 <input type="hidden" class="form-control" id="bolt-cc-save"
                     name="${pdict.forms.billingForm.boltCreditCard.save.htmlName}" value="true">
-                <input type="hidden" class="final-payment-method-id" name="selectedBoltPaymentID">
+                <input type="hidden" class="form-control" id="bolt-selected-payment-id"
+                    name="${pdict.forms.billingForm.boltCreditCard.selectedBoltPaymentID.htmlName}">
             <iselse/>
                 <input type="hidden" class="form-control" id="bolt-cc-create-account"
                     name="${pdict.forms.billingForm.boltCreditCard.createAccount.htmlName}">

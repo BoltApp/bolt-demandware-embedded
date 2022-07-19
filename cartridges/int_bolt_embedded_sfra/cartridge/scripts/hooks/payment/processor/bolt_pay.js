@@ -26,44 +26,61 @@ var log = logUtils.getLogger('Auth');
  * @returns {Object} JSON Object
  */
 function handle(currentBasket, paymentInformation, paymentMethodID, req) {
-    if (!paymentInformation.creditCardToken) {
+    var useCreditCardToken = !empty(paymentInformation.creditCardToken);
+    var useExistingCard = boltAccountUtils.loginAsBoltUser() && !empty(paymentInformation.selectedBoltPaymentID);
+    if (!useCreditCardToken && !useExistingCard) {
         return {
             fieldErrors: {},
             serverErrors: [
-                Resource.msg('error.card.information.error', 'creditCard', null)
+                Resource.msg('payment.info.missing.error', 'bolt', null)
             ],
             error: true
         };
     }
     var paymentInstrument;
+    // reset bolt related payment instrument
     Transaction.wrap(function () {
-        var paymentInstruments = currentBasket.getPaymentInstruments(
-            constants.BOLT_PAY
-        );
+        var paymentInstruments = currentBasket.getPaymentInstruments(constants.BOLT_PAY);
         collections.forEach(paymentInstruments, function (item) {
             currentBasket.removePaymentInstrument(item);
         });
         paymentInstrument = currentBasket.createPaymentInstrument(paymentMethodID, currentBasket.totalGrossPrice);
-        paymentInstrument.setCreditCardNumber(
-            constants.CC_MASKED_DIGITS + paymentInformation.lastFourDigits
-        );
-        paymentInstrument.setCreditCardType(paymentInformation.cardType);
-        paymentInstrument.setCreditCardExpirationMonth(
-            paymentInformation.expirationMonth
-        );
-        paymentInstrument.setCreditCardExpirationYear(
-            paymentInformation.expirationYear
-        );
-        paymentInstrument.setCreditCardToken(paymentInformation.creditCardToken);
-        paymentInstrument.custom.basketId = currentBasket.UUID;
-        paymentInstrument.custom.boltCardBin = paymentInformation.bin;
-        paymentInstrument.custom.boltTokenType = paymentInformation.token_type;
-        if (boltAccountUtils.loginAsBoltUser() && paymentInformation.selectedBoltPaymentID) {
-            paymentInstrument.custom.selectedBoltPaymentID = paymentInformation.selectedBoltPaymentID;
-        }
-        paymentInstrument.custom.boltSaveCard = paymentInformation.save_to_bolt;
-        paymentInstrument.custom.boltCreateAccount = paymentInformation.createAccount;
     });
+
+    if (useExistingCard) {
+        var selectedPaymentID = paymentInformation.selectedBoltPaymentID;
+        var selectedBoltPayment = boltAccountUtils.getBoltPayment(currentBasket, selectedPaymentID);
+        if (selectedBoltPayment === null) {
+            return {
+                fieldErrors: {},
+                serverErrors: [
+                    Resource.msg('payment.info.missing.error', 'bolt', null)
+                ],
+                error: true
+            };
+        }
+        Transaction.wrap(function () {
+            paymentInstrument.setCreditCardNumber(constants.CC_MASKED_DIGITS + selectedBoltPayment.last4);
+            paymentInstrument.setCreditCardType(selectedBoltPayment.network);
+            paymentInstrument.setCreditCardExpirationMonth(selectedBoltPayment.exp_month);
+            paymentInstrument.setCreditCardExpirationYear(selectedBoltPayment.exp_year);
+            paymentInstrument.custom.boltPaymentMethodId = selectedPaymentID;
+            paymentInstrument.custom.basketId = currentBasket.UUID;
+            paymentInstrument.custom.boltSaveCard = paymentInformation.save_to_bolt;
+        });
+    } else {
+        Transaction.wrap(function () {
+            paymentInstrument.setCreditCardNumber(constants.CC_MASKED_DIGITS + paymentInformation.lastFourDigits);
+            paymentInstrument.setCreditCardType(paymentInformation.cardType);
+            paymentInstrument.setCreditCardExpirationMonth(paymentInformation.expirationMonth);
+            paymentInstrument.setCreditCardExpirationYear(paymentInformation.expirationYear);
+            paymentInstrument.setCreditCardToken(paymentInformation.creditCardToken);
+            paymentInstrument.custom.basketId = currentBasket.UUID;
+            paymentInstrument.custom.boltCardBin = paymentInformation.bin;
+            paymentInstrument.custom.boltTokenType = paymentInformation.token_type;
+            paymentInstrument.custom.boltCreateAccount = paymentInformation.createAccount;
+        });
+    }
 
     return { fieldErrors: {}, serverErrors: [], error: false };
 }
@@ -163,8 +180,8 @@ function getAuthRequest(order, paymentInstrument) {
     };
 
     // use Bolt payment ID for Bolt
-    if (boltAccountUtils.loginAsBoltUser() && paymentInstrument.custom.selectedBoltPaymentID) {
-        request.credit_card_id = paymentInstrument.custom.selectedBoltPaymentID;
+    if (boltAccountUtils.loginAsBoltUser() && paymentInstrument.custom.boltPaymentMethodId) {
+        request.credit_card_id = paymentInstrument.custom.boltPaymentMethodId;
     } else {
         request.credit_card = {
             token: paymentInstrument.getCreditCardToken(),

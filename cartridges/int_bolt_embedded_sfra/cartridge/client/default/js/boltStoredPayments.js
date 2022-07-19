@@ -15,7 +15,7 @@ $(document).ready(function () {
                 if(this.checked){
                     $('#bolt-stored-payment-selector').addClass('d-none');
                     $('.bolt-pay').removeClass('d-none');
-                    $('.final-payment-method-id').val('');
+                    $('#bolt-selected-payment-id').val('');
                 }
             });
         }
@@ -36,5 +36,5 @@ $(document).ready(function () {
 // adding bolt pay id to payment content so that it's sent to auth when clicking "Place Order"
 function setFinalPaymentMethodID(){
     const boltPayID = $("#bolt-stored-payment-selector option:selected").val();
-    $('.final-payment-method-id').attr('value', boltPayID);
+    $('#bolt-selected-payment-id').attr('value', boltPayID);
 }

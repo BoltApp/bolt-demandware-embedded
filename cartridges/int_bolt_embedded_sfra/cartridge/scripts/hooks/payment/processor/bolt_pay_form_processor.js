@@ -38,9 +38,13 @@ function processForm(req, paymentForm, viewFormData) {
         htmlName: paymentForm.paymentMethod.value
     };
 
-    if (boltAccountUtils.loginAsBoltUser() && req.form.selectedBoltPaymentID) {
+    var boltCreditCardForm = paymentForm.boltCreditCard;
+    if (boltAccountUtils.loginAsBoltUser() && boltCreditCardForm.selectedBoltPaymentID.value) {
         // if returning Bolt shopper selects a stored card, use Bolt payment method ID.
-        viewData.selectedBoltPaymentID = req.form.selectedBoltPaymentID;
+        viewData.paymentInformation = {
+            selectedBoltPaymentID: boltCreditCardForm.selectedBoltPaymentID.value,
+            save_to_bolt: false
+        };
     } else {
         var boltCreditCardErrors = COHelpers.validateBillingForm(paymentForm.boltCreditCard);
         if (Object.keys(boltCreditCardErrors).length) {
@@ -49,7 +53,7 @@ function processForm(req, paymentForm, viewFormData) {
                 error: true
             };
         }
-        var boltCreditCardForm = paymentForm.boltCreditCard;
+
         var expMonthAndYear = boltCreditCardForm.expiration.value.split('-');
         viewData.paymentInformation = {
             cardType: boltCreditCardForm.network.value || '',
