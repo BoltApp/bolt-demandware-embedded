@@ -13,66 +13,71 @@ var log = LogUtils.getLogger('CheckAccount');
  * @returns {Object} result - if we need to redirect to shipping & billing page when there are missing values
  */
 exports.addAccountDetailsToBasket = function(shopperDetails){
-    log.info("Shopper Info to add to basket {0}", shopperDetails);
-    let res = {};
-    const basket = BasketMgr.getCurrentBasket();
+    var res = {};
+    try {
+        log.info("Shopper Info to add to basket {0}", shopperDetails);
+        const basket = BasketMgr.getCurrentBasket();
 
-    // set shopper detail to shipping address
-    let boltDefaultAddress;
-    shopperDetails.addresses.forEach(function(address){
-        if (address.default === true) {
-            boltDefaultAddress = address;
-        }
-    });
-
-    // save bolt shipping addresses in basket
-    if (shopperDetails.addresses) {
-        var shopperAddresses = JSON.stringify(shopperDetails.addresses);
-        Transaction.wrap(function (){
-            basket.custom.boltShippingAddress = shopperAddresses;
-        })
-    }
-
-    if (boltDefaultAddress){
-        collections.forEach(basket.getShipments(), function (shipment) {
-            // TODO: skip email delivery if there is any
-            if(!shipment.getShippingAddress()){
-                Transaction.wrap(function (){
-                    shipment.createShippingAddress();
-                })
-            }
-            if(!shipment.getShippingMethod()){
-                Transaction.wrap(function (){
-                    shipment.setShippingMethod(ShippingMgr.getDefaultShippingMethod());
-                })
-            }
-
-            // save Bolt address ID to shipping address
-            var shippingAddress = shipment.getShippingAddress();
-            Transaction.wrap(function (){
-                shippingAddress.custom.boltAddressId = boltDefaultAddress.id;
-            });
-
-            const addAddressResult = addAccountDetailsToAddress(boltDefaultAddress, shippingAddress);
-            if (addAddressResult.missingValue){
-                res.redirectShipping = true;
+        // set shopper detail to shipping address
+        let boltDefaultAddress;
+        shopperDetails.addresses.forEach(function(address){
+            if (address.default === true) {
+                boltDefaultAddress = address;
             }
         });
-    } else {
-        log.warn("default shipping address is missing from shopper details!");
-        res.redirectShipping = true;
+
+        // save bolt shipping addresses in basket
+        if (shopperDetails.addresses) {
+            var shopperAddresses = JSON.stringify(shopperDetails.addresses);
+            Transaction.wrap(function (){
+                basket.custom.boltShippingAddress = shopperAddresses;
+            })
+        }
+
+        if (boltDefaultAddress){
+            collections.forEach(basket.getShipments(), function (shipment) {
+                // TODO: skip email delivery if there is any
+                if(!shipment.getShippingAddress()){
+                    Transaction.wrap(function (){
+                        shipment.createShippingAddress();
+                    })
+                }
+                if(!shipment.getShippingMethod()){
+                    Transaction.wrap(function (){
+                        shipment.setShippingMethod(ShippingMgr.getDefaultShippingMethod());
+                    })
+                }
+
+                // save Bolt address ID to shipping address
+                var shippingAddress = shipment.getShippingAddress();
+                Transaction.wrap(function (){
+                    shippingAddress.custom.boltAddressId = boltDefaultAddress.id;
+                });
+
+                const addAddressResult = addAccountDetailsToAddress(boltDefaultAddress, shippingAddress);
+                if (addAddressResult.missingValue){
+                    res.redirectShipping = true;
+                }
+            });
+        } else {
+            log.warn("default shipping address is missing from shopper details!");
+            res.redirectShipping = true;
+        }
+
+        // adding payment methods to the baskek's custom field
+        const addPaymentResult = addPaymentMethodInfoToBasket(basket, shopperDetails.payment_methods)
+        if(addPaymentResult.missingValue){
+            res.redirectBilling = true;
+        }
+
+        // set email to the basket
+        Transaction.wrap(function (){
+            basket.setCustomerEmail(shopperDetails.profile.email);
+        }) 
+    } catch (e) {
+        log.error(e.message);
     }
 
-    // adding payment methods to the baskek's custom field
-    const addPaymentResult = addPaymentMethodInfoToBasket(basket, shopperDetails.payment_methods)
-    if(addPaymentResult.missingValue){
-        res.redirectBilling = true;
-    }
-
-    // set email to the basket
-    Transaction.wrap(function (){
-        basket.setCustomerEmail(shopperDetails.profile.email);
-    })
     return res;
 }
 

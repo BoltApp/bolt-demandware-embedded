@@ -20,8 +20,7 @@ server.extend(module.superModule);
 
 
 /**
- * Set billing address data with default shipping address if no
- * billing matching address id is set.
+ * Set billing address data with default shipping address if no billing matching address id is set. Save Bolt shippping address id.
  */
 server.append('SubmitShipping', function (req, res, next) {
     var currentBasket = BasketMgr.getCurrentBasket();

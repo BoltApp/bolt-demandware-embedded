@@ -159,34 +159,42 @@ exports.saveCardToBolt = function (order, paymentInstrument) {
 };
 
 exports.saveAddressToBolt = function (shippingAddress) {
-    // add bolt address id to endpoint if shopper is updating existing address
-    var addressUrl = shippingAddress.custom.boltAddressId ? (constants.SHOPPER_ADDRESS_URL + "/" + shippingAddress.custom.boltAddressId) : constants.SHOPPER_ADDRESS_URL;
+    try {
+        // add bolt address id to endpoint if shopper is updating existing address
+        var addressUrl = shippingAddress.custom.boltAddressId ? (constants.SHOPPER_ADDRESS_URL + "/" + shippingAddress.custom.boltAddressId) : constants.SHOPPER_ADDRESS_URL;
 
-    var request = {
-        street_address1: shippingAddress.address1 || "",
-        street_address2: shippingAddress.address2 || "",
-        locality: shippingAddress.city || "",
-        region: shippingAddress.stateCode || "",
-        postal_code: shippingAddress.postalCode || "",
-        country_code: shippingAddress.countryCode.value || "",
-        first_name: shippingAddress.firstName || "",
-        last_name: shippingAddress.lastName || "",
-        phone: shippingAddress.phone || ""
-    }
-    var bearerToken = "Bearer ".concat(session.privacy.boltOauthToken);
+        var request = {
+            street_address1: shippingAddress.address1 || "",
+            street_address2: shippingAddress.address2 || "",
+            locality: shippingAddress.city || "",
+            region: shippingAddress.stateCode || "",
+            postal_code: shippingAddress.postalCode || "",
+            country_code: shippingAddress.countryCode.value || "",
+            first_name: shippingAddress.firstName || "",
+            last_name: shippingAddress.lastName || "",
+            phone: shippingAddress.phone || ""
+        }
+        var bearerToken = "Bearer ".concat(session.privacy.boltOauthToken);
 
-    // send save address request to Bolt
-    var response = boltHttpUtils.restAPIClient(constants.HTTP_METHOD_POST, addressUrl, JSON.stringify(request), '', bearerToken);
-    var errorMsg = Resource.msg('error.save.address', 'bolt', null)
-    if (response.status && response.status === HttpResult.ERROR) {
-        log.error(errorMsg + (!empty(response.errors) && !empty(response.errors[0].message) ? response.errors[0].message : "") );
+        // send save address request to Bolt
+        var response = boltHttpUtils.restAPIClient(constants.HTTP_METHOD_POST, addressUrl, JSON.stringify(request), '', bearerToken);
+        var errorMsg = Resource.msg('error.save.address', 'bolt', null)
+        if (response.status && response.status === HttpResult.ERROR) {
+            log.error(errorMsg + (!empty(response.errors) && !empty(response.errors[0].message) ? response.errors[0].message : "") );
+            return {
+                error: true,
+                errorMsg: errorMsg
+            };
+        } 
+
+        return {
+            error: false   
+        };
+    } catch (e) {
+        log.error(e.message);
         return {
             error: true,
-            errorMsg: errorMsg
+            errorMsg: e.message
         };
-    } 
-
-    return {
-        error: false   
-    };
+    }
 }
