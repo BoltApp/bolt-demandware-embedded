@@ -185,7 +185,6 @@ workflows:
               only:
                 - master
                 - /adhoc-deploy\/.*/
-                - Derrick/fix-ci
 
       - integration-tests:
           context: sfcc-creds
@@ -198,8 +197,8 @@ workflows:
 
       - update-qa-sandbox:
           context: sfcc-creds
-          requires:
-            - swissknife/queue_up_workflow
+#          requires:
+#            - swissknife/queue_up_workflow
           filters:
             branches:
               only:
