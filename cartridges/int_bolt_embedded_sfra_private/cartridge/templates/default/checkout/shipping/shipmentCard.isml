@@ -13,7 +13,10 @@
         <input name="originalShipmentUUID" type="hidden" value="${shippingModel.UUID}" />
         <input name="shipmentUUID" type="hidden" value="${shippingModel.UUID}" />
         
-        <isset name="isBoltLogin" value="${session.privacy.boltOauthToken !== null}" scope="page" />
+        <isscript>
+            var boltAccountUtils = require('int_bolt_embedded_sfra/cartridge/scripts/util/boltAccountUtils');
+            var isBoltLogin = boltAccountUtils.loginAsBoltUser();
+        </isscript>
 
         <div class="shipping-address ${pdict.order.usingMultiShipping ? 'd-none' : ''}" >
             <fieldset class="shipment-selector-block ${(pdict.order.usingMultiShipping || shipmentLoopState) || (pdict.customer.addresses && pdict.customer.addresses.length > 0) || (isBoltLogin && pdict.boltStoredShippingAddress) ? '' : 'd-none'} ">
