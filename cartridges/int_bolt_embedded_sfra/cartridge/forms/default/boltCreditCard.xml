@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<form xmlns="http://www.demandware.com/xml/form/2008-04-19">
+
+    <field formid="token" type="string" mandatory="true" missing-error="creditcard.general.error"/>
+
+    <field formid="bin" type="string" mandatory="true" missing-error="creditcard.general.error"/>
+
+    <field formid="lastDigits" type="string" mandatory="true" missing-error="creditcard.general.error"/>
+
+    <field formid="expiration" type="string" mandatory="true" missing-error="creditcard.general.error"/>
+
+    <field formid="tokenType" type="string"/>
+
+    <field formid="network" type="string" />
+
+    <field formid="postalCode" type="string"/>
+
+    <field formid="createAccount" type="boolean" />
+
+    <field formid="save" type="boolean" />
+
+</form>
