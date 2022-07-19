@@ -38,11 +38,34 @@
         <fieldset class="payment-form-fields">
             <input type="hidden" class="form-control" name="${pdict.forms.billingForm.paymentMethod.htmlName}"
                 value="${paymentOption.ID}">
-            <input type="hidden" class="final-payment-method-id">
+
+            <input type="hidden" class="form-control" id="bolt-cc-token"
+                name="${pdict.forms.billingForm.boltCreditCard.token.htmlName}">
+            <input type="hidden" class="form-control" id="bolt-cc-bin"
+                name="${pdict.forms.billingForm.boltCreditCard.bin.htmlName}">
+            <input type="hidden" class="form-control" id="bolt-cc-last-digits"
+                name="${pdict.forms.billingForm.boltCreditCard.lastDigits.htmlName}">
+            <input type="hidden" class="form-control" id="bolt-cc-exp"
+                name="${pdict.forms.billingForm.boltCreditCard.expiration.htmlName}">
+            <input type="hidden" class="form-control" id="bolt-cc-token-type"
+                name="${pdict.forms.billingForm.boltCreditCard.tokenType.htmlName}">
+            <input type="hidden" class="form-control" id="bolt-cc-network"
+                name="${pdict.forms.billingForm.boltCreditCard.network.htmlName}">
+            <input type="hidden" class="form-control" id="bolt-cc-postal"
+                name="${pdict.forms.billingForm.boltCreditCard.postalCode.htmlName}">
             <isif condition="${loginAsBoltUser}">
-                <input name="save_card_to_bolt_val" id="save_card_to_bolt_val" type="hidden" value="true" />
+                <input type="hidden" class="form-control" id="bolt-cc-save"
+                    name="${pdict.forms.billingForm.boltCreditCard.save.htmlName}" value="true">
+                <input type="hidden" class="form-control" id="bolt-selected-payment-id"
+                    name="${pdict.forms.billingForm.boltCreditCard.selectedBoltPaymentID.htmlName}">
+            <iselse/>
+                <input type="hidden" class="form-control" id="bolt-cc-create-account"
+                    name="${pdict.forms.billingForm.boltCreditCard.createAccount.htmlName}">
             </isif>
         </fieldset>
+        <div class="alert alert-danger bolt-error-message" hidden>
+            <p class="bolt-error-message-text"></p>
+        </div>
         <div id="div-to-inject-field-into"></div>
         <isif condition="${loginAsBoltUser}">
             <div id="save-card-container">

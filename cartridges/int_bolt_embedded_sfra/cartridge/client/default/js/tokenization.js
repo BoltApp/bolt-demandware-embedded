@@ -1,9 +1,10 @@
 "use strict";
 
-var paymentComponent, boltEmbedded, accountCheck, boltCreateAccount;
+var paymentComponent, boltEmbedded, accountCheck;
+var boltCreateAccount = true;
 
 var accountCheckOptions = {
-  defaultValue: false,
+  defaultValue: true,
   version: "compact",
   listeners: {
     change: function (value) {
@@ -47,21 +48,30 @@ var initEmbeddedPaymentFields = function () {
   }
 };
 
+var resetBoltCreditCardFields = function () {
+  $("#bolt-cc-token").val('');
+  $("#bolt-cc-bin").val('');
+  $("#bolt-cc-last-digits").val('');
+  $("#bolt-cc-exp").val('');
+  $("#bolt-cc-token-type").val('');
+  $("#bolt-cc-network").val('');
+  $("#bolt-cc-postal").val('');
+}
+
 var tokenize = function (event, data) {
+  //reset credit card fields
+  resetBoltCreditCardFields();
   getToken().then(
     function (response) {
-      var serializedArray = data.form.serializeArray();
-      for (const property in response) {
-        serializedArray.push({
-          name: property,
-          value: response[property],
-        });
-      }
-      serializedArray.push({
-        name: "create_bolt_account",
-        value: boltCreateAccount,
-      });
-      data.callback($.param(serializedArray));
+      $("#bolt-cc-token").val(response.token);
+      $("#bolt-cc-bin").val(response.bin);
+      $("#bolt-cc-last-digits").val(response.last4);
+      $("#bolt-cc-exp").val(response.expiration);
+      $("#bolt-cc-token-type").val(response.token_type);
+      $("#bolt-cc-network").val(response.network);
+      $("#bolt-cc-postal").val(response.postal_code);
+      $("#bolt-cc-create-account").val(boltCreateAccount);
+      data.callback($.param(data.form.serializeArray()));
     },
     function (error) {
       console.log("Error on getting Bolt token: ", error);
