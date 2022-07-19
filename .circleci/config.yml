@@ -7,7 +7,7 @@ orbs:
 executors:
   sfcc-executor:
     docker:
-      - image: boltdev/sfcc-ci:v1.0.0
+      - image: boltdev/sfcc-ci:v1.1.0
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASSWORD
