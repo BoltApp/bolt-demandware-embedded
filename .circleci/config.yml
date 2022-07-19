@@ -119,7 +119,6 @@ jobs:
       - run:
           name: Upload metadata to QA sandbox zzgv-018
           command: |
-            sed -i 's/MERCHANT_NAME/lucky/g' metadata/bolt-meta-import/meta/system-objecttype-extensions.xml
             sfcc-ci client:auth ${SFCCCLIENTID} ${SFCCCLIENTSECRET}
             npm run uploadMetadata
       - run:
