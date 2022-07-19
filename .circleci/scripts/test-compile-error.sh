@@ -6,6 +6,7 @@ if [ $COMPILESUCCESS = ExpectedErrorCount ]
 then
     echo "npm run compile ran without errors"
 else
+    echo "error count: " $COMPILESUCCESS
     echo "npm run compile had errors"
     exit 1
 fi
