@@ -188,3 +188,20 @@ exports.saveAddressToBolt = function (shippingAddress) {
         log.error(e.message);
     }
 }
+/**
+ * Get bolt payment data which is stored in SFCC basket
+ * @param {dw.order.Basket} basket - the SFCC basket
+ * @return {Object} null or selected bolt payment data object
+ */
+ exports.getBoltPayment = function(basket, selectedBoltPaymentID){
+    if(empty(basket)|| empty(basket.custom.boltPaymentMethods)) {
+        return null;
+    }
+    var boltPayments = JSON.parse(basket.custom.boltPaymentMethods);
+    for (var i=0; i < boltPayments.length; i++) {
+        if(boltPayments[i].id === selectedBoltPaymentID){
+            return boltPayments[i];
+        }
+    }
+    return null;
+}

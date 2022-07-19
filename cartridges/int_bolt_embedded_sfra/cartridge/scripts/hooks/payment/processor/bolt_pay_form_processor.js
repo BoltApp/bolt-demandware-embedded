@@ -1,10 +1,5 @@
 'use strict';
 
-// API Includes
-var Site = require('dw/system/Site');
-var Logger = require('dw/system/Logger');
-var Resource = require('dw/web/Resource');
-
 // Script includes
 var COHelpers = require('*/cartridge/scripts/checkout/checkoutHelpers');
 var boltAccountUtils = require('~/cartridge/scripts/util/boltAccountUtils');
@@ -19,8 +14,6 @@ var boltAccountUtils = require('~/cartridge/scripts/util/boltAccountUtils');
 function processForm(req, paymentForm, viewFormData) {
     var formFieldErrors = {};
     var viewData = viewFormData;
-
-    var billingForm = req.form;
 
     // validate billing address form
     var billingFormErrors = COHelpers.validateBillingForm(
@@ -39,28 +32,45 @@ function processForm(req, paymentForm, viewFormData) {
         };
     }
 
+    // validate credit card payment information
     viewData.paymentMethod = {
         value: paymentForm.paymentMethod.value,
         htmlName: paymentForm.paymentMethod.value
     };
 
-    var expMonthAndYear = billingForm.expiration.split('-');
+    var boltCreditCardForm = paymentForm.boltCreditCard;
+    if (boltAccountUtils.loginAsBoltUser() && boltCreditCardForm.selectedBoltPaymentID.value) {
+        // if returning Bolt shopper selects a stored card, use Bolt payment method ID.
+        viewData.paymentInformation = {
+            selectedBoltPaymentID: boltCreditCardForm.selectedBoltPaymentID.value,
+            save_to_bolt: false
+        };
+    } else {
+        var boltCreditCardErrors = COHelpers.validateBillingForm(paymentForm.boltCreditCard);
+        if (Object.keys(boltCreditCardErrors).length) {
+            return {
+                fieldErrors: boltCreditCardErrors,
+                error: true
+            };
+        }
 
-    viewData.paymentInformation = {
-        cardType: billingForm.network || '',
-        expirationMonth: parseInt(expMonthAndYear[1], 10),
-        expirationYear: parseInt(expMonthAndYear[0], 10),
-        creditCardToken: billingForm.token || '',
-        bin: billingForm.bin || '',
-        lastFourDigits: billingForm.last4 || '',
-        token_type: billingForm.token_type || '',
-        save_to_bolt: billingForm.save_card_to_bolt_val === 'true',
-        createAccount: billingForm.create_bolt_account === 'true'
-    };
-
-    // if returning Bolt shopper selects a stored card, use Bolt payment method ID.
-    if (boltAccountUtils.loginAsBoltUser() && req.form.selectedBoltPaymentID) {
-        viewData.selectedBoltPaymentID = req.form.selectedBoltPaymentID;
+        var expMonthAndYear = boltCreditCardForm.expiration.value.split('-');
+        viewData.paymentInformation = {
+            cardType: boltCreditCardForm.network.value || '',
+            expirationMonth: parseInt(expMonthAndYear[1], 10),
+            expirationYear: parseInt(expMonthAndYear[0], 10),
+            creditCardToken: boltCreditCardForm.token.value || '',
+            bin: boltCreditCardForm.bin.value || '',
+            lastFourDigits: boltCreditCardForm.lastDigits.value || '',
+            token_type: boltCreditCardForm.tokenType.value || ''
+        };
+        if (boltAccountUtils.loginAsBoltUser()) {
+            viewData.paymentInformation.save_to_bolt = boltCreditCardForm.save.value === true;
+            viewData.paymentInformation.createAccount = false;
+        } else {
+            viewData.paymentInformation.createAccount = boltCreditCardForm.createAccount.value === true;
+            viewData.paymentInformation.save_to_bolt = false;
+        }
     }
 
     return {

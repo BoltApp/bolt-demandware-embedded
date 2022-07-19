@@ -107,8 +107,8 @@ $('#bolt-logout').click(function(){
 
 $("#save_card_to_bolt").on('change', function() {
   if ($(this).is(':checked')) {
-    $("#save_card_to_bolt_val").attr('value', 'true');
+    $("#bolt-cc-save").val('true');
   } else {
-    $("#save_card_to_bolt_val").attr('value', 'false');
+    $("#bolt-cc-save").val('false');
   }
 });
