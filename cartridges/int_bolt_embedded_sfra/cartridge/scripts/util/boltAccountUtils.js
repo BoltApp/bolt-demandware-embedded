@@ -181,20 +181,8 @@ exports.saveAddressToBolt = function (shippingAddress) {
         var errorMsg = Resource.msg('error.save.address', 'bolt', null)
         if (response.status && response.status === HttpResult.ERROR) {
             log.error(errorMsg + (!empty(response.errors) && !empty(response.errors[0].message) ? response.errors[0].message : "") );
-            return {
-                error: true,
-                errorMsg: errorMsg
-            };
-        } 
-
-        return {
-            error: false   
-        };
+        }
     } catch (e) {
         log.error(e.message);
-        return {
-            error: true,
-            errorMsg: e.message
-        };
     }
 }

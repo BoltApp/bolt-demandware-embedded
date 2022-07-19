@@ -119,13 +119,7 @@ function authorize(orderNumber, paymentInstrument, paymentProcessor) {
     // save shipping address to bolt account
     var shippingAddress = order.getDefaultShipment().getShippingAddress();
     if (boltAccountUtils.loginAsBoltUser() && shippingAddress.custom.saveShippingToBolt === true) {
-        var saveAddressResult = boltAccountUtils.saveAddressToBolt(shippingAddress);
-        if (saveAddressResult.error) {
-            return {
-                error: true,
-                serverErrors: [saveAddressResult.errorMsg]
-            }
-        }
+        boltAccountUtils.saveAddressToBolt(shippingAddress);
     }
 
     return { error: false };
