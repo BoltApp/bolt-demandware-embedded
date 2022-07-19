@@ -42,8 +42,7 @@ function processForm(req, paymentForm, viewFormData) {
     if (boltAccountUtils.loginAsBoltUser() && boltCreditCardForm.selectedBoltPaymentID.value) {
         // if returning Bolt shopper selects a stored card, use Bolt payment method ID.
         viewData.paymentInformation = {
-            selectedBoltPaymentID: boltCreditCardForm.selectedBoltPaymentID.value,
-            save_to_bolt: false
+            selectedBoltPaymentID: boltCreditCardForm.selectedBoltPaymentID.value
         };
     } else {
         var boltCreditCardErrors = COHelpers.validateBillingForm(paymentForm.boltCreditCard);
@@ -65,11 +64,9 @@ function processForm(req, paymentForm, viewFormData) {
             token_type: boltCreditCardForm.tokenType.value || ''
         };
         if (boltAccountUtils.loginAsBoltUser()) {
-            viewData.paymentInformation.save_to_bolt = boltCreditCardForm.save.value === true;
             viewData.paymentInformation.createAccount = false;
         } else {
             viewData.paymentInformation.createAccount = boltCreditCardForm.createAccount.value === true;
-            viewData.paymentInformation.save_to_bolt = false;
         }
     }
 

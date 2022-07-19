@@ -54,8 +54,6 @@
             <input type="hidden" class="form-control" id="bolt-cc-postal"
                 name="${pdict.forms.billingForm.boltCreditCard.postalCode.htmlName}">
             <isif condition="${loginAsBoltUser}">
-                <input type="hidden" class="form-control" id="bolt-cc-save"
-                    name="${pdict.forms.billingForm.boltCreditCard.save.htmlName}" value="true">
                 <input type="hidden" class="form-control" id="bolt-selected-payment-id"
                     name="${pdict.forms.billingForm.boltCreditCard.selectedBoltPaymentID.htmlName}">
             <iselse/>
@@ -67,12 +65,7 @@
             <p class="bolt-error-message-text"></p>
         </div>
         <div id="div-to-inject-field-into"></div>
-        <isif condition="${loginAsBoltUser}">
-            <div id="save-card-container">
-                <input name="save_card_to_bolt" id="save_card_to_bolt" type="checkbox" checked />
-                <label for="save_card_to_bolt"><span>${Resource.msg('save.card', 'bolt', null)}</span></label>
-            </div>
-        <iselse/>
+        <isif condition="${!loginAsBoltUser}">
             <div id="acct-checkbox"></div>
         </isif>
     </div>

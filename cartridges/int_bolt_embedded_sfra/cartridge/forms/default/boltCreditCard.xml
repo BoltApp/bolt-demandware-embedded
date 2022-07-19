@@ -19,6 +19,4 @@
 
     <field formid="createAccount" type="boolean" />
 
-    <field formid="save" type="boolean" />
-
 </form>
