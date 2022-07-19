@@ -1,8 +1,8 @@
 #!/bin/bash
-ZERO=0
+ExpectedErrorCount=1
 COMPILESUCCESS=$(npm run compile | grep "Error" | wc -l | xargs)
 
-if [ $COMPILESUCCESS = $ZERO ]
+if [ $COMPILESUCCESS = ExpectedErrorCount ]
 then
     echo "npm run compile ran without errors"
 else
