@@ -13,8 +13,7 @@ var logUtils = require('~/cartridge/scripts/util/boltLogUtils');
 var log = logUtils.getLogger('Checkout');
 
 server.append('Begin', function (req, res, next) {
-    var configuration; var basket; var boltStoredPaymentMethods; var boltStoredShippingAddress; var
-        boltAddressId;
+    var configuration, basket, boltStoredPaymentMethods, boltStoredShippingAddress, boltAddressId;
     try {
         configuration = BoltPreferences.getSitePreferences();
         basket = BasketMgr.getCurrentBasket();
