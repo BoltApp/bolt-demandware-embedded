@@ -66,7 +66,6 @@ function handle(currentBasket, paymentInformation, paymentMethodID, req) {
             paymentInstrument.setCreditCardExpirationYear(selectedBoltPayment.exp_year);
             paymentInstrument.custom.boltPaymentMethodId = selectedPaymentID;
             paymentInstrument.custom.basketId = currentBasket.UUID;
-            paymentInstrument.custom.boltSaveCard = paymentInformation.save_to_bolt;
         });
     } else {
         Transaction.wrap(function () {
@@ -129,7 +128,7 @@ function authorize(orderNumber, paymentInstrument, paymentProcessor) {
     });
 
     // save card to bolt account
-    if (boltAccountUtils.loginAsBoltUser() && paymentInstrument.custom.boltSaveCard === true) {
+    if (boltAccountUtils.loginAsBoltUser() && !empty(paymentInstrument.getCreditCardToken())) {
         boltAccountUtils.saveCardToBolt(order, paymentInstrument);
     }
 
