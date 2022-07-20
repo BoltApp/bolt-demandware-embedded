@@ -23,7 +23,6 @@ exports.getSitePreferences = function () {
     boltCdnUrl: boltCdnUrl,
     boltMultiPublishableKey: boltMultiPublishableKey,
     boltApiKey: boltApiKey,
-    defaultLocale: site.getDefaultLocale() || ''
   };
 };
 
