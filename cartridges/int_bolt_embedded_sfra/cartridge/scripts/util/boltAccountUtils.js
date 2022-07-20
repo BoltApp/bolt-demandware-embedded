@@ -178,7 +178,17 @@ exports.saveAddressToBolt = function (shippingAddress) {
             last_name: shippingAddress.lastName || "",
             phone: shippingAddress.phone || ""
         }
-        var bearerToken = "Bearer ".concat(session.privacy.boltOauthToken);
+
+        var boltOauthToken = oauth.getValidOauthToken();
+        if (empty(boltOauthToken)) {
+            let errorMsg = 'Bolt Oauth Token is missing';
+            log.error(errorMsg);
+            return {
+                success: false,
+                message: errorMsg
+            };
+        }
+        var bearerToken = "Bearer ".concat(boltOauthToken);
 
         // send save address request to Bolt
         var response = boltHttpUtils.restAPIClient(constants.HTTP_METHOD_POST, addressUrl, JSON.stringify(request), '', bearerToken);
