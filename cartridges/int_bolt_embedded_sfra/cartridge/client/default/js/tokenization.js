@@ -1,4 +1,5 @@
 "use strict";
+var util = require("./util.js");
 
 var paymentComponent, boltEmbedded, accountCheck;
 var boltCreateAccount = true;
@@ -83,7 +84,8 @@ $("body").ready(function () {
   var isBoltEmbeddedExists = setInterval(function () {
     if (typeof Bolt !== "undefined") {
       clearInterval(isBoltEmbeddedExists);
-      boltEmbedded = Bolt($(".bolt-publishable-key").val());
+      const locale = $('.bolt-locale').val();
+      boltEmbedded = Bolt($(".bolt-publishable-key").val(), {language: util.getISOCodeByLocale(locale)});
       initEmbeddedPaymentFields();
       renderBoltCreateAccountCheckField();
     }
