@@ -72,6 +72,8 @@ var clearBillingInformationInBasket = function (basket) {
 exports.clearBoltSessionData = function () {
     delete session.privacy.boltOauthToken;
     delete session.privacy.boltRefreshToken;
+    delete session.privacy.boltRefreshTokenScope;
+    delete session.privacy.boltOauthTokenExpire;
 };
 
 /**
