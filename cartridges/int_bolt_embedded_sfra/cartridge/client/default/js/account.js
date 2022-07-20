@@ -86,6 +86,9 @@ function getISOCodeByLocale(locale){
     case "fr_CA":
       isoCode = "fr-ca"
       break
+    case "de_DE":
+      isoCode = "de"
+      break
     default:
       isoCode = "en-us"
   }
