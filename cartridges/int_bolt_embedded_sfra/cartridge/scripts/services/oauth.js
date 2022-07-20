@@ -18,7 +18,7 @@ var log = LogUtils.getLogger('Oauth');
  * @param {string} scope - scope for the oauth workflow, currently only support openid
  * @returns {Object} result
  */
-exports.fetchToken = function(code, scope) {
+exports.fetchNewToken = function(code, scope) {
     var config = preferences.getSitePreferences();
     var payload = "grant_type=authorization_code&code="
         .concat(code, "&scope=")

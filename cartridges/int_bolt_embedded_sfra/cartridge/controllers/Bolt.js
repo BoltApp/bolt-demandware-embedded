@@ -33,7 +33,7 @@ server.get('AccountExists', server.middleware.https, function (req, res, next) {
 });
 
 server.get('FetchOauthToken', server.middleware.https, function (req, res, next) {
-    var response = oauth.fetchToken(req.querystring.code, req.querystring.scope);
+    var response = oauth.fetchNewToken(req.querystring.code, req.querystring.scope);
 
     var returnObject = {};
     if (response.status === HttpResult.OK) {
