@@ -44,7 +44,8 @@ function handle(currentBasket, paymentInformation, paymentMethodID, req) {
         collections.forEach(paymentInstruments, function (item) {
             currentBasket.removePaymentInstrument(item);
         });
-        paymentInstrument = currentBasket.createPaymentInstrument(paymentMethodID, currentBasket.totalGrossPrice);
+        var nonGCTotal = currentBasket.totalGrossPrice.subtract(currentBasket.giftCertificateTotalGrossPrice);
+        paymentInstrument = currentBasket.createPaymentInstrument(paymentMethodID, nonGCTotal);
     });
 
     if (useExistingCard) {
