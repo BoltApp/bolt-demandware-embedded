@@ -10,7 +10,7 @@ var preferences = require("~/cartridge/scripts/util/preferences");
 var boltAccountUtils = require('~/cartridge/scripts/util/boltAccountUtils');
 var LogUtils = require('~/cartridge/scripts/util/boltLogUtils');
 var log = LogUtils.getLogger('Oauth');
-var config = preferences.getSitePreferences();
+
 
 /**
  * This returns the JSON encoded result for the return value of token exchange endpoint
@@ -19,6 +19,7 @@ var config = preferences.getSitePreferences();
  * @returns {Object} result
  */
 exports.fetchToken = function(code, scope) {
+    var config = preferences.getSitePreferences();
     var payload = "grant_type=authorization_code&code="
         .concat(code, "&scope=")
         .concat(scope, "&client_secret=")
@@ -31,7 +32,7 @@ exports.fetchToken = function(code, scope) {
  * Check if log in Oauth token is still valid, refresh the token if it expires.
  * @returns {string} boltOauthToken - New Oauth token
  */
-exports.getValidOauthToken = function() {
+exports.getOauthToken = function() {
     // Oauth token will not expire in 4 seconds, use the current Oauth token in session
     if ((session.privacy.boltOauthTokenExpire - new Date().getTime())> 4000) {
         return session.privacy.boltOauthToken;
@@ -42,18 +43,19 @@ exports.getValidOauthToken = function() {
 }
 
 function refreshToken () {
+    var boltOauthToken;
     if (!session.privacy.boltRefreshToken || !session.privacy.boltRefreshTokenScope) {
         log.error("Refresh token or refresh token scope is missing.");
-        return null;
+        return boltOauthToken;
     }
 
+    var config = preferences.getSitePreferences();
     var payload = "grant_type=refresh_token&refresh_token="
         .concat(session.privacy.boltRefreshToken, "&scope=")
         .concat(session.privacy.boltRefreshTokenScope, "&client_secret=")
         .concat(config.boltApiKey, "&client_id=")
         .concat(config.boltMultiPublishableKey);
 
-    var boltOauthToken;
     var response = httpUtils.restAPIClient('POST', constants.OAUTH_TOKEN_URL, payload, 'application/x-www-form-urlencoded');
     if (response.status === HttpResult.OK && !empty(response.result)) {
         session.privacy.boltOauthToken = response.result.access_token;
@@ -63,7 +65,6 @@ function refreshToken () {
         boltOauthToken = response.result.access_token;
     } else {
         log.error("Failed to refresh Oauth Token." + (!empty(response.errors) && !empty(response.errors[0].message) ? response.errors[0].message : "") );
-        boltOauthToken = null;
     }
 
     return boltOauthToken;

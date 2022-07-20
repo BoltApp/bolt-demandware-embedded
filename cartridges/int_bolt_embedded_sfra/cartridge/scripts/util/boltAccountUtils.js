@@ -104,7 +104,7 @@ exports.loginAsBoltUser = function () {
  * @returns {Object} status - indicate if save card process is success or not
  */
 exports.saveCardToBolt = function (order, paymentInstrument) {
-    var boltOauthToken = oauth.getValidOauthToken();
+    var boltOauthToken = oauth.getOauthToken();
     if (empty(boltOauthToken)) {
         let errorMsg = 'Bolt Oauth Token is missing';
         log.error(errorMsg);
@@ -179,7 +179,7 @@ exports.saveAddressToBolt = function (shippingAddress) {
             phone: shippingAddress.phone || ""
         }
 
-        var boltOauthToken = oauth.getValidOauthToken();
+        var boltOauthToken = oauth.getOauthToken();
         if (empty(boltOauthToken)) {
             let errorMsg = 'Bolt Oauth Token is missing';
             log.error(errorMsg);
