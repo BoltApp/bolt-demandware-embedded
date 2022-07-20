@@ -2,6 +2,7 @@
 
 var server = require('server');
 var BasketMgr = require('dw/order/BasketMgr');
+var Locale = require('dw/util/Locale');
 var page = module.superModule;
 server.extend(page);
 
@@ -18,7 +19,7 @@ server.append('Begin', function (req, res, next) {
         basket = BasketMgr.getCurrentBasket();
         boltStoredPaymentMethods = boltAccountUtils.loginAsBoltUser() ? JSON.parse(basket.custom.boltPaymentMethods) : null;
         boltStoredShippingAddress = boltAccountUtils.loginAsBoltUser() && basket.custom.boltShippingAddress ? JSON.parse(basket.custom.boltShippingAddress) : null;
-        boltAddressId = basket.getDefaultShipment() && basket.getDefaultShipment().getShippingAddress() ? basket.getDefaultShipment().getShippingAddress().custom.boltAddressId : "";
+        boltAddressId = basket.getDefaultShipment() && basket.getDefaultShipment().getShippingAddress() ? basket.getDefaultShipment().getShippingAddress().custom.boltAddressId : '';
     } catch (e) {
         log.error(e.message);
         res.json({
@@ -26,12 +27,12 @@ server.append('Begin', function (req, res, next) {
         });
         return next();
     }
-
     res.render('checkout/checkout', {
         config: configuration,
         boltStoredPaymentMethods: boltStoredPaymentMethods,
         boltStoredShippingAddress: boltStoredShippingAddress,
-        boltAddressId: boltAddressId
+        boltAddressId: boltAddressId,
+        locale: req.locale.id
     });
     next();
 });

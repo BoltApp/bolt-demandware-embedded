@@ -2,7 +2,10 @@
 
 async function authorizeWithEmail(customerEmail){
   const boltPublishableKey = $('.bolt-publishable-key').val();
-  const boltEmbedded = Bolt(boltPublishableKey);
+  const locale = $('.bolt-locale').val();
+
+  const boltEmbedded = Bolt(boltPublishableKey, {language: getISOCodeByLocale(locale)});
+
   const authorizationComponent = boltEmbedded.create("authorization_component",  {style: {position: "right"}} );
   await authorizationComponent.mount(".card.customer-section") // mount on the div container otherwise the iframe won't render
 
@@ -73,6 +76,11 @@ function checkAccountAndFetchDetail(){
     }
   });
   emailInput.unbind("focusout");
+}
+
+// return the iso language code based on local of the site
+function getISOCodeByLocale(locale){
+  return locale.replace("_", "-").toLowerCase();
 }
 
 $(document).ready(function () {
