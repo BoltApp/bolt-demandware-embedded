@@ -3,12 +3,8 @@
 async function authorizeWithEmail(customerEmail){
   const boltPublishableKey = $('.bolt-publishable-key').val();
   const defaultLocale = $('.default-locale').val();
-  let boltEmbedded;
-  if (defaultLocale === "fr_CA") {
-    boltEmbedded = Bolt(boltPublishableKey, {language: "fr-ca"});
-  } else {
-    boltEmbedded = Bolt(boltPublishableKey);
-  }
+
+  const boltEmbedded = Bolt(boltPublishableKey, {language: getISOCodeByLocale(defaultLocale)});
 
   const authorizationComponent = boltEmbedded.create("authorization_component",  {style: {position: "right"}} );
   await authorizationComponent.mount(".card.customer-section") // mount on the div container otherwise the iframe won't render
@@ -80,6 +76,20 @@ function checkAccountAndFetchDetail(){
     }
   });
   emailInput.unbind("focusout");
+}
+
+// return the iso language code based on local of the site
+// currently only support en-US and fr-ca
+function getISOCodeByLocale(locale){
+  let isoCode;
+  switch (locale){
+    case "fr_CA":
+      isoCode = "fr-ca"
+      break
+    default:
+      isoCode = "en-us"
+  }
+  return isoCode;
 }
 
 $(document).ready(function () {
