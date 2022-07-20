@@ -59,7 +59,7 @@ var resetBoltCreditCardFields = function () {
   $("#bolt-cc-postal").val('');
 }
 
-var tokenize = function (event, callback) {
+var tokenize = function (event, options) {
   //reset credit card fields
   resetBoltCreditCardFields();
   getToken().then(
@@ -72,11 +72,11 @@ var tokenize = function (event, callback) {
       $("#bolt-cc-network").val(response.network);
       $("#bolt-cc-postal").val(response.postal_code);
       $("#bolt-cc-create-account").val(boltCreateAccount);
-      callback.resolve();
+      options.resolve();
     },
     function (error) {
       console.log("Error on getting Bolt token: ", error);
-      callback.reject();
+      options.reject();
     }
   );
 };
