@@ -79,20 +79,8 @@ function checkAccountAndFetchDetail(){
 }
 
 // return the iso language code based on local of the site
-// currently only support en-US and fr-ca
 function getISOCodeByLocale(locale){
-  let isoCode;
-  switch (locale){
-    case "fr_CA":
-      isoCode = "fr-ca"
-      break
-    case "de_DE":
-      isoCode = "de"
-      break
-    default:
-      isoCode = "en-us"
-  }
-  return isoCode;
+  return locale.replace("_", "-").toLowerCase();
 }
 
 $(document).ready(function () {

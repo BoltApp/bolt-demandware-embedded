@@ -2,6 +2,7 @@
 
 var server = require('server');
 var BasketMgr = require('dw/order/BasketMgr');
+var Locale = require('dw/util/Locale');
 var page = module.superModule;
 server.extend(page);
 
@@ -12,7 +13,8 @@ var logUtils = require('~/cartridge/scripts/util/boltLogUtils');
 var log = logUtils.getLogger('Checkout');
 
 server.append('Begin', function (req, res, next) {
-    var configuration, basket, boltStoredPaymentMethods, boltStoredShippingAddress, boltAddressId;
+    var configuration; var basket; var boltStoredPaymentMethods; var boltStoredShippingAddress; var
+        boltAddressId;
     try {
         configuration = BoltPreferences.getSitePreferences();
         basket = BasketMgr.getCurrentBasket();
@@ -26,7 +28,6 @@ server.append('Begin', function (req, res, next) {
         });
         return next();
     }
-
     res.render('checkout/checkout', {
         config: configuration,
         boltStoredPaymentMethods: boltStoredPaymentMethods,
