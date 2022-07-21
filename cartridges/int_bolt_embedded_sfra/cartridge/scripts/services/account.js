@@ -65,7 +65,15 @@ exports.addAccountDetailsToBasket = function(shopperDetails){
         }
 
         // adding payment methods to the baskek's custom field
-        const addPaymentResult = addPaymentMethodInfoToBasket(basket, shopperDetails.payment_methods)
+        const addPaymentResult = addPaymentMethodInfoToBasket(basket, shopperDetails.payment_methods);
+
+        // hacky fix for missing phone number in the billing address
+        if(!basket.getBillingAddress().getPhone()){
+            Transaction.wrap(function (){
+                basket.getBillingAddress().setPhone(shopperDetails.profile.phone);
+            })
+        }
+
         if(addPaymentResult.missingValue){
             res.redirectBilling = true;
         }
