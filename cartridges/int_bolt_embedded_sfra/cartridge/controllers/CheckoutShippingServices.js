@@ -2,7 +2,7 @@
 
 /* API Includes */
 var server = require('server');
-var HttpResult = require("dw/svc/Result");
+var HttpResult = require('dw/svc/Result');
 var Resource = require('dw/web/Resource');
 var BasketMgr = require('dw/order/BasketMgr');
 var Transaction = require('dw/system/Transaction');
@@ -24,7 +24,16 @@ server.extend(module.superModule);
  */
 server.append('SubmitShipping', function (req, res, next) {
     var currentBasket = BasketMgr.getCurrentBasket();
-    
+    this.on('route:BeforeComplete', function (req, res) { // eslint-disable-line no-shadow
+        var order = res.viewData.order;
+        if (order.billing && empty(order.billing.matchingAddressId) && currentBasket.getDefaultShipment()) {
+            order.billing.matchingAddressId = currentBasket.getDefaultShipment().UUID;
+            order.billing.billingAddress = new AddressModel(currentBasket.getDefaultShipment().getShippingAddress());
+            res.json({
+                order: order
+            });
+        }
+    });
     // shopper doesn't have a Bolt account or no stored address
     if (!boltAccountUtils.loginAsBoltUser() || empty(currentBasket.custom.boltShippingAddress)) {
         return next();
@@ -36,20 +45,10 @@ server.append('SubmitShipping', function (req, res, next) {
 
     // save bolt address id to shipping address
     Transaction.wrap(function () {
-        shippingAddress.custom.boltAddressId = boltAddressId || "";
+        shippingAddress.custom.boltAddressId = boltAddressId || '';
         shippingAddress.custom.saveShippingToBolt = addressform.saveToBolt.checked;
     });
 
-    this.on('route:BeforeComplete', function (req, res) { // eslint-disable-line no-shadow
-        var order = res.viewData.order;
-        if (order.billing && empty(order.billing.matchingAddressId) && currentBasket.getDefaultShipment()) {
-            order.billing.matchingAddressId = currentBasket.getDefaultShipment().UUID;
-            order.billing.billingAddress = new AddressModel(currentBasket.getDefaultShipment().getShippingAddress());
-            res.json({
-                order: order
-            });
-        }
-    });
     next();
 });
 module.exports = server.exports();

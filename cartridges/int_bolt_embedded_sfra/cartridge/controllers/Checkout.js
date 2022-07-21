@@ -11,12 +11,20 @@ var BoltPreferences = require('~/cartridge/scripts/util/preferences');
 var boltAccountUtils = require('~/cartridge/scripts/util/boltAccountUtils');
 var logUtils = require('~/cartridge/scripts/util/boltLogUtils');
 var log = logUtils.getLogger('Checkout');
+var AddressModel = require('*/cartridge/models/address');
 
 server.append('Begin', function (req, res, next) {
-    var configuration, basket, boltStoredPaymentMethods, boltStoredShippingAddress, boltAddressId;
+    var configuration, boltStoredPaymentMethods, boltStoredShippingAddress, boltAddressId;
+    var basket = BasketMgr.getCurrentBasket();
+    this.on('route:BeforeComplete', function (req, res) { // eslint-disable-line no-shadow
+        var order = res.viewData.order;
+        if (order.billing && empty(order.billing.matchingAddressId) && basket.getDefaultShipment()) {
+            order.billing.matchingAddressId = basket.getDefaultShipment().UUID;
+            order.billing.billingAddress = new AddressModel(basket.getDefaultShipment().getShippingAddress());
+        }
+    });
     try {
         configuration = BoltPreferences.getSitePreferences();
-        basket = BasketMgr.getCurrentBasket();
         boltStoredPaymentMethods = boltAccountUtils.loginAsBoltUser() ? JSON.parse(basket.custom.boltPaymentMethods) : null;
         boltStoredShippingAddress = boltAccountUtils.loginAsBoltUser() && basket.custom.boltShippingAddress ? JSON.parse(basket.custom.boltShippingAddress) : null;
         boltAddressId = basket.getDefaultShipment() && basket.getDefaultShipment().getShippingAddress() ? basket.getDefaultShipment().getShippingAddress().custom.boltAddressId : '';
