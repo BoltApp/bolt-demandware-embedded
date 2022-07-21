@@ -105,8 +105,6 @@ function authorize(orderNumber, paymentInstrument, paymentProcessor) {
             Transaction.wrap(function () {
                 paymentInstrument.custom.boltPaymentMethodId = saveCardResult.newPaymentMethodID;
             });
-        } else {
-            return { fieldErrors: [], serverErrors: [Resource.msg('payment.auth.error.general', 'bolt', null)], error: true };
         }
     }
 
