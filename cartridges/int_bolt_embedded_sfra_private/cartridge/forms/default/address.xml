@@ -42,9 +42,6 @@
            range-error="error.message.between10and20"
            parse-error="error.message.parse.phone"/>
 
-     <!-- save address to Bolt checkbox -->
-       <field formid="saveToBolt" type="boolean" checked="false" default-value="false" binding="saveToBolt" mandatory="false" />
-
     <!-- actions provided by the edit shipping address dialog -->
     <action formid="apply" valid-form="true"/>
     <action formid="remove" valid-form="false"/>

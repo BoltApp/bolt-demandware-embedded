@@ -138,13 +138,6 @@
         <externally-managed-flag>false</externally-managed-flag>
         <min-length>0</min-length>
       </attribute-definition>
-      <attribute-definition attribute-id="saveShippingToBolt">
-        <display-name xml:lang="x-default">Save Shipping Address to Bolt Account</display-name>
-        <type>boolean</type>
-        <mandatory-flag>false</mandatory-flag>
-        <externally-managed-flag>false</externally-managed-flag>
-        <default-value>false</default-value>
-      </attribute-definition>
     </custom-attribute-definitions>
   </type-extension>
 </metadata>
