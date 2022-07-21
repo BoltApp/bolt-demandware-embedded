@@ -34,7 +34,7 @@ exports.fetchNewToken = function(code, scope) {
  */
 exports.getOauthToken = function() {
     // Oauth token will not expire in 4 seconds, use the current Oauth token in session
-    if ((session.privacy.boltOauthTokenExpire - new Date().getTime())> 4000) {
+    if ((session.privacy.boltOauthTokenExpire - new Date().getTime())> constants.OAUTH_TOKEN_REFRESH_TIME) {
         return session.privacy.boltOauthToken;
     }
 
@@ -61,6 +61,7 @@ function refreshToken () {
         session.privacy.boltOauthToken = response.result.access_token;
         session.privacy.boltRefreshToken = response.result.refresh_token;
         session.privacy.boltRefreshTokenScope = response.result.refresh_token_scope;
+        // store OAuth token expire time in milliseconds, 1000 -> ONE_SECOND
         session.privacy.boltOauthTokenExpire = Date.now() + response.result.expires_in * 1000;
         boltOauthToken = response.result.access_token;
     } else {

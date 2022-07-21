@@ -42,6 +42,7 @@ server.get('FetchOauthToken', server.middleware.https, function (req, res, next)
         session.privacy.boltOauthToken = response.result.access_token;
         session.privacy.boltRefreshToken = response.result.refresh_token;
         session.privacy.boltRefreshTokenScope = response.result.refresh_token_scope;
+        // store OAuth token expire time in milliseconds, 1000 -> ONE_SECOND
         session.privacy.boltOauthTokenExpire = response.result.expires_in * 1000 + new Date().getTime();
     } else {
         var log = LogUtils.getLogger('Oauth');
@@ -58,7 +59,7 @@ server.get('GetAccountDetails', server.middleware.https, function (req, res, nex
     var boltOauthToken = oauth.getOauthToken();
     if (empty(boltOauthToken)) {
         let errorMessage = 'Bolt Oauth Token is missing';
-        log.error(errorMsg);
+        log.error(errorMessage);
         res.json({
             success: false,
             errorMessage: errorMessage

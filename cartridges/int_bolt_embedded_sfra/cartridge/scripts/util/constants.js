@@ -30,3 +30,9 @@ exports.BOLT_CARTRIDGE_VERSION = '21.4.22';
  * HTTP Method
  */
 exports.HTTP_METHOD_POST = 'POST';
+
+/**
+ * Time to Refresh Oauth Token in Milliseconds
+ * 4000 -> 4 seconds
+ */
+exports.OAUTH_TOKEN_REFRESH_TIME = 4000;
