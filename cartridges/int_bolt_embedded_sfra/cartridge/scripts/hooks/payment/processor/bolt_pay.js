@@ -134,9 +134,8 @@ function authorize(orderNumber, paymentInstrument, paymentProcessor) {
     }
 
     // save shipping address to bolt account
-    var shippingAddress = order.getDefaultShipment().getShippingAddress();
-    if (boltAccountUtils.loginAsBoltUser() && shippingAddress.custom.saveShippingToBolt === true) {
-        boltAccountUtils.saveAddressToBolt(shippingAddress);
+    if (boltAccountUtils.loginAsBoltUser()) {
+        boltAccountUtils.saveAddressToBolt(order);
     }
 
     return { error: false };

@@ -46,7 +46,6 @@ server.append('SubmitShipping', function (req, res, next) {
     // save bolt address id to shipping address
     Transaction.wrap(function () {
         shippingAddress.custom.boltAddressId = boltAddressId || '';
-        shippingAddress.custom.saveShippingToBolt = addressform.saveToBolt.checked;
     });
 
     next();

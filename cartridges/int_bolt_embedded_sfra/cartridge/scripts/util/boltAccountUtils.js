@@ -158,8 +158,14 @@ exports.saveCardToBolt = function (order, paymentInstrument) {
     };
 };
 
-exports.saveAddressToBolt = function (shippingAddress) {
+/**
+ * Save new address to Bolt or update existing Bolt address
+ * @param {dw.order.Order} order - SFCC order object
+ */
+exports.saveAddressToBolt = function (order) {
     try {
+        var shippingAddress = order.getDefaultShipment().getShippingAddress();
+
         // add bolt address id to endpoint if shopper is updating existing address
         var addressUrl = shippingAddress.custom.boltAddressId ? (constants.SHOPPER_ADDRESS_URL + "/" + shippingAddress.custom.boltAddressId) : constants.SHOPPER_ADDRESS_URL;
 

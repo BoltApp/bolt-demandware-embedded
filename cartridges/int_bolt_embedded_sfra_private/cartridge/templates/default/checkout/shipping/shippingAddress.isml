@@ -7,20 +7,6 @@
 
 <input type="hidden" name="${addressFields.boltAddressId.htmlName}" value="${pdict.boltAddressId}">
 
-<isif condition="${isBoltLogin && pdict.boltStoredShippingAddress}" >
-    <div class="row">
-        <div class="col-12">
-            <div class="custom-control custom-checkbox">
-                <input type="checkbox" id="saveToBolt" name="${addressFields.saveToBolt.htmlName}" 
-                <isprint value="${addressFields.saveToBolt.attributes}" encoding="off"/> />   
-                <label class="form-check-label" for="saveToBolt">
-                    ${Resource.msg('check.save.address', 'bolt', null)}
-                </label>
-            </div>
-        </div>
-    </div>
-</isif>
-
 <div class="row">
     <div class="col-sm-6">
         <div class="form-group
