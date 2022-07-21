@@ -34,7 +34,7 @@
                 <span>${Resource.msg('add.new.card', 'bolt', null)}</span>
             </label>
     </isif>
-    <div class="bolt-pay ${loginAsBoltUser && pdict.boltStoredPaymentMethods ? 'd-none' : ''}">
+    <div class="bolt-pay ${loginAsBoltUser && pdict.boltStoredPaymentMethods && pdict.boltStoredPaymentMethods.length ? 'd-none' : ''}">
         <fieldset class="payment-form-fields">
             <input type="hidden" class="form-control" name="${pdict.forms.billingForm.paymentMethod.htmlName}"
                 value="${paymentOption.ID}">
