@@ -48,8 +48,7 @@
 <isif condition="${isBoltLogin && pdict.boltStoredShippingAddress}">
     <option disabled>${Resource.msg('msg.account.addresses', 'checkout', null)}</option>
     <isloop items="${pdict.boltStoredShippingAddress}" var="address">
-        <option value="${'ab_'+address.id}"
-                ${address.id==shippingModel.shippingAddress.custom.boltAddressId ? 'selected="selected"' : '' }
+        <option value="${'ab_'+address.id}" ${address.id==pdict.boltAddressId ? 'selected="selected"' : '' }
         data-first-name="${address.first_name||''}" data-last-name="${address.last_name||''}"
         data-address1="${address.street_address1||''}" data-address2="${address.street_address2||''}"
         data-city="${address.locality||''}" data-state-code="${address.region_code||''}"
