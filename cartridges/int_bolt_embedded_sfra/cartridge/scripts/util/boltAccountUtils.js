@@ -148,18 +148,19 @@ exports.saveCardToBolt = function (order, paymentInstrument) {
 
     // send add payment method request to Bolt
     var response = boltHttpUtils.restAPIClient(constants.HTTP_METHOD_POST, constants.ADD_PAYMENT_URL, JSON.stringify(request), '', bearerToken);
-    if (response.status && response.status === HttpResult.ERROR) {
+    if(response.status === HttpResult.OK && response.result !== null){
+        return {
+            success: true,
+            newPaymentMethodID: response.result.id
+        };
+    }else{
         let errorMsg = Resource.msg('error.add.payment.method', 'bolt', null) + (!empty(response.errors) && !empty(response.errors[0].message) ? response.errors[0].message : '');
-        // double check the error data format
         log.error(errorMsg);
         return {
             success: false,
             message: errorMsg
         };
     }
-    return {
-        success: true
-    };
 };
 
 /**

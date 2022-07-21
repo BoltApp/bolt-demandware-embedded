@@ -96,9 +96,21 @@ function authorize(orderNumber, paymentInstrument, paymentProcessor) {
     Transaction.wrap(function () {
         paymentInstrument.paymentTransaction.setPaymentProcessor(paymentProcessor);
     });
+    var order = OrderMgr.getOrder(orderNumber);
+    // save card to bolt account
+    // if save card is success, use the new credit card id for authorization
+    if (boltAccountUtils.loginAsBoltUser() && !empty(paymentInstrument.getCreditCardToken())) {
+        var saveCardResult = boltAccountUtils.saveCardToBolt(order, paymentInstrument);
+        if (saveCardResult.success) {
+            Transaction.wrap(function () {
+                paymentInstrument.custom.boltPaymentMethodId = saveCardResult.newPaymentMethodID;
+            });
+        } else {
+            return { fieldErrors: [], serverErrors: [Resource.msg('payment.auth.error.general', 'bolt', null)], error: true };
+        }
+    }
 
     // build auth request
-    var order = OrderMgr.getOrder(orderNumber);
     var authRequestObj = getAuthRequest(order, paymentInstrument);
     if (authRequestObj.error) {
         log.error(authRequestObj.errorMsg);
@@ -127,11 +139,6 @@ function authorize(orderNumber, paymentInstrument, paymentProcessor) {
             : orderNumber;
         paymentInstrument.getPaymentTransaction().setTransactionID(transactionRef);
     });
-
-    // save card to bolt account
-    if (boltAccountUtils.loginAsBoltUser() && !empty(paymentInstrument.getCreditCardToken())) {
-        boltAccountUtils.saveCardToBolt(order, paymentInstrument);
-    }
 
     // save shipping address to bolt account
     if (boltAccountUtils.loginAsBoltUser()) {
