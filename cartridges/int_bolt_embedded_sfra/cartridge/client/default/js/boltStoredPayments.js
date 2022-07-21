@@ -8,6 +8,7 @@ $(document).ready(function () {
                 if(this.checked){
                     $('#bolt-stored-payment-selector').removeClass('d-none');
                     $('.bolt-pay').addClass('d-none');
+                    setFinalPaymentMethodID();
                 }
             });
 
