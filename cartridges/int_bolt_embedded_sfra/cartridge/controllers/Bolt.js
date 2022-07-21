@@ -19,7 +19,7 @@ var log = LogUtils.getLogger('CheckAccount');
 
 server.get('AccountExists', server.middleware.https, function (req, res, next) {
     var email = req.querystring.email;
-    var response = httpUtils.restAPIClient('GET', constants.CHECK_ACCOUNT_EXIST_URL + email);
+    var response = httpUtils.restAPIClient('GET', constants.CHECK_ACCOUNT_EXIST_URL + encodeURIComponent(email));
 
     var returnObject = {};
     if (response.status === HttpResult.OK) {
@@ -59,9 +59,9 @@ server.get('GetAccountDetails', server.middleware.https, function (req, res, nex
     if (response.status === HttpResult.OK) {
         var shopperDetails = response.result;
         var addAccountDetailsResult = account.addAccountDetailsToBasket(shopperDetails);
-        if (addAccountDetailsResult.redirectShipping){
+        if (addAccountDetailsResult.redirectShipping) {
             returnObject.redirectUrl = URLUtils.https('Checkout-Begin').append('stage', 'shipping').toString();
-        } else if (addAccountDetailsResult.redirectBilling){
+        } else if (addAccountDetailsResult.redirectBilling) {
             returnObject.redirectUrl = URLUtils.https('Checkout-Begin').append('stage', 'payment').toString();
         } else {
             returnObject.redirectUrl = URLUtils.https('Checkout-Begin').append('stage', 'placeOrder').toString();
