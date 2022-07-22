@@ -3,6 +3,8 @@
         var boltAccountUtils = require('int_bolt_embedded_sfra/cartridge/scripts/util/boltAccountUtils');
         var isBoltLogin = boltAccountUtils.loginAsBoltUser();
     </isscript>
+
+    <iscomment> Check boltAddressId for Bolt logged-in shoppers, every stored address has a unique boltAddressId, new address doesn't have. </iscomment>
     <form class="shipping-form" autocomplete="on" novalidate
           action="${shipmentLoopState
           ? URLUtils.url('CheckoutAddressServices-AddNewAddress')
