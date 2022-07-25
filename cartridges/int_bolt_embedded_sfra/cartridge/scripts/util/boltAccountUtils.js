@@ -105,7 +105,8 @@ exports.loginAsBoltUser = function () {
  */
 exports.saveCardToBolt = function (order, paymentInstrument) {
     try {
-        if (empty(session.privacy.boltOauthToken)) {
+        var boltOauthToken = oauth.getOauthToken();
+        if (empty(boltOauthToken)) {
             let errorMsg = 'Bolt Oauth Token is missing';
             log.error(errorMsg);
             return {
@@ -113,8 +114,8 @@ exports.saveCardToBolt = function (order, paymentInstrument) {
                 message: errorMsg
             };
         }
+        var bearerToken = 'Bearer '.concat(boltOauthToken);
         var billingAddress = order.getBillingAddress();
-        var bearerToken = 'Bearer '.concat(session.privacy.boltOauthToken);
         var expMonth = paymentInstrument.getCreditCardExpirationMonth().toString();
     
         // format month value if needed
