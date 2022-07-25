@@ -117,11 +117,6 @@ jobs:
       #         "\"hostname\":\"${QA_EMBEDDED_SANDBOX_HOSTNAME}\"" \
       #         "}" > dw.json
       # - run:
-      #     name: Upload metadata to QA sandbox zzgv-018
-      #     command: |
-      #       sfcc-ci client:auth ${SFCCCLIENTID} ${SFCCCLIENTSECRET}
-      #       npm run uploadMetadata
-      # - run:
       #     name: Reset dw.json #On meta upload process, adding user/password data to dw.json causes auth issue, it's a SFCC bug
       #     command: |
       #       rm dw.json
@@ -136,6 +131,11 @@ jobs:
               "\"password\":\"${SFCC_QA_ACCOUNT_PW}\"," \
               "\"code-version\":\"QA\"" \
               "}" > dw.json
+      - run:
+          name: Upload metadata to QA sandbox zzgv-018
+          command: |
+            sfcc-ci client:auth ${SFCCCLIENTID} ${SFCCCLIENTSECRET}
+            npm run uploadMetadata
       - run:
           name: Upload cartridges to QA sandbox zzgv-018
           command: |
