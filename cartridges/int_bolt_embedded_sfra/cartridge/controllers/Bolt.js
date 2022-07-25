@@ -11,7 +11,6 @@ var LogUtils = require('~/cartridge/scripts/util/boltLogUtils');
 var httpUtils = require('~/cartridge/scripts/services/httpUtils');
 var constants = require('~/cartridge/scripts/util/constants');
 var oauth = require('~/cartridge/scripts/services/oauth');
-var preferences = require('~/cartridge/scripts/util/preferences');
 var account = require('~/cartridge/scripts/services/account');
 var boltAccountUtils = require('~/cartridge/scripts/util/boltAccountUtils');
 
@@ -34,8 +33,7 @@ server.get('AccountExists', server.middleware.https, function (req, res, next) {
 });
 
 server.get('FetchOauthToken', server.middleware.https, function (req, res, next) {
-    var config = preferences.getSitePreferences();
-    var response = oauth.fetchToken(req.querystring.code, req.querystring.scope, config.boltMultiPublishableKey, config.boltApiKey);
+    var response = oauth.fetchNewToken(req.querystring.code, req.querystring.scope);
 
     var returnObject = {};
     if (response.status === HttpResult.OK) {
@@ -43,8 +41,14 @@ server.get('FetchOauthToken', server.middleware.https, function (req, res, next)
         returnObject.refreshToken = response.result.refresh_token;
         session.privacy.boltOauthToken = response.result.access_token;
         session.privacy.boltRefreshToken = response.result.refresh_token;
+        session.privacy.boltRefreshTokenScope = response.result.refresh_token_scope;
+        // store OAuth token expire time in milliseconds, 1000 -> ONE_SECOND
+        session.privacy.boltOauthTokenExpire = response.result.expires_in * 1000 + new Date().getTime();
     } else {
-        returnObject.errorMessage = response.errors;
+        var log = LogUtils.getLogger('Oauth');
+        var errorMsg = "Failed to fetch Oauth Token." + !empty(response.errors) && !empty(response.errors[0].message) ? response.errors[0].message : "";
+        log.error(errorMsg);
+        returnObject.errorMessage = errorMsg;
     }
 
     res.json(returnObject);
@@ -52,7 +56,17 @@ server.get('FetchOauthToken', server.middleware.https, function (req, res, next)
 });
 
 server.get('GetAccountDetails', server.middleware.https, function (req, res, next) {
-    var bearerToken = 'Bearer '.concat(req.querystring.bearerToken);
+    var boltOauthToken = oauth.getOauthToken();
+    if (empty(boltOauthToken)) {
+        let errorMessage = 'Bolt Oauth Token is missing';
+        log.error(errorMessage);
+        res.json({
+            success: false,
+            errorMessage: errorMessage
+        });
+    }
+
+    var bearerToken = 'Bearer '.concat(boltOauthToken);
     var response = httpUtils.restAPIClient('GET', constants.ACCOUNT_DETAILS_URL, null, '', bearerToken);
 
     var returnObject = {};
