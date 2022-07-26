@@ -256,3 +256,27 @@ exports.isAnyAddressDataMissing = function (address) {
 exports.checkEmptyValue = function (list) {
     return list.includes('');
 }
+
+
+/**
+ * Check if it is a empty SFCC address object
+ * @param {dw.order.OrderAddress} address - SFCC address object
+ * @return {boolean} true if all the fields are empty otherwise false
+ */
+exports.isEmptyAddress = function(address) {
+    if (address === null) {
+        return true;
+    }
+    return [
+        address.firstName,
+        address.lastName,
+        address.address1,
+        address.city,
+        address.stateCode,
+        address.countryCode && address.countryCode.value ? address.countryCode.value : null,
+        address.postalCode,
+        address.phone
+    ].every(function(field){
+        return field === null;
+    })
+}
