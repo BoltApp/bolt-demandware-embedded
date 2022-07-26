@@ -115,6 +115,8 @@ jobs:
           command: |
             echo "{" \
               "\"hostname\":\"${QA_EMBEDDED_SANDBOX_HOSTNAME}\"" \
+              "\"client-id\":\"${SFCCCLIENTID}\"," \
+              "\"client-secret\":\"${SFCCCLIENTSECRET}\"" \
               "}" > dw.json
       - run:
           name: Upload metadata to QA sandbox zzgv-018
