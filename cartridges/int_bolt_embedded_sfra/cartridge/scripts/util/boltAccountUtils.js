@@ -104,62 +104,70 @@ exports.loginAsBoltUser = function () {
  * @returns {Object} status - indicate if save card process is success or not
  */
 exports.saveCardToBolt = function (order, paymentInstrument) {
-    var boltOauthToken = oauth.getOauthToken();
-    if (empty(boltOauthToken)) {
-        let errorMsg = 'Bolt Oauth Token is missing';
-        log.error(errorMsg);
-        return {
-            success: false,
-            message: errorMsg
-        };
-    }
-
-    var billingAddress = order.getBillingAddress();
-    var bearerToken = 'Bearer '.concat(boltOauthToken);
-    var expMonth = paymentInstrument.getCreditCardExpirationMonth().toString();
-
-    // format month value if needed
-    if (expMonth.length === 1) {
-        expMonth = '0' + expMonth;
-    }
-
-    // create request body for add payment method API call
-    var request = {
-        token: paymentInstrument.getCreditCardToken() || '',
-        last4: paymentInstrument.getCreditCardNumberLastDigits() || '',
-        bin: paymentInstrument.custom.boltCardBin || '',
-        expiration: (paymentInstrument.getCreditCardExpirationYear() + '-' + expMonth) || '',
-        postal_code: billingAddress.getPostalCode() || '',
-        billing_address: {
-            street_address1: billingAddress.getAddress1() || '',
-            street_address2: billingAddress.getAddress2() || '',
-            locality: billingAddress.getCity() || '',
-            region: billingAddress.getStateCode() || '',
+    try {
+        var boltOauthToken = oauth.getOauthToken();
+        if (empty(boltOauthToken)) {
+            let errorMsg = 'Bolt Oauth Token is missing';
+            log.error(errorMsg);
+            return {
+                success: false,
+                message: errorMsg
+            };
+        }
+        var bearerToken = 'Bearer '.concat(boltOauthToken);
+        var billingAddress = order.getBillingAddress();
+        var expMonth = paymentInstrument.getCreditCardExpirationMonth().toString();
+    
+        // format month value if needed
+        if (expMonth.length === 1) {
+            expMonth = '0' + expMonth;
+        }
+    
+        // create request body for add payment method API call
+        var request = {
+            token: paymentInstrument.getCreditCardToken() || '',
+            last4: paymentInstrument.getCreditCardNumberLastDigits() || '',
+            bin: paymentInstrument.custom.boltCardBin || '',
+            expiration: (paymentInstrument.getCreditCardExpirationYear() + '-' + expMonth) || '',
             postal_code: billingAddress.getPostalCode() || '',
-            country_code: billingAddress.getCountryCode().getValue().toString(),
-            country: billingAddress.getCountryCode().getDisplayValue() || '',
-            first_name: billingAddress.getFirstName() || '',
-            last_name: billingAddress.getLastName() || '',
-            phone: billingAddress.getPhone() || ''
-        },
-        network: paymentInstrument.getCreditCardType() || '',
-        token_type: paymentInstrument.custom.boltTokenType || ''
-    };
-
-    // send add payment method request to Bolt
-    var response = boltHttpUtils.restAPIClient(constants.HTTP_METHOD_POST, constants.ADD_PAYMENT_URL, JSON.stringify(request), '', bearerToken);
-    if (response.status && response.status === HttpResult.ERROR) {
-        let errorMsg = Resource.msg('error.add.payment.method', 'bolt', null) + (!empty(response.errors) && !empty(response.errors[0].message) ? response.errors[0].message : '');
-        // double check the error data format
-        log.error(errorMsg);
+            billing_address: {
+                street_address1: billingAddress.getAddress1() || '',
+                street_address2: billingAddress.getAddress2() || '',
+                locality: billingAddress.getCity() || '',
+                region: billingAddress.getStateCode() || '',
+                postal_code: billingAddress.getPostalCode() || '',
+                country_code: billingAddress.getCountryCode().getValue().toString(),
+                country: billingAddress.getCountryCode().getDisplayValue() || '',
+                first_name: billingAddress.getFirstName() || '',
+                last_name: billingAddress.getLastName() || '',
+                phone: billingAddress.getPhone() || ''
+            },
+            network: paymentInstrument.getCreditCardType() || '',
+            token_type: paymentInstrument.custom.boltTokenType || ''
+        };
+    
+        // send add payment method request to Bolt
+        var response = boltHttpUtils.restAPIClient(constants.HTTP_METHOD_POST, constants.ADD_PAYMENT_URL, JSON.stringify(request), '', bearerToken);
+        if(response.status === HttpResult.OK && response.result !== null){
+            return {
+                success: true,
+                newPaymentMethodID: response.result.id
+            };
+        } else {
+            let errorMsg = Resource.msg('error.add.payment.method', 'bolt', null) + (!empty(response.errors) && !empty(response.errors[0].message) ? response.errors[0].message : '');
+            log.error(errorMsg);
+            return {
+                success: false,
+                message: errorMsg
+            };
+        }
+    } catch (e) {
+        log.error(e.message);
         return {
             success: false,
-            message: errorMsg
+            message: e.message
         };
     }
-    return {
-        success: true
-    };
 };
 
 /**
