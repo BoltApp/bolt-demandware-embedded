@@ -231,3 +231,28 @@ exports.saveAddressToBolt = function (order) {
     }
     return null;
 }
+
+/**
+ * Check if any required address data is missing
+ * @param {dw.order.OrderAddress} address - SFCC address object
+ * @return {boolean} true if any data is empty otherwise false
+ */
+exports.isAnyAddressDataMissing = function (address) {
+    if (this.checkEmptyValue([
+        address.phone || '',
+        address.firstName || '',
+        address.lastName || '',
+        address.address1 || '',
+        address.city || '',
+        address.stateCode || '',
+        address.countryCode.value || '',
+        address.postalCode || ''
+    ])){
+        return true;
+    }
+    return false;
+}
+
+exports.checkEmptyValue = function (list) {
+    return list.includes('');
+}

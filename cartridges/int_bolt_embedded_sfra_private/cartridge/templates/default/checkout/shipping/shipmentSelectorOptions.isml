@@ -55,7 +55,7 @@
         data-country-code="${address.country_code||''}" data-postal-code="${address.postal_code||''}"
         data-phone="${address.phone_number||''}" data-is-gift="${''}" data-gift-message="${''}"
         data-bolt-address-id="${address.id}">
-        ${address.first_name || ''} ${address.last_name || ''} ${address.street_address1 || ''} ${address.street_address2 || ''} ${address.locality || ''} ', ' ${address.region_code||''} ${address.postal_code||''}
+        ${address.first_name || ''} ${address.last_name || ''} ${address.street_address1 || ''} ${address.street_address2 || ''} ${address.locality || ''}${!address.locality || ','} ${address.region_code||''} ${address.postal_code||''}
         </option>
     </isloop>
 <iselseif condition="${pdict.customer.addresses && pdict.customer.addresses.length > 0}">

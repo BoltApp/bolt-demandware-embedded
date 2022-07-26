@@ -6,6 +6,7 @@ var LogUtils = require('~/cartridge/scripts/util/boltLogUtils');
 var collections = require('*/cartridge/scripts/util/collections');
 var constants = require('~/cartridge/scripts/util/constants');
 var log = LogUtils.getLogger('CheckAccount');
+var boltAccountUtils = require('~/cartridge/scripts/util/boltAccountUtils');
 
 /**
  * This returns the JSON encoded result for the return value of token exchange endpoint
@@ -116,7 +117,7 @@ function addAccountDetailsToAddress(boltAddress, address){
         address.setCountryCode(country_code);
         address.setPostalCode(postal_code);
     });
-    if (checkEmptyValue([phone, first_name, last_name, address1, city, state_code, country_code, postal_code])){
+    if (boltAccountUtils.checkEmptyValue([phone, first_name, last_name, address1, city, state_code, country_code, postal_code])){
         return {
             missingValue: true
         }
@@ -197,12 +198,8 @@ function addPaymentMethodInfoToBasket(basket, boltPaymentMethods){
         paymentInstrument.custom.boltPaymentMethodId = boltPaymentMethodID;
     });
 
-    if(checkEmptyValue([creditCardNumber, network, exp_month, exp_year])){
+    if(boltAccountUtils.checkEmptyValue([creditCardNumber, network, exp_month, exp_year])){
         res.missingValue = true;
     }
     return res;
-}
-
-function checkEmptyValue(list){
-    return list.includes('');
 }

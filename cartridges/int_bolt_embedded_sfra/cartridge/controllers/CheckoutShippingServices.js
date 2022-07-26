@@ -25,13 +25,17 @@ server.extend(module.superModule);
 server.append('SubmitShipping', function (req, res, next) {
     var currentBasket = BasketMgr.getCurrentBasket();
     this.on('route:BeforeComplete', function (req, res) { // eslint-disable-line no-shadow
-        var order = res.viewData.order;
-        if (order.billing && empty(order.billing.matchingAddressId) && currentBasket.getDefaultShipment()) {
-            order.billing.matchingAddressId = currentBasket.getDefaultShipment().UUID;
-            order.billing.billingAddress = new AddressModel(currentBasket.getDefaultShipment().getShippingAddress());
-            res.json({
-                order: order
-            });
+        try {
+            var order = res.viewData.order;
+            if (order && order.billing && empty(order.billing.matchingAddressId) && currentBasket.getDefaultShipment()) {
+                order.billing.matchingAddressId = currentBasket.getDefaultShipment().UUID;
+                order.billing.billingAddress = new AddressModel(currentBasket.getDefaultShipment().getShippingAddress());
+                res.json({
+                    order: order
+                });
+            }
+        } catch (e) {
+            log.error(e.message);
         }
     });
     // shopper doesn't have a Bolt account or no stored address

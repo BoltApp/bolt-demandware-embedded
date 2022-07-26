@@ -2,6 +2,7 @@
     <isscript>
         var boltAccountUtils = require('int_bolt_embedded_sfra/cartridge/scripts/util/boltAccountUtils');
         var isBoltLogin = boltAccountUtils.loginAsBoltUser();
+        var boltShippingAddressDataComplete = isBoltLogin && pdict.boltAddressId && !pdict.shippingAddressDataMissing;
     </isscript>
 
     <iscomment> Check boltAddressId for Bolt logged-in shoppers, every stored address has a unique boltAddressId, new address doesn't have. </iscomment>
@@ -9,7 +10,7 @@
           action="${shipmentLoopState
           ? URLUtils.url('CheckoutAddressServices-AddNewAddress')
           : URLUtils.url('CheckoutShippingServices-SubmitShipping')}"
-          data-address-mode="${(isBoltLogin ? pdict.boltAddressId : shippingModel.matchingAddressId) ? 'edit' : 'new'}"
+          data-address-mode="${(boltShippingAddressDataComplete || shippingModel.matchingAddressId) ? 'edit' : 'new'}"
           <isprint value=${pdict.forms.shippingForm.attributes} encoding="off"/>
     >
         <isif condition="${lineItem}">
