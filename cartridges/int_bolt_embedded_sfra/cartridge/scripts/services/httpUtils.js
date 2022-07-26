@@ -53,8 +53,9 @@ exports.restAPIClient = function (method, endPoint, request, requestContentType,
     },
   });
 
-  var config = getConfiguration();
-  var endPointUrl = config.boltAPIBaseURL + endPoint;
+  var config = boltPreferences.getBoltSecrets();
+  var baseAPIUrl = boltPreferences.getBoltApiServiceURL();
+  var endPointUrl = baseAPIUrl + endPoint;
   request = request || "";
   var serviceArgs = {
     method: method,
@@ -120,25 +121,3 @@ function serviceParseResponse(_service, httpClient) {
   return res;
 }
 
-/**
- * Get the configuration settings from Business Manager
- * @returns {Object} configuration object
- */
-function getConfiguration() {
-  var site = Site.getCurrent();
-  var boltSigningSecret =
-    site.getCustomPreferenceValue("boltSigningSecret") || "";
-  var boltAPIKey = site.getCustomPreferenceValue("boltAPIKey") || "";
-
-  if (boltAPIKey === "" || boltSigningSecret === "") {
-    log.error("Error: Bolt Business Manager configurations are missing.");
-  }
-
-  var baseAPIUrl = boltPreferences.getBoltApiServiceURL();
-
-  return {
-    boltSigningSecret: boltSigningSecret,
-    boltAPIKey: boltAPIKey,
-    boltAPIBaseURL: baseAPIUrl,
-  };
-}
