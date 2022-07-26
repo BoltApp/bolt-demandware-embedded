@@ -2,7 +2,7 @@
 ZERO=0
 UPLOADSUCCESS=$(npm run upload:all | grep "Error" | wc -l | xargs)
 
-if [ $UPLOADSUCCESS = $ZERO ]
+if [ "$UPLOADSUCCESS" -eq "$ZERO" ]
 then
     echo "Cartridge upload success!"
 else
