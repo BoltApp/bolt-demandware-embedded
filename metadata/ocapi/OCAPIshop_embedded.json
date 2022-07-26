@@ -1,0 +1,35 @@
+{
+  "_v": "21.10",
+  "clients": [
+    {
+      "client_id": "<<client_id>>",
+      "resources": [
+       {
+          "resource_id":"/customers/auth",
+          "read_attributes":"(**)",
+          "write_attributes":"(**)",
+          "methods":[
+             "post"
+          ]
+       },
+       {
+          "resource_id":"/orders",
+          "read_attributes":"(**)",
+          "write_attributes":"(**)",
+          "methods":[
+             "post"
+          ]
+       },
+       {
+          "resource_id":"/orders/{order_no}",
+          "read_attributes":"(**)",
+          "write_attributes":"(**)",
+          "methods":[
+             "get",
+             "patch"
+          ]
+       }
+     ]
+    }
+  ]
+}

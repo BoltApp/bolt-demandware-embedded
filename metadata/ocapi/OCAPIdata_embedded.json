@@ -1,0 +1,27 @@
+// Note: the following metadata is used for automated cartridge/metadata upload only
+{
+  "_v": "21.10",
+  "clients": [
+    {
+      "client_id": "<<client_id>>",
+      "resources": [
+        {
+          "methods": [
+            "post"
+          ],
+          "read_attributes": "(**)",
+          "write_attributes": "(**)",
+          "resource_id": "/jobs/*/executions"
+        },
+        {
+          "methods": [
+            "get"
+          ],
+          "read_attributes": "(**)",
+          "write_attributes": "(**)",
+          "resource_id": "/jobs/*/executions/*"
+        }
+      ]
+    }
+  ]
+}
