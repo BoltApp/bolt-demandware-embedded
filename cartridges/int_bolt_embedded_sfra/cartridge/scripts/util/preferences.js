@@ -15,9 +15,20 @@ exports.getSitePreferences = function () {
   var boltMultiPublishableKey = site.getCustomPreferenceValue('boltMultiPublishableKey') || '';
   var boltApiUrl = this.getBoltApiServiceURL();
   var boltCdnUrl = boltConnectURL();
+  var boltEnable = Site.getCurrent().getCustomPreferenceValue('boltEnable');
+  var boltMerchantDivisionID = Site.getCurrent().getCustomPreferenceValue('boltMerchantDivisionID') || ''
+
+  if(!boltEnable){
+    log.warn("Bolt is disabled! Please set 'boltEnable' to true in custom preference");
+  }
+
+  if (!boltMerchantDivisionID || !boltMultiPublishableKey){
+    log.error("Error: Bolt Business Manager configurations (boltMerchantDivisionID, boltMultiPublishableKey) are missing.")
+  }
+
   return {
-    boltEnable: Site.getCurrent().getCustomPreferenceValue('boltEnable'),
-    boltMerchantDivisionID: Site.getCurrent().getCustomPreferenceValue('boltMerchantDivisionID') || '',
+    boltEnable: boltEnable,
+    boltMerchantDivisionID: boltMerchantDivisionID,
     boltApiUrl: boltApiUrl,
     boltCdnUrl: boltCdnUrl,
     boltMultiPublishableKey: boltMultiPublishableKey,
