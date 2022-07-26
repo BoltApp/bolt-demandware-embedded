@@ -114,7 +114,7 @@ jobs:
           name: Setup dw.json for meta upload
           command: |
             echo "{" \
-              "\"hostname\":\"${QA_EMBEDDED_SANDBOX_HOSTNAME}\"，" \
+              "\"hostname\":\"${QA_EMBEDDED_SANDBOX_HOSTNAME}\"," \
               "\"client-id\":\"${SFCCCLIENTID}\"," \
               "\"client-secret\":\"${SFCCCLIENTSECRET}\"" \
               "}" > dw.json
