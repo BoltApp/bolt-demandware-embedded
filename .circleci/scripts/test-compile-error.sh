@@ -1,8 +1,8 @@
 #!/bin/bash
 ZERO=0
-COMPILESUCCESS=$(npm run compile | grep "Error" | wc -l | xargs)
+COMPILESUCCESS=$(npm run compile | grep -v "formErrors" | grep "Error" | wc -l | xargs)
 
-if [ $COMPILESUCCESS = $ZERO ]
+if [ "$COMPILESUCCESS" -eq "$ZERO" ]
 then
     echo "npm run compile ran without errors"
 else
