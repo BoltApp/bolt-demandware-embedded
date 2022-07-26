@@ -203,7 +203,6 @@ workflows:
             branches:
               only:
                 - master
-                - Derrick/fix-ci
 
   sfcc-release-flow:
     when: << pipeline.parameters.run_release_workflow >>
