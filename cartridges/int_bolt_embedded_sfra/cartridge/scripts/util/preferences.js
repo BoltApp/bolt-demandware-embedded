@@ -15,16 +15,35 @@ exports.getSitePreferences = function () {
   var boltMultiPublishableKey = site.getCustomPreferenceValue('boltMultiPublishableKey') || '';
   var boltApiUrl = this.getBoltApiServiceURL();
   var boltCdnUrl = boltConnectURL();
-  var boltApiKey = site.getCustomPreferenceValue('boltAPIKey') || '';
   return {
     boltEnable: Site.getCurrent().getCustomPreferenceValue('boltEnable'),
     boltMerchantDivisionID: Site.getCurrent().getCustomPreferenceValue('boltMerchantDivisionID') || '',
     boltApiUrl: boltApiUrl,
     boltCdnUrl: boltCdnUrl,
     boltMultiPublishableKey: boltMultiPublishableKey,
-    boltApiKey: boltApiKey,
   };
 };
+
+/**
+ * Get the bolt secrets settings from Business Manager
+ * @returns {Object} configuration object
+ */
+exports.getBoltSecrets = function() {
+  var site = Site.getCurrent();
+  var boltSigningSecret =
+      site.getCustomPreferenceValue("boltSigningSecret") || "";
+  var boltAPIKey = site.getCustomPreferenceValue("boltAPIKey") || "";
+
+  if (boltAPIKey === "" || boltSigningSecret === "") {
+    log.error("Error: Bolt Business Manager configurations (boltAPIKey, boltSigningSecret) are missing.");
+  }
+
+  return {
+    boltSigningSecret: boltSigningSecret,
+    boltAPIKey: boltAPIKey,
+  };
+}
+
 
 /**
  * Return API URL

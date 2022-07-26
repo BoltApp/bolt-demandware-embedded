@@ -7,7 +7,6 @@ var HttpResult = require('dw/svc/Result');
 var httpUtils = require('~/cartridge/scripts/services/httpUtils')
 var constants = require('~/cartridge/scripts/util/constants');
 var preferences = require("~/cartridge/scripts/util/preferences");
-var boltAccountUtils = require('~/cartridge/scripts/util/boltAccountUtils');
 var LogUtils = require('~/cartridge/scripts/util/boltLogUtils');
 var log = LogUtils.getLogger('Oauth');
 
@@ -19,11 +18,12 @@ var log = LogUtils.getLogger('Oauth');
  * @returns {Object} result
  */
 exports.fetchNewToken = function(code, scope) {
+    var secrets = preferences.getBoltSecrets();
     var config = preferences.getSitePreferences();
     var payload = "grant_type=authorization_code&code="
         .concat(code, "&scope=")
         .concat(scope, "&client_secret=")
-        .concat(config.boltApiKey, "&client_id=")
+        .concat(secrets.boltAPIKey, "&client_id=")
         .concat(config.boltMultiPublishableKey);
     return httpUtils.restAPIClient('POST', constants.OAUTH_TOKEN_URL, payload, 'application/x-www-form-urlencoded');
 }
