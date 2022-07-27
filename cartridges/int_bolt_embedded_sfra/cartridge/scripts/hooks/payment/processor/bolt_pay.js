@@ -140,6 +140,9 @@ function authorize(orderNumber, paymentInstrument, paymentProcessor) {
         boltAccountUtils.saveAddressToBolt(order);
     }
 
+    // clear session data
+    boltAccountUtils.clearBoltSessionData();
+
     return { error: false };
 }
 
@@ -252,6 +255,7 @@ function getDwsidCookie() {
 
     return '';
 }
+
 
 module.exports = {
     Handle: handle,
