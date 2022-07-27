@@ -164,30 +164,30 @@ function getAuthRequest(order, paymentInstrument) {
         return { error: true, errorMsg: 'SFCC basket has not billing address.' };
     }
 
-    var sfccBillingAddress = order.getBillingAddress();
+    var billingAddress = order.getBillingAddress();
     var userIdentifier = {
         email: order.getCustomerEmail(),
-        phone: sfccBillingAddress.getPhone()
+        phone: billingAddress.getPhone()
     };
     var userIdentity = {
-        first_name: sfccBillingAddress.getFirstName(),
-        last_name: sfccBillingAddress.getLastName()
+        first_name: billingAddress.getFirstName(),
+        last_name: billingAddress.getLastName()
     };
 
     var boltBillingAddress = {
-        street_address1: sfccBillingAddress.getAddress1() || '',
-        street_address2: sfccBillingAddress.getAddress2() || '',
-        locality: sfccBillingAddress.getCity() || '',
-        region: sfccBillingAddress.getStateCode() || '',
-        postal_code: sfccBillingAddress.getPostalCode() || '',
-        country_code: sfccBillingAddress.getCountryCode() ? sfccBillingAddress.getCountryCode().getValue().toUpperCase() : '',
-        country: sfccBillingAddress.getCountryCode() ? sfccBillingAddress.getCountryCode().getDisplayValue() : '',
-        name: sfccBillingAddress.getFullName(),
-        first_name: sfccBillingAddress.getFirstName(),
-        last_name: sfccBillingAddress.getLastName(),
-        phone_number: sfccBillingAddress.getPhone(),
+        street_address1: billingAddress.getAddress1() || '',
+        street_address2: billingAddress.getAddress2() || '',
+        locality: billingAddress.getCity() || '',
+        region: billingAddress.getStateCode() || '',
+        postal_code: billingAddress.getPostalCode() || '',
+        country_code: billingAddress.getCountryCode() ? billingAddress.getCountryCode().getValue().toUpperCase() : '',
+        country: billingAddress.getCountryCode() ? billingAddress.getCountryCode().getDisplayValue() : '',
+        name: billingAddress.getFullName(),
+        first_name: billingAddress.getFirstName(),
+        last_name: billingAddress.getLastName(),
+        phone_number: billingAddress.getPhone(),
         email: order.getCustomerEmail(),
-        phone: sfccBillingAddress.getPhone() || ''
+        phone: billingAddress.getPhone() || ''
     };
 
     var request = {
@@ -227,7 +227,7 @@ function getAuthRequest(order, paymentInstrument) {
             paymentInstrument.getCreditCardExpirationMonth(),
             '00'
         ),
-            postal_code: sfccBillingAddress.getPostalCode(),
+            postal_code: billingAddress.getPostalCode(),
             token_type: constants.BOLT_TOKEN_TYPE
         };
     }
