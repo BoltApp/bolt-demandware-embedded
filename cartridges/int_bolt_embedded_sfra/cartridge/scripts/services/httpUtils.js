@@ -51,7 +51,7 @@ exports.restAPIClient = function (method, endPoint, request, requestContentType,
     },
   });
 
-  var config = boltPreferences.getBoltSecrets();
+  var boltAPIKey = boltPreferences.getBoltAPIKey();
   var baseAPIUrl = boltPreferences.getBoltApiServiceURL();
   var endPointUrl = baseAPIUrl + endPoint;
   request = request || "";
@@ -59,7 +59,7 @@ exports.restAPIClient = function (method, endPoint, request, requestContentType,
     method: method,
     endPointUrl: endPointUrl,
     request: request,
-    boltAPIKey: config.boltAPIKey,
+    boltAPIKey: boltAPIKey,
   };
   var result = service.call(serviceArgs);
 

@@ -23,13 +23,6 @@
         <externally-managed-flag>false</externally-managed-flag>
         <min-length>0</min-length>
       </attribute-definition>
-      <attribute-definition attribute-id="boltSigningSecret">
-        <display-name xml:lang="x-default">Signing Secret</display-name>
-        <type>string</type>
-        <mandatory-flag>false</mandatory-flag>
-        <externally-managed-flag>false</externally-managed-flag>
-        <min-length>0</min-length>
-      </attribute-definition>
       <attribute-definition attribute-id="boltEnvironment">
         <display-name xml:lang="x-default">Bolt Environment</display-name>
         <type>enum-of-string</type>
@@ -64,7 +57,6 @@
         <display-name xml:lang="x-default">Bolt Payment Setting  - Embedded</display-name>
         <attribute attribute-id="boltEnable"/>
         <attribute attribute-id="boltAPIKey"/>
-        <attribute attribute-id="boltSigningSecret"/>
         <attribute attribute-id="boltMerchantDivisionID"/>
         <attribute attribute-id="boltMultiPublishableKey"/>
         <attribute attribute-id="boltEnvironment"/>
