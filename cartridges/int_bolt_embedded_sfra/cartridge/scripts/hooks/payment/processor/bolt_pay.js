@@ -65,7 +65,6 @@ function handle(currentBasket, paymentInformation, paymentMethodID, req) {
             paymentInstrument.setCreditCardExpirationMonth(selectedBoltPayment.exp_month);
             paymentInstrument.setCreditCardExpirationYear(selectedBoltPayment.exp_year);
             paymentInstrument.custom.boltPaymentMethodId = selectedPaymentID;
-            paymentInstrument.custom.basketId = currentBasket.UUID;
         });
     } else {
         Transaction.wrap(function () {
@@ -74,7 +73,6 @@ function handle(currentBasket, paymentInformation, paymentMethodID, req) {
             paymentInstrument.setCreditCardExpirationMonth(paymentInformation.expirationMonth);
             paymentInstrument.setCreditCardExpirationYear(paymentInformation.expirationYear);
             paymentInstrument.setCreditCardToken(paymentInformation.creditCardToken);
-            paymentInstrument.custom.basketId = currentBasket.UUID;
             paymentInstrument.custom.boltCardBin = paymentInformation.bin;
             paymentInstrument.custom.boltTokenType = paymentInformation.token_type;
             paymentInstrument.custom.boltCreateAccount = paymentInformation.createAccount;
@@ -154,10 +152,6 @@ function authorize(orderNumber, paymentInstrument, paymentProcessor) {
 function getAuthRequest(order, paymentInstrument) {
     if (empty(paymentInstrument)) {
         return { error: true, errorMsg: 'Missing payment instrument.' };
-    }
-
-    if (empty(paymentInstrument.custom.basketId)) {
-        return { error: true, errorMsg: 'SFCC basket ID not found.' };
     }
 
     if (empty(order.billingAddress)) {
