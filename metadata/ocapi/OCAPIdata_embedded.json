@@ -1,0 +1,21 @@
+{
+   "_v": "21.10",
+   "clients": [
+     {
+       "client_id": "<<client_id>>",
+       "resources": [
+         {
+            "resource_id": "/sites/**",
+            "methods": [
+               "get",
+               "post",
+               "put",
+               "patch"
+            ],
+            "read_attributes": "(**)",
+            "write_attributes": "(**)"
+         }
+       ]
+     }
+   ]
+ }
