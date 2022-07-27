@@ -393,11 +393,6 @@ declare class SitePreferencesCustomAttributes {
   boltPreauthEnable: boolean;
 
   /**
-   * Signing Secret
-   */
-  boltSigningSecret: string;
-
-  /**
    * Bolt Environment
    */
   boltEnvironment: string;

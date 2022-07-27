@@ -36,23 +36,18 @@ exports.getSitePreferences = function () {
 };
 
 /**
- * Get the bolt secrets settings from Business Manager
+ * Get the bolt api key settings from Business Manager
  * @returns {Object} configuration object
  */
-exports.getBoltSecrets = function() {
+exports.getBoltAPIKey = function() {
   var site = Site.getCurrent();
-  var boltSigningSecret =
-      site.getCustomPreferenceValue("boltSigningSecret") || "";
   var boltAPIKey = site.getCustomPreferenceValue("boltAPIKey") || "";
 
-  if (boltAPIKey === "" || boltSigningSecret === "") {
-    log.error("Error: Bolt Business Manager configurations (boltAPIKey, boltSigningSecret) are missing.");
+  if (boltAPIKey === "") {
+    log.error("Error: Bolt Business Manager configurations boltAPIKey is missing.");
   }
 
-  return {
-    boltSigningSecret: boltSigningSecret,
-    boltAPIKey: boltAPIKey,
-  };
+  return boltAPIKey;
 }
 
 
