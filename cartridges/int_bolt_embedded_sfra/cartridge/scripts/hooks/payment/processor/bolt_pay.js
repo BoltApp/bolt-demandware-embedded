@@ -4,7 +4,6 @@
 var Resource = require('dw/web/Resource');
 var Transaction = require('dw/system/Transaction');
 var OrderMgr = require('dw/order/OrderMgr');
-var BasketMgr = require('dw/order/BasketMgr');
 var StringUtils = require('dw/util/StringUtils');
 var Site = require('dw/system/Site');
 var HttpResult = require('dw/svc/Result');
@@ -148,7 +147,7 @@ function authorize(orderNumber, paymentInstrument, paymentProcessor) {
 
 /**
  * Create Authorization Request Body
- * @param {string} order - SFCC order object
+ * @param {dw.order.Order} order - SFCC order object
  * @param {dw.order.PaymentInstrument} paymentInstrument - payment instrument to authorize
  * @return {Object} returns an response object
  */
@@ -161,22 +160,48 @@ function getAuthRequest(order, paymentInstrument) {
         return { error: true, errorMsg: 'SFCC basket ID not found.' };
     }
 
+    if (empty(order.billingAddress)) {
+        return { error: true, errorMsg: 'SFCC basket has not billing address.' };
+    }
+
+    var billingAddress = order.getBillingAddress();
     var userIdentifier = {
         email: order.getCustomerEmail(),
-        phone: order.getBillingAddress().getPhone()
+        phone: billingAddress.getPhone()
     };
     var userIdentity = {
-        first_name: order.getBillingAddress().getFirstName(),
-        last_name: order.getBillingAddress().getLastName()
+        first_name: billingAddress.getFirstName(),
+        last_name: billingAddress.getLastName()
+    };
+
+    var boltBillingAddress = {
+        street_address1: billingAddress.getAddress1() || '',
+        street_address2: billingAddress.getAddress2() || '',
+        locality: billingAddress.getCity() || '',
+        region: billingAddress.getStateCode() || '',
+        postal_code: billingAddress.getPostalCode() || '',
+        country_code: billingAddress.getCountryCode() ? billingAddress.getCountryCode().getValue().toUpperCase() : '',
+        country: billingAddress.getCountryCode() ? billingAddress.getCountryCode().getDisplayValue() : '',
+        name: billingAddress.getFullName(),
+        first_name: billingAddress.getFirstName(),
+        last_name: billingAddress.getLastName(),
+        phone_number: billingAddress.getPhone(),
+        email: order.getCustomerEmail(),
+        phone: billingAddress.getPhone() || ''
     };
 
     var request = {
+        auto_capture: true, // TODO: get this from prefs
         cart: {
-            order_reference: paymentInstrument.custom.basketId
+            order_reference: order.getOrderNo(),
+            billing_address: boltBillingAddress,
+            currency: order.currencyCode,
+            metadata: {
+                SFCCSessionID: getDwsidCookie()
+            }
         },
         division_id:
-      Site.getCurrent().getCustomPreferenceValue('boltMerchantDivisionID')
-      || '',
+            Site.getCurrent().getCustomPreferenceValue('boltMerchantDivisionID') || '',
         source: constants.DIRECT_PAYMENTS,
         user_identifier: userIdentifier,
         user_identity: userIdentity,
@@ -202,7 +227,7 @@ function getAuthRequest(order, paymentInstrument) {
             paymentInstrument.getCreditCardExpirationMonth(),
             '00'
         ),
-            postal_code: order.getBillingAddress().getPostalCode(),
+            postal_code: billingAddress.getPostalCode(),
             token_type: constants.BOLT_TOKEN_TYPE
         };
     }
@@ -211,6 +236,22 @@ function getAuthRequest(order, paymentInstrument) {
         authRequest: request,
         error: false
     };
+}
+
+/**
+ * getDwsidCookie returns DW Session ID from cookie
+ * @return {string} DW Session ID
+ */
+function getDwsidCookie() {
+    var cookies = request.getHttpCookies();
+
+    for (var i = 0; i < cookies.cookieCount; i++) {
+        if (cookies[i].name === 'dwsid') {
+            return cookies[i].value;
+        }
+    }
+
+    return '';
 }
 
 module.exports = {
