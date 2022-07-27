@@ -192,7 +192,6 @@ function addPaymentMethodInfoToBasket(basket, boltPaymentMethods){
         paymentInstrument.setCreditCardExpirationMonth(exp_month);
         paymentInstrument.setCreditCardExpirationYear(exp_year);
 
-        paymentInstrument.custom.basketId = basket.UUID;
         // TODO: don't have this info at this point, do we need to add it later
         //paymentInstrument.custom.boltCardBin = paymentInformation.bin;
         paymentInstrument.custom.boltPaymentMethodId = boltPaymentMethodID;

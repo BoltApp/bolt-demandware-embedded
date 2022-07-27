@@ -87,13 +87,6 @@
         <externally-managed-flag>false</externally-managed-flag>
         <default-value>false</default-value>
       </attribute-definition>
-      <attribute-definition attribute-id="basketId">
-        <display-name xml:lang="x-default">SFCC Basket ID</display-name>
-        <type>string</type>
-        <mandatory-flag>false</mandatory-flag>
-        <externally-managed-flag>false</externally-managed-flag>
-        <min-length>0</min-length>
-      </attribute-definition>
       <attribute-definition attribute-id="boltPaymentMethodId">
         <display-name xml:lang="x-default">Bolt Payment Method ID</display-name>
         <type>string</type>
