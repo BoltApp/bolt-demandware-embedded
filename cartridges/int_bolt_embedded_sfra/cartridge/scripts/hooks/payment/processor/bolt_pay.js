@@ -191,7 +191,6 @@ function getAuthRequest(order, paymentInstrument) {
     };
 
     var request = {
-        auto_capture: true, // TODO: get this from prefs
         cart: {
             order_reference: order.getOrderNo(),
             billing_address: boltBillingAddress,
@@ -209,7 +208,7 @@ function getAuthRequest(order, paymentInstrument) {
     };
 
     // populate auto capture field if needed
-    var autoCapture = Site.getCustomPreferenceValue('boltEnableAutoCapture') === true;
+    var autoCapture = Site.getCurrent().getCustomPreferenceValue('boltEnableAutoCapture') === true;
     if (autoCapture) {
         request.auto_capture = true;
     }
