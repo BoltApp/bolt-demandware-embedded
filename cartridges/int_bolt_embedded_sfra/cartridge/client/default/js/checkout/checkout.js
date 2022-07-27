@@ -16,20 +16,10 @@ var billingHelpers = require('./billing');
         return defer;
     }
 
-    function triggerEvent(name, form, data) {
-        return new Promise((resolve, reject) => {
-            $('body').trigger(name, {
-                form,
-                data,
-                callback(data) {
-                    if(data) {
-                        resolve(data);
-                    } else {
-                        reject(data)
-                    }
-                }
-            })
-        })
+    function triggerEvent(name) {
+        return new Promise ((resolve, reject) => {
+            $('body').trigger(name, {resolve, reject});
+        });
     }
 
     $.fn.checkout = function () { // eslint-disable-line
@@ -251,11 +241,7 @@ var billingHelpers = require('./billing');
                         const boltPaymentFields = $('bolt-pay');
                         const shouldTokenize = boltPamentATag && boltPamentATag.hasClass('active') && !boltPaymentFields.hasClass('d-done');
                         if(shouldTokenize){
-                            paymentInfoForm = await triggerEvent(
-                                'checkout:tokenize',
-                                $(paymentInfoSelector),
-                                paymentInfoForm
-                            );
+                            await triggerEvent('checkout:tokenize');
                         }
 
                         $('body').trigger('checkout:serializeBilling', {
