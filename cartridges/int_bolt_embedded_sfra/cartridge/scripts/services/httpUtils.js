@@ -2,10 +2,8 @@
  * Utility functions for API service
  */
 /* API Includes */
-var Site = require("dw/system/Site");
 var LocalServiceRegistry = require("dw/svc/LocalServiceRegistry");
 var HttpResult = require("dw/svc/Result");
-var Logger = require("dw/system/Logger");
 
 /* Script Includes */
 var constants = require("~/cartridge/scripts/util/constants");
@@ -120,4 +118,3 @@ function serviceParseResponse(_service, httpClient) {
 
   return res;
 }
-
