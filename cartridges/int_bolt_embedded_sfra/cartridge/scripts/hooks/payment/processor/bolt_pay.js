@@ -208,6 +208,12 @@ function getAuthRequest(order, paymentInstrument) {
         create_bolt_account: paymentInstrument.custom.boltCreateAccount
     };
 
+    // populate auto capture field if needed
+    var autoCapture = Site.getCustomPreferenceValue('boltEnableAutoCapture') === true;
+    if (autoCapture) {
+        request.auto_capture = true;
+    }
+
     // use Bolt payment ID for Bolt
     if (boltAccountUtils.loginAsBoltUser() && paymentInstrument.custom.boltPaymentMethodId) {
         request.credit_card_id = paymentInstrument.custom.boltPaymentMethodId;
