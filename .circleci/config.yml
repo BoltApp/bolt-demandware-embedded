@@ -177,14 +177,6 @@ workflows:
     jobs:
       - lint-and-unit-test:
           context: sfcc-creds
-      - swissknife/queue_up_workflow:
-          workflow-name: sfcc-flow
-          context: sfcc-creds
-          filters:
-            branches:
-              only:
-                - master
-                - /adhoc-deploy\/.*/
 
       - integration-tests:
           context: sfcc-creds
@@ -197,8 +189,6 @@ workflows:
 
       - update-qa-sandbox:
           context: sfcc-creds
-#          requires:
-#            - swissknife/queue_up_workflow
           filters:
             branches:
               only:
