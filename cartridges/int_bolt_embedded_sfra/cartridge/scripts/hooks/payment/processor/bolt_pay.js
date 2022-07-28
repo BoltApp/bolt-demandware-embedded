@@ -253,7 +253,6 @@ function getDwsidCookie() {
     return '';
 }
 
-
 module.exports = {
     Handle: handle,
     Authorize: authorize
