@@ -7,6 +7,7 @@ var formHelpers = require('base/checkout/formErrors');
 var scrollAnimate = require('base/components/scrollAnimate');
 
 var billingHelpers = require('./billing');
+var addressHelpers = require('./address');
 
 (function ($) {
 
@@ -602,7 +603,7 @@ var billingHelpers = require('./billing');
     };
 }(jQuery));
 
-[billingHelpers].forEach(function (library) {
+[billingHelpers, addressHelpers].forEach(function (library) {
     Object.keys(library).forEach(function (item) {
       if (typeof library[item] === 'object') {
         base[item] = $.extend({}, base[item], library[item]);
