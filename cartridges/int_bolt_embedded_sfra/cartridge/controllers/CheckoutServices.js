@@ -16,7 +16,6 @@ server.append('PlaceOrder', function (req, res, next) {
         log.info('clearing session data');
         boltAccountUtils.clearBoltSessionData();
     }
-    res.json(res);
 
     next();
 });
