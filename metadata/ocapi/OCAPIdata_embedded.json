@@ -4,7 +4,23 @@
      {
        "client_id": "<<client_id>>",
        "resources": [
-         {
+        {
+					"resource_id": "/products/{id}",
+					"read_attributes": "(**)",
+					"write_attributes": "(**)",
+					"methods": [
+						"get"
+					]
+				},
+				{
+					"resource_id": "/products/{id}/variations",
+					"read_attributes": "(**)",
+					"write_attributes": "(**)",
+					"methods": [
+						"get"
+					]
+				},
+        {
             "resource_id": "/sites/**",
             "methods": [
                "get",
