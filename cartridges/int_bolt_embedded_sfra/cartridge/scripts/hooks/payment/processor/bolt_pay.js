@@ -121,10 +121,10 @@ function authorize(orderNumber, paymentInstrument, paymentProcessor) {
         var errorMessage = !empty(response.errors) && !empty(response.errors[0].message)
             ? response.errors[0].message
             : '';
-        var errorCode = !empty(response.errors) && !empty(response.errors[0].message)
-            ? response.errors[0].message
+        var errorCode = !empty(response.errors) && !empty(response.errors[0].code)
+            ? response.errors[0].code
             : '';
-        log.error('Payment authorization failed, error: ' + errorMessage + ' ; Code:', errorCode);
+        log.error('Payment authorization failed, error: ' + errorMessage + ' ; Code: ' + errorCode);
         return { error: true, errorCode: errorCode, errorMessage: errorMessage };
     }
 
