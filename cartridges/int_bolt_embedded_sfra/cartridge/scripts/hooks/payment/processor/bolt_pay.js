@@ -118,13 +118,14 @@ function authorize(orderNumber, paymentInstrument, paymentProcessor) {
         JSON.stringify(authRequestObj.authRequest)
     );
     if (response.status && response.status === HttpResult.ERROR) {
-        log.error(
-            'Payment authorization failed, error: '
-        + (!empty(response.errors) && !empty(response.errors[0].message)
+        var errorMessage = !empty(response.errors) && !empty(response.errors[0].message)
             ? response.errors[0].message
-            : '')
-        );
-        return { error: true };
+            : '';
+        var errorCode = !empty(response.errors) && !empty(response.errors[0].message)
+            ? response.errors[0].message
+            : '';
+        log.error('Payment authorization failed, error: ' + errorMessage + ' ; Code:', errorCode);
+        return { error: true, errorCode: errorCode, errorMessage: errorMessage };
     }
 
     // set payment transaction
