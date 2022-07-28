@@ -51,13 +51,13 @@ function updateBillingAddress() {
 
     var firstName = billingAddress.first_name || '',
         lastName = billingAddress.last_name || '',
-        address1 = billingAddress. street_address1,
-        address2 = billingAddress. street_address2,
-        city = billingAddress.locality,
-        stateCode = billingAddress.region_code,
-        postalCode = billingAddress.postal_code,
-        countryCode = billingAddress.country_code,
-        phoneNumber = billingAddress.phone_number;
+        address1 = billingAddress. street_address1 || '',
+        address2 = billingAddress. street_address2 || '',
+        city = billingAddress.locality || '',
+        stateCode = billingAddress.region_code || '',
+        postalCode = billingAddress.postal_code || '',
+        countryCode = billingAddress.country_code || '',
+        phoneNumber = billingAddress.phone_number || '';
 
     //update billing form
     $('input[name$=_firstName]', form).val(firstName);
