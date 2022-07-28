@@ -51,7 +51,7 @@
         <min-length>0</min-length>
       </attribute-definition>
       <attribute-definition attribute-id="boltEnableAutoCapture">
-        <display-name xml:lang="x-default">Enable Bolt Pay</display-name>
+        <display-name xml:lang="x-default">Enable Auto Capture</display-name>
         <type>boolean</type>
         <mandatory-flag>false</mandatory-flag>
         <externally-managed-flag>false</externally-managed-flag>
