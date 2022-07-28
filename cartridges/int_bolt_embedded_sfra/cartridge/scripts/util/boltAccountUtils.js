@@ -180,7 +180,8 @@ exports.saveAddressToBolt = function (order) {
 
         // add bolt address id to endpoint if shopper is updating existing address
         var addressUrl = shippingAddress.custom.boltAddressId ? (constants.SHOPPER_ADDRESS_URL + "/" + shippingAddress.custom.boltAddressId) : constants.SHOPPER_ADDRESS_URL;
-
+        var isGift = order.getDefaultShipment().isGift();
+        
         var request = {
             street_address1: shippingAddress.address1 || "",
             street_address2: shippingAddress.address2 || "",
@@ -190,7 +191,8 @@ exports.saveAddressToBolt = function (order) {
             country_code: shippingAddress.countryCode.value || "",
             first_name: shippingAddress.firstName || "",
             last_name: shippingAddress.lastName || "",
-            phone: shippingAddress.phone || ""
+            phone: shippingAddress.phone || "",
+            default: !isGift
         }
 
         var boltOauthToken = oauth.getOauthToken();
