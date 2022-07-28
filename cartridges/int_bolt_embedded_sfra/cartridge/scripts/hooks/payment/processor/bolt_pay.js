@@ -215,6 +215,7 @@ function getAuthRequest(order, paymentInstrument) {
             token: paymentInstrument.getCreditCardToken(),
             last4: paymentInstrument.getCreditCardNumberLastDigits(),
             bin: paymentInstrument.custom.boltCardBin,
+            billing_address: boltBillingAddress,
             number: '',
             expiration:
         StringUtils.formatNumber(
