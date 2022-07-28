@@ -33,8 +33,8 @@ exports.fetchNewToken = function (code, scope) {
  */
 exports.getOauthToken = function () {
     // Oauth token will not expire in 4 seconds, use the current Oauth token in session
-    if ((session.privacy.boltOauthTokenExpire - new Date().getTime()) > constants.OAUTH_TOKEN_REFRESH_TIME) {
-        return session.privacy.boltOauthToken;
+    if ((session.custom.boltOauthTokenExpire - new Date().getTime()) > constants.OAUTH_TOKEN_REFRESH_TIME) {
+        return session.custom.boltOauthToken;
     }
 
     // refresh OAuth token
@@ -43,25 +43,25 @@ exports.getOauthToken = function () {
 
 function refreshToken() {
     var boltOauthToken;
-    if (!session.privacy.boltRefreshToken || !session.privacy.boltRefreshTokenScope) {
+    if (!session.custom.boltRefreshToken || !session.custom.boltRefreshTokenScope) {
         log.error('Refresh token or refresh token scope is missing.');
         return boltOauthToken;
     }
 
     var config = preferences.getSitePreferences();
     var payload = 'grant_type=refresh_token&refresh_token='
-        .concat(session.privacy.boltRefreshToken, '&scope=')
-        .concat(session.privacy.boltRefreshTokenScope, '&client_secret=')
+        .concat(session.custom.boltRefreshToken, '&scope=')
+        .concat(session.custom.boltRefreshTokenScope, '&client_secret=')
         .concat(config.boltApiKey, '&client_id=')
         .concat(config.boltMultiPublishableKey);
 
     var response = httpUtils.restAPIClient('POST', constants.OAUTH_TOKEN_URL, payload, 'application/x-www-form-urlencoded');
     if (response.status === HttpResult.OK && !empty(response.result)) {
-        session.privacy.boltOauthToken = response.result.access_token;
-        session.privacy.boltRefreshToken = response.result.refresh_token;
-        session.privacy.boltRefreshTokenScope = response.result.refresh_token_scope;
+        session.custom.boltOauthToken = response.result.access_token;
+        session.custom.boltRefreshToken = response.result.refresh_token;
+        session.custom.boltRefreshTokenScope = response.result.refresh_token_scope;
         // store OAuth token expire time in milliseconds, 1000 -> ONE_SECOND
-        session.privacy.boltOauthTokenExpire = Date.now() + response.result.expires_in * 1000;
+        session.custom.boltOauthTokenExpire = Date.now() + response.result.expires_in * 1000;
         boltOauthToken = response.result.access_token;
     } else {
         log.error('Failed to refresh Oauth Token.' + (!empty(response.errors) && !empty(response.errors[0].message) ? response.errors[0].message : ''));
