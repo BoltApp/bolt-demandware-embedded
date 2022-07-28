@@ -54,6 +54,7 @@
             <input type="hidden" class="form-control" id="bolt-cc-postal"
                 name="${pdict.forms.billingForm.boltCreditCard.postalCode.htmlName}">
             <isif condition="${loginAsBoltUser}">
+                <input type="hidden" class="form-control" id="bolt-stored-paymentmethods" value="${dw.order.BasketMgr.currentBasket.custom.boltPaymentMethods}" >
                 <input type="hidden" class="form-control" id="bolt-selected-payment-id"
                     name="${pdict.forms.billingForm.boltCreditCard.selectedBoltPaymentID.htmlName}">
             <iselse/>
