@@ -19,8 +19,8 @@
     "lint": "npm run lint:css && npm run eslint",
     "lint:css": "sgmf-scripts --lint css",
     "upload:embedded_sfra": "sgmf-scripts --uploadCartridge int_bolt_embedded_sfra",
-    "upload:embedded_sfra_private": "sgmf-scripts --uploadCartridge int_bolt_embedded_sfra_private",
-    "upload:all": "npm run upload:embedded_sfra && npm run upload:embedded_sfra_private ",
+    "upload:embedded_sfra_custom": "sgmf-scripts --uploadCartridge int_bolt_embedded_sfra_custom",
+    "upload:all": "npm run upload:embedded_sfra && npm run upload:embedded_sfra_custom ",
     "zipMetadata": "if [ -f metadata/bolt-meta-import-embedded.zip ] ; then rm -r metadata/bolt-meta-import-embedded.zip && cd metadata && zip -r bolt-meta-import-embedded.zip bolt-meta-import-embedded ; else cd metadata && zip -r bolt-meta-import-embedded.zip bolt-meta-import-embedded ; fi",
     "uploadMetadata": "npm run zipMetadata && sfcc-ci instance:upload metadata/bolt-meta-import-embedded.zip && sfcc-ci instance:import bolt-meta-import-embedded.zip -s -j",
     "configMetadata": "METADATA_PATH=metadata\\/bolt-meta-import\\/meta\\/system-objecttype-extensions.xml;sed -i.bak \"s/MERCHANT_NAME/$npm_config_mx/g\" $METADATA_PATH; rm $METADATA_PATH.bak;"
