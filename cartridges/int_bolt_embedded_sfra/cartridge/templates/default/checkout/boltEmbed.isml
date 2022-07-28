@@ -10,5 +10,10 @@
         assets.addJs('/js/account.js');
         assets.addJs('/js/tokenization.js');
         assets.addJs('/js/boltStoredPayments.js');
+
+        var boltAccountUtils = require('~/cartridge/scripts/util/boltAccountUtils');
+        var loginAsBoltUser = boltAccountUtils.loginAsBoltUser();
     </isscript>
+    ${loginAsBoltUser}
+    <input type="hidden" class="is-loggedin-user" value="${loginAsBoltUser}" />
 </isif>
