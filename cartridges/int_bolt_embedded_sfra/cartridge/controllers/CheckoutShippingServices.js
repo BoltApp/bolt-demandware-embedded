@@ -48,7 +48,7 @@ server.append('SubmitShipping', function (req, res, next) {
 
     var shippingAddress = currentBasket.getDefaultShipment().getShippingAddress();
     var addressform = server.forms.getForm('shipping').shippingAddress.addressFields;
-    var boltAddressId = addressform.boltAddressId.value;
+    var boltAddressId = addressform.boltAddressId.value || '';
 
     // save bolt address id to shipping address
     Transaction.wrap(function () {
