@@ -1,6 +1,6 @@
 <isif condition="${!empty(pdict.config.boltEnable)}">
     <input type="hidden" class="check-bolt-account-exist" value="${URLUtils.https('Bolt-AccountExists')}" />
-    <input type="hidden" class="authenticate-bolt-user" value="${URLUtils.https('Bolt-FetchOauthToken')}" />
+    <input type="hidden" class="authenticate-bolt-user" value="${URLUtils.https('Bolt-FetchOAuthToken')}" />
     <input type="hidden" class="get-bolt-account-details" value="${URLUtils.https('Bolt-GetAccountDetails')}" />
     <input type="hidden" class="bolt-publishable-key" value="${pdict.config.boltMultiPublishableKey}" />
     <input type="hidden" class="bolt-locale" value="${pdict.locale}" />

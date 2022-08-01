@@ -32,7 +32,7 @@ exports.BOLT_CARTRIDGE_VERSION = '22.07.001';
 exports.HTTP_METHOD_POST = 'POST';
 
 /**
- * Time to Refresh Oauth Token in Milliseconds
+ * Time to Refresh OAuth Token in Milliseconds
  * 4000 -> 4 seconds
  */
 exports.OAUTH_TOKEN_REFRESH_TIME = 4000;

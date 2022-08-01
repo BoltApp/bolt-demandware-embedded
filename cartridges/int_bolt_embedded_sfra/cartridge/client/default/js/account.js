@@ -16,8 +16,8 @@ async function authorizeWithEmail(customerEmail){
 async function authorizeUser(email){
   const authorizeWithEmailResp = await authorizeWithEmail(email);
   if (!authorizeWithEmailResp) return;
-  const OauthResp = await authenticateUserWithCode(authorizeWithEmailResp.authorizationCode, authorizeWithEmailResp.scope);
-  return await getAccountDetails(OauthResp.accessToken);
+  const OAuthResp = await authenticateUserWithCode(authorizeWithEmailResp.authorizationCode, authorizeWithEmailResp.scope);
+  return await getAccountDetails(OAuthResp.accessToken);
 }
 
 function authenticateUserWithCode(authCode, scope){
@@ -36,10 +36,10 @@ function authenticateUserWithCode(authCode, scope){
   });
 }
 
-function getAccountDetails(oauthToken){
+function getAccountDetails(oAuthToken){
   const accountDetailUrl = $('.get-bolt-account-details').val();
   const reqBody = {
-    bearerToken: oauthToken
+    bearerToken: oAuthToken
   }
   return $.ajax({
     url: accountDetailUrl,
