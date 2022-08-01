@@ -41,6 +41,10 @@ exports.getOauthToken = function () {
     return refreshToken();
 };
 
+/**
+ * Refresh the expired oauth token.
+ * @returns {string} boltOauthToken - Refreshed Oauth token
+ */
 function refreshToken() {
     var boltOauthToken;
     if (!session.custom.boltRefreshToken || !session.custom.boltRefreshTokenScope) {

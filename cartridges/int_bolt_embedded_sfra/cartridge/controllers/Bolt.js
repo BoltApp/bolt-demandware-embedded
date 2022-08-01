@@ -14,7 +14,7 @@ var oauth = require('~/cartridge/scripts/services/oauth');
 var account = require('~/cartridge/scripts/services/account');
 var boltAccountUtils = require('~/cartridge/scripts/util/boltAccountUtils');
 
-var log = LogUtils.getLogger('CheckAccount');
+var log = LogUtils.getLogger('Bolt');
 
 server.get('AccountExists', server.middleware.https, function (req, res, next) {
     var email = req.querystring.email;
@@ -27,6 +27,7 @@ server.get('AccountExists', server.middleware.https, function (req, res, next) {
         returnObject.hasBoltAccount = false;
         returnObject.errorMessage = response.errors;
     }
+    log.debug('{0} has bolt account: {1}', req.querystring.email, returnObject.hasBoltAccount);
 
     res.json(returnObject);
     next();
@@ -34,8 +35,8 @@ server.get('AccountExists', server.middleware.https, function (req, res, next) {
 
 server.get('FetchOauthToken', server.middleware.https, function (req, res, next) {
     var response = oauth.fetchNewToken(req.querystring.code, req.querystring.scope);
-
     var returnObject = {};
+
     if (response.status === HttpResult.OK) {
         returnObject.accessToken = response.result.access_token;
         returnObject.refreshToken = response.result.refresh_token;
@@ -44,8 +45,8 @@ server.get('FetchOauthToken', server.middleware.https, function (req, res, next)
         session.custom.boltRefreshTokenScope = response.result.refresh_token_scope;
         // store OAuth token expire time in milliseconds, 1000 -> ONE_SECOND
         session.custom.boltOauthTokenExpire = response.result.expires_in * 1000 + new Date().getTime();
+        log.info('fetching oauth token succeeded');
     } else {
-        var log = LogUtils.getLogger('Oauth');
         var errorMsg = "Failed to fetch Oauth Token." + !empty(response.errors) && !empty(response.errors[0].message) ? response.errors[0].message : "";
         log.error(errorMsg);
         returnObject.errorMessage = errorMsg;
@@ -105,6 +106,7 @@ server.post('AccountLogOut', server.middleware.https, function (req, res, next) 
             success: true,
             redirectUrl: redirectURL.toString()
         });
+        log.info('logout succeed');
     } catch (e) {
         log.error('Bolt Account Logout: ' + e.message + ' ' + e.stack);
         res.setStatusCode('500');
