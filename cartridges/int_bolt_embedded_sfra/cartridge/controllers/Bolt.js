@@ -14,7 +14,7 @@ var oauth = require('~/cartridge/scripts/services/oauth');
 var account = require('~/cartridge/scripts/services/account');
 var boltAccountUtils = require('~/cartridge/scripts/util/boltAccountUtils');
 
-var log = LogUtils.getLogger('CheckAccount');
+var log = LogUtils.getLogger('Bolt');
 
 server.get('AccountExists', server.middleware.https, function (req, res, next) {
     var email = req.querystring.email;

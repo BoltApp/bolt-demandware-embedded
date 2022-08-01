@@ -5,7 +5,7 @@ var Transaction = require('dw/system/Transaction');
 var LogUtils = require('~/cartridge/scripts/util/boltLogUtils');
 var collections = require('*/cartridge/scripts/util/collections');
 var constants = require('~/cartridge/scripts/util/constants');
-var log = LogUtils.getLogger('CheckAccount');
+var log = LogUtils.getLogger('Account');
 var boltAccountUtils = require('~/cartridge/scripts/util/boltAccountUtils');
 
 /**
@@ -16,7 +16,7 @@ var boltAccountUtils = require('~/cartridge/scripts/util/boltAccountUtils');
 exports.addAccountDetailsToBasket = function(shopperDetails){
     var res = {};
     try {
-        log.info("Shopper Info to add to basket {0}", shopperDetails);
+        log.info("Shopper Info to add to basket {0}", JSON.stringify(shopperDetails));
         const basket = BasketMgr.getCurrentBasket();
 
         // set shopper detail to shipping address
