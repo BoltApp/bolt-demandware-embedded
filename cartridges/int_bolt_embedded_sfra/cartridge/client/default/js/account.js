@@ -76,20 +76,24 @@ function checkAccountAndFetchDetail(){
       console.log(error);
     }
   });
+  // Unbiding the callback to avoid triggering OTP modal many times
   emailInput.unbind("focusout");
 }
 
+// register the event listener on the $('#email-guest') component
+// change the html element ID if you make change to $('#email-guest')
 $(document).ready(function () {
   const emailInputLoaded = setInterval(function (){
-    const emailInput = $('#email-guest'); // guest email input - rename to bolt specific?
+    const emailInput = $('#email-guest'); 
     if (emailInput){
-      console.log("email input loaded");
       clearInterval(emailInputLoaded);
+      // we chose onfocusout callback to trigger the OTP modal. feel free to use a different callback if you'd like a different user experience
       emailInput.focusout(checkAccountAndFetchDetail);
     }
-  }, 100)
+  }, 100);
 })
 
+// register the event listener on the logout button
 $('#bolt-logout').click(function(){
   var url = $('#bolt-logout').attr('data-bolt-logout-url');
   $.ajax({

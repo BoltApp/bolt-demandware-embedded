@@ -13,7 +13,7 @@ server.extend(module.superModule);
 server.append('PlaceOrder', function (req, res, next) {
     if (!res.viewData.error) {
         // clear session data after order placed successfully
-        log.info('clearing session data');
+        log.info('clearing session data after a successful order!');
         boltAccountUtils.clearBoltSessionData();
     }
 

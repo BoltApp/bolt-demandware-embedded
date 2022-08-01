@@ -1,3 +1,4 @@
+// register the event listener to the radio buttons for selecting stored payments
 $(document).ready(function () {
     const radioButtonLoaded = setInterval(function (){
         const useExistingCardBtn = $('#use-existing-card-radio-button');

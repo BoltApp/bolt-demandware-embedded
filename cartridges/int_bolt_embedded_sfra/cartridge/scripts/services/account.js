@@ -118,6 +118,7 @@ function addAccountDetailsToAddress(boltAddress, address){
         address.setPostalCode(postal_code);
     });
     if (boltAccountUtils.checkEmptyValue([phone, first_name, last_name, address1, city, state_code, country_code, postal_code])){
+        log.warn('address information incomplete');
         return {
             missingValue: true
         }
@@ -160,6 +161,7 @@ function addPaymentMethodInfoToBasket(basket, boltPaymentMethods){
     // adding billing address to bolt account
     var addBillingAddressResult = addAccountDetailsToAddress(boltBillingAddress, billingAddress);
     if (addBillingAddressResult.missingValue){
+        log.warn("payment information - billing address is incomplete");
         res.missingValue = true;
     }
     // store all payment methods in the basket so that it can be later chosen by the customer
@@ -198,6 +200,7 @@ function addPaymentMethodInfoToBasket(basket, boltPaymentMethods){
     });
 
     if(boltAccountUtils.checkEmptyValue([creditCardNumber, network, exp_month, exp_year])){
+        log.warn("payment card information is incomplete");
         res.missingValue = true;
     }
     return res;

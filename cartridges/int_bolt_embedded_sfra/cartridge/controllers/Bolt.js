@@ -27,6 +27,7 @@ server.get('AccountExists', server.middleware.https, function (req, res, next) {
         returnObject.hasBoltAccount = false;
         returnObject.errorMessage = response.errors;
     }
+    log.info('{0} has bolt account: {1}', req.querystring.email, returnObject.hasBoltAccount);
 
     res.json(returnObject);
     next();
@@ -44,6 +45,7 @@ server.get('FetchOauthToken', server.middleware.https, function (req, res, next)
         session.custom.boltRefreshTokenScope = response.result.refresh_token_scope;
         // store OAuth token expire time in milliseconds, 1000 -> ONE_SECOND
         session.custom.boltOauthTokenExpire = response.result.expires_in * 1000 + new Date().getTime();
+        log.info('fetching oauth token succeeded');
     } else {
         var log = LogUtils.getLogger('Oauth');
         var errorMsg = "Failed to fetch Oauth Token." + !empty(response.errors) && !empty(response.errors[0].message) ? response.errors[0].message : "";
@@ -105,6 +107,7 @@ server.post('AccountLogOut', server.middleware.https, function (req, res, next) 
             success: true,
             redirectUrl: redirectURL.toString()
         });
+        log.info('logout succeed');
     } catch (e) {
         log.error('Bolt Account Logout: ' + e.message + ' ' + e.stack);
         res.setStatusCode('500');
