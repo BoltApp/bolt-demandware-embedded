@@ -12,7 +12,7 @@ var Resource = require('dw/web/Resource');
 var basketCalculationHelpers = require('*/cartridge/scripts/helpers/basketCalculationHelpers');
 var boltHttpUtils = require('~/cartridge/scripts/services/httpUtils');
 var constants = require('~/cartridge/scripts/util/constants');
-var oauth = require('~/cartridge/scripts/services/oauth');
+var oAuth = require('~/cartridge/scripts/services/oAuth');
 var logUtils = require('~/cartridge/scripts/util/boltLogUtils');
 var log = logUtils.getLogger('BoltAccount');
 
@@ -70,10 +70,10 @@ var clearBillingInformationInBasket = function (basket) {
  * @returns {void} - no return data
  */
 exports.clearBoltSessionData = function () {
-    delete session.custom.boltOauthToken;
+    delete session.custom.boltOAuthToken;
     delete session.custom.boltRefreshToken;
     delete session.custom.boltRefreshTokenScope;
-    delete session.custom.boltOauthTokenExpire;
+    delete session.custom.boltOAuthTokenExpire;
 };
 
 /**
@@ -94,7 +94,7 @@ exports.clearShopperDataInBasket = function () {
  * @returns {boolean} - if bolt user returns true otherwise false
  */
 exports.loginAsBoltUser = function () {
-    return session.custom.boltOauthToken !== null;
+    return session.custom.boltOAuthToken !== null;
 };
 
 /*
@@ -105,24 +105,24 @@ exports.loginAsBoltUser = function () {
  */
 exports.saveCardToBolt = function (order, paymentInstrument) {
     try {
-        var boltOauthToken = oauth.getOauthToken();
-        if (empty(boltOauthToken)) {
-            let errorMsg = 'Bolt Oauth Token is missing';
+        var boltOAuthToken = oAuth.getOAuthToken();
+        if (empty(boltOAuthToken)) {
+            let errorMsg = 'Bolt OAuth Token is missing';
             log.error(errorMsg);
             return {
                 success: false,
                 message: errorMsg
             };
         }
-        var bearerToken = 'Bearer '.concat(boltOauthToken);
+        var bearerToken = 'Bearer '.concat(boltOAuthToken);
         var billingAddress = order.getBillingAddress();
         var expMonth = paymentInstrument.getCreditCardExpirationMonth().toString();
-    
+
         // format month value if needed
         if (expMonth.length === 1) {
             expMonth = '0' + expMonth;
         }
-    
+
         // create request body for add payment method API call
         var request = {
             token: paymentInstrument.getCreditCardToken() || '',
@@ -145,7 +145,7 @@ exports.saveCardToBolt = function (order, paymentInstrument) {
             network: paymentInstrument.getCreditCardType() || '',
             token_type: paymentInstrument.custom.boltTokenType || ''
         };
-    
+
         // send add payment method request to Bolt
         var response = boltHttpUtils.restAPIClient(constants.HTTP_METHOD_POST, constants.ADD_PAYMENT_URL, JSON.stringify(request), '', bearerToken);
         if(response.status === HttpResult.OK && response.result !== null){
@@ -182,7 +182,7 @@ exports.saveAddressToBolt = function (order) {
         // add bolt address id to endpoint if shopper is updating existing address
         var addressUrl = shippingAddress.custom.boltAddressId ? (constants.SHOPPER_ADDRESS_URL + "/" + shippingAddress.custom.boltAddressId) : constants.SHOPPER_ADDRESS_URL;
         var isGift = order.getDefaultShipment().isGift();
-        
+
         var request = {
             street_address1: shippingAddress.address1 || "",
             street_address2: shippingAddress.address2 || "",
@@ -196,16 +196,16 @@ exports.saveAddressToBolt = function (order) {
             default: !isGift
         }
 
-        var boltOauthToken = oauth.getOauthToken();
-        if (empty(boltOauthToken)) {
-            let errorMsg = 'Bolt Oauth Token is missing';
+        var boltOAuthToken = oAuth.getOAuthToken();
+        if (empty(boltOAuthToken)) {
+            let errorMsg = 'Bolt OAuth Token is missing';
             log.error(errorMsg);
             return {
                 success: false,
                 message: errorMsg
             };
         }
-        var bearerToken = "Bearer ".concat(boltOauthToken);
+        var bearerToken = "Bearer ".concat(boltOAuthToken);
 
         // send save address request to Bolt
         var response = boltHttpUtils.restAPIClient(constants.HTTP_METHOD_POST, addressUrl, JSON.stringify(request), '', bearerToken);
