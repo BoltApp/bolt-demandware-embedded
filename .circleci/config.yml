@@ -208,7 +208,6 @@ workflows:
               only:
                 - master
                 - /release\/.*/
-                - Derrick/release-flow
 
   # auto-release:
   #   triggers:
