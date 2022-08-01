@@ -43,6 +43,7 @@ server.append('SubmitShipping', function (req, res, next) {
     });
     // shopper doesn't have a Bolt account or no stored address
     if (!boltAccountUtils.loginAsBoltUser() || empty(currentBasket.custom.boltShippingAddress)) {
+        log.info('shopper has no bolt stored address, cannot save bolt address ID');
         return next();
     }
 

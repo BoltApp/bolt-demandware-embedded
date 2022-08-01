@@ -35,8 +35,8 @@ server.get('AccountExists', server.middleware.https, function (req, res, next) {
 
 server.get('FetchOauthToken', server.middleware.https, function (req, res, next) {
     var response = oauth.fetchNewToken(req.querystring.code, req.querystring.scope);
-
     var returnObject = {};
+
     if (response.status === HttpResult.OK) {
         returnObject.accessToken = response.result.access_token;
         returnObject.refreshToken = response.result.refresh_token;
@@ -47,7 +47,6 @@ server.get('FetchOauthToken', server.middleware.https, function (req, res, next)
         session.custom.boltOauthTokenExpire = response.result.expires_in * 1000 + new Date().getTime();
         log.info('fetching oauth token succeeded');
     } else {
-        var log = LogUtils.getLogger('Oauth');
         var errorMsg = "Failed to fetch Oauth Token." + !empty(response.errors) && !empty(response.errors[0].message) ? response.errors[0].message : "";
         log.error(errorMsg);
         returnObject.errorMessage = errorMsg;
