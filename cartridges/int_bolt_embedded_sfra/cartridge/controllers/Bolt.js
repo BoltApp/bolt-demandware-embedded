@@ -27,7 +27,7 @@ server.get('AccountExists', server.middleware.https, function (req, res, next) {
         returnObject.hasBoltAccount = false;
         returnObject.errorMessage = response.errors;
     }
-    log.info('{0} has bolt account: {1}', req.querystring.email, returnObject.hasBoltAccount);
+    log.debug('{0} has bolt account: {1}', req.querystring.email, returnObject.hasBoltAccount);
 
     res.json(returnObject);
     next();

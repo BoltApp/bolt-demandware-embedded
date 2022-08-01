@@ -16,7 +16,7 @@ var boltAccountUtils = require('~/cartridge/scripts/util/boltAccountUtils');
 exports.addAccountDetailsToBasket = function(shopperDetails){
     var res = {};
     try {
-        log.info("Shopper Info to add to basket {0}", JSON.stringify(shopperDetails));
+        log.debug("Shopper Info to add to basket {0}", JSON.stringify(shopperDetails));
         const basket = BasketMgr.getCurrentBasket();
 
         // set shopper detail to shipping address
