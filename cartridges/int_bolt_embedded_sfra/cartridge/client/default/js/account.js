@@ -54,7 +54,7 @@ function getAccountDetails(oAuthToken){
   });
 }
 
-function checkAccountAndFetchDetail(){
+export function checkAccountAndFetchDetail(){
   const emailInput = $('#email-guest');
   const customerEmail = emailInput.val();
   const checkBoltAccountUrl = $('.check-bolt-account-exist').val();
@@ -76,39 +76,22 @@ function checkAccountAndFetchDetail(){
       console.log(error);
     }
   });
-  // Unbiding the callback to avoid triggering OTP modal many times
-  emailInput.unbind("focusout");
 }
 
-// register the event listener on the $('#email-guest') component
-// change the html element ID if you make change to $('#email-guest')
-$(document).ready(function () {
-  const emailInputLoaded = setInterval(function (){
-    const emailInput = $('#email-guest'); 
-    if (emailInput){
-      clearInterval(emailInputLoaded);
-      // we chose onfocusout callback to trigger the OTP modal. feel free to use a different callback if you'd like a different user experience
-      emailInput.focusout(checkAccountAndFetchDetail);
-    }
-  }, 100);
-})
-
-// register the event listener on the logout button
-$('#bolt-logout').click(function(){
-  var url = $('#bolt-logout').attr('data-bolt-logout-url');
+export function logOut(url) {
   $.ajax({
-      url: url,
-      method: 'POST',
-      success: function (data) {
-        if(data.redirectUrl){
-          window.location.href = data.redirectUrl;
-        }
-      },
-      error: function (err) {
-        if (err.responseJSON.message) {
-          $('.error-message').show();
-          $('.error-message-text').text(err.responseJSON.message);
+    url: url,
+    method: "POST",
+    success: function(data) {
+      if (data.redirectUrl) {
+        window.location.href = data.redirectUrl;
       }
+    },
+    error: function(err) {
+      if (err.responseJSON.message) {
+        $(".error-message").show();
+        $(".error-message-text").text(err.responseJSON.message);
       }
+    }
   });
-});
+}
