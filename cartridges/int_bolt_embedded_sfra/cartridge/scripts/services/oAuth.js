@@ -24,7 +24,7 @@ exports.fetchNewToken = function (code, scope) {
         .concat(scope, '&client_secret=')
         .concat(boltAPIKey, '&client_id=')
         .concat(config.boltMultiPublishableKey);
-    return httpUtils.restAPIClient('POST', constants.OAUTH_TOKEN_URL, payload, 'application/x-www-form-urlencoded');
+    return httpUtils.restAPIClient(constants.HTTP_METHOD_POST, constants.OAUTH_TOKEN_URL, payload, constants.CONTENT_TYPE_URL_ENCODED);
 };
 
 /**
@@ -59,7 +59,7 @@ function refreshToken() {
         .concat(config.boltApiKey, '&client_id=')
         .concat(config.boltMultiPublishableKey);
 
-    var response = httpUtils.restAPIClient('POST', constants.OAUTH_TOKEN_URL, payload, 'application/x-www-form-urlencoded');
+    var response = httpUtils.restAPIClient(constants.HTTP_METHOD_POST, constants.OAUTH_TOKEN_URL, payload, constants.CONTENT_TYPE_URL_ENCODED);
     if (response.status === HttpResult.OK && !empty(response.result)) {
         session.custom.boltOAuthToken = response.result.access_token;
         session.custom.boltRefreshToken = response.result.refresh_token;

@@ -21,33 +21,53 @@ var log = logUtils.getLogger("HttpUtils");
  * @returns {ServiceResponse} service response
  */
 exports.restAPIClient = function (method, endPoint, request, requestContentType, authenticationHeader) {
-  const contentType = requestContentType || "application/json";
+  const isProductionEnv = dw.system.System.getInstanceType() === dw.system.System.PRODUCTION_SYSTEM;
   const service = LocalServiceRegistry.createService("bolt.http", {
     createRequest(service, args) {
       service.URL = args.endPointUrl;
       service.setRequestMethod(args.method);
-      service.addHeader("Content-Type", contentType);
+      if(!empty(requestContentType)){
+        service.addHeader("Content-Type", requestContentType);
+      }
       service.addHeader("X-Api-Key", args.boltAPIKey);
       service.addHeader("Content-Length", args.request.length);
       service.addHeader("X-Nonce", new Date().getTime());
       service.addHeader("X-Bolt-Source-Name", constants.BOLT_SOURCE_NAME);
       service.addHeader("X-Bolt-Source-Version", constants.BOLT_CARTRIDGE_VERSION);
-      if (authenticationHeader){
+      if (authenticationHeader) {
         service.addHeader("Authorization", authenticationHeader);
       }
       return args.request;
     },
     parseResponse: serviceParseResponse,
-    getRequestLogMessage(request, requestContentType) {
-      if (requestContentType !== "application/json") {
-        return request;
+    getRequestLogMessage(request) {
+      var emptyRequest = JSON.stringify({});
+      try {
+        if (isProductionEnv) {
+          if (requestContentType !== constants.CONTENT_TYPE_JSON) {
+            return request;
+          }
+          return request ? logUtils.maskCustomerData(JSON.parse(request)) : emptyRequest;
+        } else {
+          return request;
+        }
+      } catch (e) {
+        log.error(e.message);
+        return isProductionEnv ? emptyRequest: request;
       }
-      return request
-        ? logUtils.maskCustomerData(JSON.parse(request))
-        : JSON.stringify({});
     },
     getResponseLogMessage(response) {
-      return logUtils.maskCustomerData(JSON.parse(response.text));
+      var emptyResponse = JSON.stringify({});
+      try {
+        if (isProductionEnv) {
+          return logUtils.maskCustomerData(JSON.parse(response.text));
+        } else {
+          return  response.text;
+        }
+      } catch (e) {
+        log.error(e.message);
+        return isProductionEnv ? emptyResponse : response.text;
+      }
     },
   });
 

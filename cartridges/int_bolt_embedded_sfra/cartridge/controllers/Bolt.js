@@ -18,7 +18,7 @@ var log = LogUtils.getLogger('Bolt');
 
 server.get('AccountExists', server.middleware.https, function (req, res, next) {
     var email = req.querystring.email;
-    var response = httpUtils.restAPIClient('GET', constants.CHECK_ACCOUNT_EXIST_URL + encodeURIComponent(email));
+    var response = httpUtils.restAPIClient(constants.HTTP_METHOD_GET, constants.CHECK_ACCOUNT_EXIST_URL + encodeURIComponent(email));
 
     var returnObject = {};
     if (response.status === HttpResult.OK) {
@@ -68,7 +68,7 @@ server.get('GetAccountDetails', server.middleware.https, function (req, res, nex
     }
 
     var bearerToken = 'Bearer '.concat(boltOAuthToken);
-    var response = httpUtils.restAPIClient('GET', constants.ACCOUNT_DETAILS_URL, null, '', bearerToken);
+    var response = httpUtils.restAPIClient(constants.HTTP_METHOD_GET, constants.ACCOUNT_DETAILS_URL, null, '', bearerToken);
 
     var returnObject = {};
     if (response.status === HttpResult.OK) {

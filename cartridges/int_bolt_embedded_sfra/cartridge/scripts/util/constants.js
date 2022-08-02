@@ -30,6 +30,13 @@ exports.BOLT_CARTRIDGE_VERSION = 'bolt-sfcc-embedded-0.1.0';
  * HTTP Method
  */
 exports.HTTP_METHOD_POST = 'POST';
+exports.HTTP_METHOD_GET = 'GET';
+
+/**
+ * HTTP Content Type
+ */
+exports.CONTENT_TYPE_JSON = 'application/json';
+exports.CONTENT_TYPE_URL_ENCODED = 'application/x-www-form-urlencoded';
 
 /**
  * Time to Refresh OAuth Token in Milliseconds
