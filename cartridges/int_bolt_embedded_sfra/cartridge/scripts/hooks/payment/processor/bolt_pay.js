@@ -115,7 +115,8 @@ function authorize(orderNumber, paymentInstrument, paymentProcessor) {
     var response = boltHttpUtils.restAPIClient(
         constants.HTTP_METHOD_POST,
         constants.AUTH_CARD_URL,
-        JSON.stringify(authRequestObj.authRequest)
+        JSON.stringify(authRequestObj.authRequest),
+        constants.CONTENT_TYPE_JSON
     );
     if (response.status && response.status === HttpResult.ERROR) {
         var errorMessage = !empty(response.errors) && !empty(response.errors[0].message)
