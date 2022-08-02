@@ -1,5 +1,5 @@
 "use strict";
-var account = require("cartridges/int_bolt_embedded_sfra/cartridge/client/default/js/account.js");
+var account = require("../../../../../int_bolt_embedded_sfra/cartridge/client/default/js/account.js");
 
 // register the event listener on the $('#email-guest') component
 // change the html element ID if you make change to $('#email-guest')

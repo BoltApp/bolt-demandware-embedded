@@ -84,7 +84,7 @@
     "stylelint-scss": "^3.21.0",
     "typescript": "^4.6.4",
     "url": "^0.11.0"
-  },
+  }, 
   "dependencies": {
     "app-root-path": "^3.0.0",
     "bootstrap": "^4.6.1",

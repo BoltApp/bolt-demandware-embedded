@@ -12,7 +12,7 @@
         var assets = require('*/cartridge/scripts/assets.js');
         assets.addJs('/js/checkout.js');
         assets.addCss('/css/checkout/checkout.css');
-        assets.addJs('/js/emailHandler.js');
+        assets.addJs('/js/custom_entry.js');
     </isscript>
 
     <isif condition="${pdict.reportingURLs && pdict.reportingURLs.length}">
