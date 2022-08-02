@@ -37,9 +37,9 @@ server.append('Begin', function (req, res, next) {
         }
 
         var boltPayment = PaymentMgr.getPaymentMethod(constants.BOLT_PAY);
-        if(boltPayment.getImage() !== null){
+        if (boltPayment.getImage() !== null) {
             boltPayLogo = boltPayment.getImage().getHttpsURL();
-        }else{
+        } else {
             boltPayLogo = URLUtils.staticURL('/images/credit.png');
         }
     } catch (e) {
