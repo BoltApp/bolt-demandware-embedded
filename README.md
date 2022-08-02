@@ -53,13 +53,3 @@ Use the provided NPM scripts to compile and upload changes to your Sandbox.
 supported locales: `en-US`, `en-CA`, `fr-CA`
 
 # Features
-
-## Supported Payment Methods
-
-- Bolt Payments
-- Paypal
-- After pay
-- Affirm
-- Klarna
-- Amazon pay
-- Apple pay
