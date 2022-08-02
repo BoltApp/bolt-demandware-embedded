@@ -50,7 +50,7 @@ server.append('Begin', function (req, res, next) {
         return next();
     }
     res.render('checkout/checkout', {
-        isBoltLogin: boltAccountUtils.loginAsBoltUser(),
+        isBoltShopperLoggedIn: boltAccountUtils.loginAsBoltUser(),
         boltPayLogo: boltPayLogo,
         config: configuration,
         boltStoredPaymentMethods: boltStoredPaymentMethods,

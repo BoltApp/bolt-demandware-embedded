@@ -4,7 +4,7 @@
           action="${shipmentLoopState
           ? URLUtils.url('CheckoutAddressServices-AddNewAddress')
           : URLUtils.url('CheckoutShippingServices-SubmitShipping')}"
-          data-address-mode="${((pdict.isBoltLogin && pdict.boltAddressId && !pdict.shippingAddressDataMissing) || shippingModel.matchingAddressId) ? 'edit' : 'new'}"
+          data-address-mode="${((pdict.isBoltShopperLoggedIn && pdict.boltAddressId && !pdict.shippingAddressDataMissing) || shippingModel.matchingAddressId) ? 'edit' : 'new'}"
           <isprint value=${pdict.forms.shippingForm.attributes} encoding="off"/>
     >
         <isif condition="${lineItem}">
@@ -15,7 +15,7 @@
         <input name="shipmentUUID" type="hidden" value="${shippingModel.UUID}" />
 
         <div class="shipping-address ${pdict.order.usingMultiShipping ? 'd-none' : ''}" >
-            <fieldset class="shipment-selector-block ${(pdict.order.usingMultiShipping || shipmentLoopState) || (pdict.customer.addresses && pdict.customer.addresses.length > 0) || (pdict.isBoltLogin && pdict.boltStoredShippingAddress) ? '' : 'd-none'} ">
+            <fieldset class="shipment-selector-block ${(pdict.order.usingMultiShipping || shipmentLoopState) || (pdict.customer.addresses && pdict.customer.addresses.length > 0) || (pdict.isBoltShopperLoggedIn && pdict.boltStoredShippingAddress) ? '' : 'd-none'} ">
                 <isinclude template="checkout/shipping/shipmentSelector" />
             </fieldset>
 

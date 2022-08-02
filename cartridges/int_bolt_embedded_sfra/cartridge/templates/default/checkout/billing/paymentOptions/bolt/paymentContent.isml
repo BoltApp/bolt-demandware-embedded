@@ -30,7 +30,7 @@
                 <span>${Resource.msg('add.new.card', 'bolt', null)}</span>
             </label>
     </isif>
-    <div class="bolt-pay ${pdict.isBoltLogin && pdict.boltStoredPaymentMethods && pdict.boltStoredPaymentMethods.length ? 'd-none' : ''}">
+    <div class="bolt-pay ${pdict.isBoltShopperLoggedIn && pdict.boltStoredPaymentMethods && pdict.boltStoredPaymentMethods.length ? 'd-none' : ''}">
         <fieldset class="payment-form-fields">
             <input type="hidden" class="form-control" name="${pdict.forms.billingForm.paymentMethod.htmlName}"
                 value="${paymentOption.ID}">
@@ -49,7 +49,7 @@
                 name="${pdict.forms.billingForm.boltCreditCard.network.htmlName}">
             <input type="hidden" class="form-control" id="bolt-cc-postal"
                 name="${pdict.forms.billingForm.boltCreditCard.postalCode.htmlName}">
-            <isif condition="${pdict.isBoltLogin}">
+            <isif condition="${pdict.isBoltShopperLoggedIn}">
                 <input type="hidden" class="form-control" id="bolt-stored-paymentmethods" value="${dw.order.BasketMgr.currentBasket.custom.boltPaymentMethods}" >
                 <input type="hidden" class="form-control" id="bolt-selected-payment-id"
                     name="${pdict.forms.billingForm.boltCreditCard.selectedBoltPaymentID.htmlName}">
@@ -62,7 +62,7 @@
             <p class="bolt-error-message-text"></p>
         </div>
         <div id="div-to-inject-field-into"></div>
-        <isif condition="${!pdict.isBoltLogin}">
+        <isif condition="${!pdict.isBoltShopperLoggedIn}">
             <div id="acct-checkbox"></div>
         </isif>
     </div>

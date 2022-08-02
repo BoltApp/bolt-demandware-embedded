@@ -4,7 +4,7 @@
 <br />
 <div class="summary-details customer">
     <span class="customer-summary-email">
-        <isif condition="${pdict.isBoltLogin && pdict.order.orderEmail}">
+        <isif condition="${pdict.isBoltShopperLoggedIn && pdict.order.orderEmail}">
             ${Resource.msg('customer.login.as.bolt', 'bolt', null)} <b>${pdict.order.orderEmail}</b>
         <iselse/>
             ${(pdict.customer.profile && pdict.customer.profile.email) ? pdict.customer.profile.email: pdict.order.orderEmail}
