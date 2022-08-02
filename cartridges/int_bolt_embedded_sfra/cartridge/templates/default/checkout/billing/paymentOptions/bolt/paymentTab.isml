@@ -9,6 +9,6 @@
     }
 </isscript>
     <a class="nav-link bolt-tab" data-toggle="tab" href="#bolt-content" role="tab">
-        <img src="${boltPayLogo}" height="32" title="${paymentOption.name}" alt="${paymentOption.name}">
+        <img src="${pdict.boltPayLogo}" height="32" title="${paymentOption.name}" alt="${paymentOption.name}">
     </a>
 </li>

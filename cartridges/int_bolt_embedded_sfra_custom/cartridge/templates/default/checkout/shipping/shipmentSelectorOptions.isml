@@ -45,7 +45,7 @@
     </isloop>
 </isif>
 
-<isif condition="${isBoltLogin && pdict.boltStoredShippingAddress}">
+<isif condition="${pdict.isBoltLogin && pdict.boltStoredShippingAddress}">
     <option disabled>${Resource.msg('msg.account.addresses', 'checkout', null)}</option>
     <isloop items="${pdict.boltStoredShippingAddress}" var="address">
         <option value="${'ab_'+address.id}" ${address.id==pdict.boltAddressId ? 'selected="selected"' : '' }

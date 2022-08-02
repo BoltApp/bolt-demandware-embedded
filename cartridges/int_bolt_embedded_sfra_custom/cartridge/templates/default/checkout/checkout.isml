@@ -7,8 +7,6 @@
     <!-- Load Static Assets -->
     <!----------------------------------------------------------------------------------->
     <isscript>
-        var boltAccountUtils = require('int_bolt_embedded_sfra/cartridge/scripts/util/boltAccountUtils');
-        var isBoltLogin = boltAccountUtils.loginAsBoltUser();
         var assets = require('*/cartridge/scripts/assets.js');
         assets.addJs('/js/checkout.js');
         assets.addCss('/css/checkout/checkout.css');
@@ -21,7 +19,7 @@
     <h1 class="page-title">
         ${Resource.msg('title.checkout', 'checkout', null)}
     </h1>
-    <div id="checkout-main" class="container data-checkout-stage <isif condition=" ${pdict.order.usingMultiShipping && pdict.order.shipping.length > 1}">multi-ship</isif>" data-customer-type="${isBoltLogin ? 'boltShopper' : (pdict.customer.registeredUser ? 'registered' : 'guest')}" data-checkout-stage="${pdict.currentStage}"
+    <div id="checkout-main" class="container data-checkout-stage <isif condition=" ${pdict.order.usingMultiShipping && pdict.order.shipping.length > 1}">multi-ship</isif>" data-customer-type="${pdict.isBoltLogin ? 'boltShopper' : (pdict.customer.registeredUser ? 'registered' : 'guest')}" data-checkout-stage="${pdict.currentStage}"
         data-checkout-get-url="${URLUtils.https('CheckoutServices-Get')}">
         <!----------------------------------------------------------------------------------->
         <!-- Help and Phone -->
@@ -60,7 +58,7 @@
                 <div class="card customer-summary">
                     <div class="card-header clearfix">
                         <h2 class="pull-left card-header-custom">${Resource.msg('heading.checkout.customer', 'checkout', null)}</h2>
-                        <isif condition="${isBoltLogin}">
+                        <isif condition="${pdict.isBoltLogin}">
                             <button class="pull-right" id="bolt-logout"
                                 data-bolt-logout-url="${URLUtils.https('Bolt-AccountLogOut')}">${Resource.msg('customer.logout', 'bolt', null)}</button>
                         <iselse/>
