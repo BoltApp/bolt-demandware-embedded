@@ -56,10 +56,4 @@ supported locales: `en-US`, `en-CA`, `fr-CA`
 
 ## Supported Payment Methods
 
-- Bolt Payments
-- Paypal
-- After pay
-- Affirm
-- Klarna
-- Amazon pay
-- Apple pay
+- Credit Card
