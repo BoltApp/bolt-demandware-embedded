@@ -40,14 +40,14 @@ server.get('FetchOAuthToken', server.middleware.https, function (req, res, next)
     if (response.status === HttpResult.OK) {
         returnObject.accessToken = response.result.access_token;
         returnObject.refreshToken = response.result.refresh_token;
-        session.custom.boltOAuthToken = response.result.access_token;
-        session.custom.boltRefreshToken = response.result.refresh_token;
-        session.custom.boltRefreshTokenScope = response.result.refresh_token_scope;
+        session.custom.boltOAuthToken = response.result.access_token; // eslint-disable-line no-undef
+        session.custom.boltRefreshToken = response.result.refresh_token; // eslint-disable-line no-undef
+        session.custom.boltRefreshTokenScope = response.result.refresh_token_scope; // eslint-disable-line no-undef
         // store OAuth token expire time in milliseconds, 1000 -> ONE_SECOND
-        session.custom.boltOAuthTokenExpire = response.result.expires_in * 1000 + new Date().getTime();
+        session.custom.boltOAuthTokenExpire = response.result.expires_in * 1000 + new Date().getTime(); // eslint-disable-line no-undef
         log.info('fetching oauth token succeeded');
     } else {
-        var errorMsg = "Failed to fetch OAuth Token." + !empty(response.errors) && !empty(response.errors[0].message) ? response.errors[0].message : "";
+        var errorMsg = 'Failed to fetch OAuth Token.' + !empty(response.errors) && !empty(response.errors[0].message) ? response.errors[0].message : ''; // eslint-disable-line no-undef
         log.error(errorMsg);
         returnObject.errorMessage = errorMsg;
     }
@@ -58,8 +58,8 @@ server.get('FetchOAuthToken', server.middleware.https, function (req, res, next)
 
 server.get('GetAccountDetails', server.middleware.https, function (req, res, next) {
     var boltOAuthToken = oAuth.getOAuthToken();
-    if (empty(boltOAuthToken)) {
-        let errorMessage = 'Bolt OAuth Token is missing';
+    if (empty(boltOAuthToken)) { // eslint-disable-line no-undef
+        var errorMessage = 'Bolt OAuth Token is missing';
         log.error(errorMessage);
         res.json({
             success: false,

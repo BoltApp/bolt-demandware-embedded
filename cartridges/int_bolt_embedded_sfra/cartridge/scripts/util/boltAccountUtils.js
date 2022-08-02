@@ -40,7 +40,7 @@ var clearShippingInformationInBasket = function (basket) {
     });
     // Re-calculate basket since shipping price adjustment might be removed
     Transaction.wrap(function () {
-        basket.custom.boltShippingAddress = null;
+        basket.custom.boltShippingAddress = null; // eslint-disable-line no-param-reassign
         basketCalculationHelpers.calculateTotals(basket);
     });
 };
@@ -54,7 +54,7 @@ var clearBillingInformationInBasket = function (basket) {
     // Reset billing address information
     Transaction.wrap(function () {
         basket.createBillingAddress();
-        basket.custom.boltPaymentMethods = null;
+        basket.custom.boltPaymentMethods = null; // eslint-disable-line no-param-reassign
     });
     // Clear all BOLT_PAY payments
     var boltPaymentInstruments = basket.getPaymentInstruments('BOLT_PAY');
@@ -70,10 +70,10 @@ var clearBillingInformationInBasket = function (basket) {
  * @returns {void} - no return data
  */
 exports.clearBoltSessionData = function () {
-    delete session.custom.boltOAuthToken;
-    delete session.custom.boltRefreshToken;
-    delete session.custom.boltRefreshTokenScope;
-    delete session.custom.boltOAuthTokenExpire;
+    delete session.custom.boltOAuthToken; // eslint-disable-line no-undef
+    delete session.custom.boltRefreshToken; // eslint-disable-line no-undef
+    delete session.custom.boltRefreshTokenScope; // eslint-disable-line no-undef
+    delete session.custom.boltOAuthTokenExpire; // eslint-disable-line no-undef
 };
 
 /**
@@ -94,7 +94,7 @@ exports.clearShopperDataInBasket = function () {
  * @returns {boolean} - if bolt user returns true otherwise false
  */
 exports.loginAsBoltUser = function () {
-    return session.custom.boltOAuthToken !== null;
+    return session.custom.boltOAuthToken !== null; // eslint-disable-line no-undef
 };
 
 /*
@@ -105,9 +105,10 @@ exports.loginAsBoltUser = function () {
  */
 exports.saveCardToBolt = function (order, paymentInstrument) {
     try {
+        var errorMsg;
         var boltOAuthToken = oAuth.getOAuthToken();
-        if (empty(boltOAuthToken)) {
-            let errorMsg = 'Bolt OAuth Token is missing';
+        if (empty(boltOAuthToken)) { // eslint-disable-line no-undef
+            errorMsg = 'Bolt OAuth Token is missing';
             log.error(errorMsg);
             return {
                 success: false,
@@ -148,20 +149,20 @@ exports.saveCardToBolt = function (order, paymentInstrument) {
 
         // send add payment method request to Bolt
         var response = boltHttpUtils.restAPIClient(constants.HTTP_METHOD_POST, constants.ADD_PAYMENT_URL, JSON.stringify(request), constants.CONTENT_TYPE_JSON, bearerToken);
-        if(response.status === HttpResult.OK && response.result !== null){
+        if (response.status === HttpResult.OK && response.result !== null) {
             log.info('card succesfully added to bolt');
             return {
                 success: true,
                 newPaymentMethodID: response.result.id
             };
-        } else {
-            let errorMsg = Resource.msg('error.add.payment.method', 'bolt', null) + (!empty(response.errors) && !empty(response.errors[0].message) ? response.errors[0].message : '');
-            log.error(errorMsg);
-            return {
-                success: false,
-                message: errorMsg
-            };
         }
+        // eslint-disable-next-line no-undef
+        errorMsg = Resource.msg('error.add.payment.method', 'bolt', null) + (!empty(response.errors) && !empty(response.errors[0].message) ? response.errors[0].message : '');
+        log.error(errorMsg);
+        return {
+            success: false,
+            message: errorMsg
+        };
     } catch (e) {
         log.error(e.message);
         return {
@@ -174,67 +175,65 @@ exports.saveCardToBolt = function (order, paymentInstrument) {
 /**
  * Save new address to Bolt or update existing Bolt address
  * @param {dw.order.Order} order - SFCC order object
+ * @returns {void} - no return data
  */
 exports.saveAddressToBolt = function (order) {
     try {
         var shippingAddress = order.getDefaultShipment().getShippingAddress();
-
+        var errorMsg;
         // add bolt address id to endpoint if shopper is updating existing address
-        var addressUrl = shippingAddress.custom.boltAddressId ? (constants.SHOPPER_ADDRESS_URL + "/" + shippingAddress.custom.boltAddressId) : constants.SHOPPER_ADDRESS_URL;
+        var addressUrl = shippingAddress.custom.boltAddressId ? (constants.SHOPPER_ADDRESS_URL + '/' + shippingAddress.custom.boltAddressId) : constants.SHOPPER_ADDRESS_URL;
         var isGift = order.getDefaultShipment().isGift();
 
         var request = {
-            street_address1: shippingAddress.address1 || "",
-            street_address2: shippingAddress.address2 || "",
-            locality: shippingAddress.city || "",
-            region: shippingAddress.stateCode || "",
-            postal_code: shippingAddress.postalCode || "",
-            country_code: shippingAddress.countryCode.value || "",
-            first_name: shippingAddress.firstName || "",
-            last_name: shippingAddress.lastName || "",
-            phone: shippingAddress.phone || "",
+            street_address1: shippingAddress.address1 || '',
+            street_address2: shippingAddress.address2 || '',
+            locality: shippingAddress.city || '',
+            region: shippingAddress.stateCode || '',
+            postal_code: shippingAddress.postalCode || '',
+            country_code: shippingAddress.countryCode.value || '',
+            first_name: shippingAddress.firstName || '',
+            last_name: shippingAddress.lastName || '',
+            phone: shippingAddress.phone || '',
             default: !isGift
-        }
+        };
 
         var boltOAuthToken = oAuth.getOAuthToken();
-        if (empty(boltOAuthToken)) {
-            let errorMsg = 'Bolt OAuth Token is missing';
+        if (empty(boltOAuthToken)) { // eslint-disable-line no-undef
+            errorMsg = 'Bolt OAuth Token is missing';
             log.error(errorMsg);
-            return {
-                success: false,
-                message: errorMsg
-            };
         }
-        var bearerToken = "Bearer ".concat(boltOAuthToken);
+        var bearerToken = 'Bearer '.concat(boltOAuthToken);
 
         // send save address request to Bolt
         var response = boltHttpUtils.restAPIClient(constants.HTTP_METHOD_POST, addressUrl, JSON.stringify(request), constants.CONTENT_TYPE_JSON, bearerToken);
-        var errorMsg = Resource.msg('error.save.address', 'bolt', null)
+        errorMsg = Resource.msg('error.save.address', 'bolt', null);
         if (response.status && response.status === HttpResult.ERROR) {
-            log.error(errorMsg + (!empty(response.errors) && !empty(response.errors[0].message) ? response.errors[0].message : "") );
+            log.error(errorMsg + (!empty(response.errors) && !empty(response.errors[0].message) ? response.errors[0].message : '')); // eslint-disable-line no-undef
         }
         log.info('address successfully saved to bolt');
     } catch (e) {
         log.error(e.message);
     }
-}
+};
 /**
  * Get bolt payment data which is stored in SFCC basket
  * @param {dw.order.Basket} basket - the SFCC basket
+ * @param {string} selectedBoltPaymentID - selected Bolt Payment ID
  * @return {Object} null or selected bolt payment data object
  */
- exports.getBoltPayment = function(basket, selectedBoltPaymentID){
-    if(empty(basket)|| empty(basket.custom.boltPaymentMethods)) {
+exports.getBoltPayment = function (basket, selectedBoltPaymentID) {
+    if (empty(basket) || empty(basket.custom.boltPaymentMethods)) { // eslint-disable-line no-undef
         return null;
     }
     var boltPayments = JSON.parse(basket.custom.boltPaymentMethods);
-    for (var i=0; i < boltPayments.length; i++) {
-        if(boltPayments[i].id === selectedBoltPaymentID){
+    for (var i = 0; i < boltPayments.length; i++) { // eslint-disable-line no-plusplus
+        if (boltPayments[i].id === selectedBoltPaymentID) {
             return boltPayments[i];
         }
     }
     return null;
-}
+};
 
 /**
  * Check if any required address data is missing
@@ -251,23 +250,22 @@ exports.isAnyAddressDataMissing = function (address) {
         address.stateCode || '',
         address.countryCode.value || '',
         address.postalCode || ''
-    ])){
+    ])) {
         return true;
     }
     return false;
-}
+};
 
 exports.checkEmptyValue = function (list) {
     return list.includes('');
-}
-
+};
 
 /**
  * Check if it is a empty SFCC address object
  * @param {dw.order.OrderAddress} address - SFCC address object
  * @return {boolean} true if all the fields are empty otherwise false
  */
-exports.isEmptyAddress = function(address) {
+exports.isEmptyAddress = function (address) {
     if (address === null) {
         return true;
     }
@@ -280,7 +278,7 @@ exports.isEmptyAddress = function(address) {
         address.countryCode && address.countryCode.value ? address.countryCode.value : null,
         address.postalCode,
         address.phone
-    ].every(function(field){
+    ].every(function (field) {
         return field === null;
-    })
-}
+    });
+};

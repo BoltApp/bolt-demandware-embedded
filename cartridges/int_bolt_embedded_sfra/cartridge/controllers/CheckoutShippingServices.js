@@ -2,16 +2,11 @@
 
 /* API Includes */
 var server = require('server');
-var HttpResult = require('dw/svc/Result');
-var Resource = require('dw/web/Resource');
 var BasketMgr = require('dw/order/BasketMgr');
 var Transaction = require('dw/system/Transaction');
 
 /* Script Modules */
-var csrfProtection = require('*/cartridge/scripts/middleware/csrf');
-var boltHttpUtils = require('~/cartridge/scripts/services/httpUtils');
 var boltAccountUtils = require('~/cartridge/scripts/util/boltAccountUtils');
-var constants = require('~/cartridge/scripts/util/constants');
 var logUtils = require('~/cartridge/scripts/util/boltLogUtils');
 var log = logUtils.getLogger('Shipping');
 var AddressModel = require('*/cartridge/models/address');
@@ -28,7 +23,7 @@ server.append('SubmitShipping', function (req, res, next) {
             var order = res.viewData.order;
             if (order && currentBasket) {
                 var emptyBillingAddressInBasket = boltAccountUtils.isEmptyAddress(currentBasket.getBillingAddress());
-                var noBillingAddressData = empty(order.billing.matchingAddressId) && emptyBillingAddressInBasket;
+                var noBillingAddressData = empty(order.billing.matchingAddressId) && emptyBillingAddressInBasket; // eslint-disable-line no-undef
                 if (noBillingAddressData && order.billing && currentBasket.getDefaultShipment()) {
                     order.billing.matchingAddressId = currentBasket.getDefaultShipment().UUID;
                     order.billing.billingAddress = new AddressModel(currentBasket.getDefaultShipment().getShippingAddress());
@@ -42,7 +37,7 @@ server.append('SubmitShipping', function (req, res, next) {
         }
     });
     // shopper doesn't have a Bolt account or no stored address
-    if (!boltAccountUtils.loginAsBoltUser() || empty(currentBasket.custom.boltShippingAddress)) {
+    if (!boltAccountUtils.loginAsBoltUser() || empty(currentBasket.custom.boltShippingAddress)) { // eslint-disable-line no-undef
         log.info('shopper has no bolt stored address, cannot save bolt address ID');
         return next();
     }
@@ -56,6 +51,6 @@ server.append('SubmitShipping', function (req, res, next) {
         shippingAddress.custom.boltAddressId = boltAddressId || '';
     });
 
-    next();
+    return next();
 });
 module.exports = server.exports();
