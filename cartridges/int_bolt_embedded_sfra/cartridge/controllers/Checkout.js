@@ -3,6 +3,8 @@
 var server = require('server');
 var BasketMgr = require('dw/order/BasketMgr');
 var Locale = require('dw/util/Locale');
+var PaymentMgr = require('dw/order/PaymentMgr');
+var URLUtils = require('dw/web/URLUtils');
 var page = module.superModule;
 server.extend(page);
 
@@ -12,9 +14,10 @@ var boltAccountUtils = require('~/cartridge/scripts/util/boltAccountUtils');
 var logUtils = require('~/cartridge/scripts/util/boltLogUtils');
 var log = logUtils.getLogger('Checkout');
 var AddressModel = require('*/cartridge/models/address');
+var constants = require('~/cartridge/scripts/util/constants');
 
 server.append('Begin', function (req, res, next) {
-    var configuration, boltStoredPaymentMethods, boltStoredShippingAddress, boltAddressId;
+    var configuration, boltStoredPaymentMethods, boltStoredShippingAddress, boltAddressId, boltPayLogo;
     var shippingAddressDataMissing = true;
     var basket = BasketMgr.getCurrentBasket();
     this.on('route:BeforeComplete', function (req, res) { // eslint-disable-line no-shadow
@@ -32,6 +35,13 @@ server.append('Begin', function (req, res, next) {
         if (basket.getDefaultShipment() && basket.getDefaultShipment().getShippingAddress()) {
             shippingAddressDataMissing = boltAccountUtils.isAnyAddressDataMissing(basket.getDefaultShipment().getShippingAddress());
         }
+
+        var boltPayment = PaymentMgr.getPaymentMethod(constants.BOLT_PAY);
+        if(boltPayment.getImage() !== null){
+            boltPayLogo = boltPayment.getImage().getHttpsURL();
+        }else{
+            boltPayLogo = URLUtils.staticURL('/images/credit.png');
+        }
     } catch (e) {
         log.error(e.message);
         res.json({
@@ -40,6 +50,8 @@ server.append('Begin', function (req, res, next) {
         return next();
     }
     res.render('checkout/checkout', {
+        isBoltShopperLoggedIn: boltAccountUtils.loginAsBoltUser(),
+        boltPayLogo: boltPayLogo,
         config: configuration,
         boltStoredPaymentMethods: boltStoredPaymentMethods,
         boltStoredShippingAddress: boltStoredShippingAddress,

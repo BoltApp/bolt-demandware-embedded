@@ -1,13 +1,10 @@
-<isscript>
-    var boltAccountUtils = require('~/cartridge/scripts/util/boltAccountUtils');
-</isscript>
 <span class="summary-section-label customer-label">
     ${Resource.msg('label.customer.data', 'confirmation', null)}
 </span>
 <br />
 <div class="summary-details customer">
     <span class="customer-summary-email">
-        <isif condition="${boltAccountUtils.loginAsBoltUser() && pdict.order.orderEmail}">
+        <isif condition="${pdict.isBoltShopperLoggedIn && pdict.order.orderEmail}">
             ${Resource.msg('customer.login.as.bolt', 'bolt', null)} <b>${pdict.order.orderEmail}</b>
         <iselse/>
             ${(pdict.customer.profile && pdict.customer.profile.email) ? pdict.customer.profile.email: pdict.order.orderEmail}

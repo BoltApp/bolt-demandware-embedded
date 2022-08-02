@@ -1,14 +1,5 @@
 <li class="nav-item" data-method-id="${paymentOption.ID}">
-    <isscript>
-    var boltPayLogo;
-    var boltPayment = dw.order.PaymentMgr.getPaymentMethod(paymentOption.ID);
-    if(boltPayment.getImage() !== null){
-        boltPayLogo = boltPayment.getImage().getHttpsURL();
-    }else{
-        boltPayLogo = dw.web.URLUtils.staticURL('/images/credit.png');
-    }
-</isscript>
     <a class="nav-link bolt-tab" data-toggle="tab" href="#bolt-content" role="tab">
-        <img src="${boltPayLogo}" height="32" title="${paymentOption.name}" alt="${paymentOption.name}">
+        <img src="${pdict.boltPayLogo}" height="32" title="${paymentOption.name}" alt="${paymentOption.name}">
     </a>
 </li>
