@@ -51,7 +51,7 @@ server.append('Begin', function (req, res, next) {
     }
     res.render('checkout/checkout', {
         isBoltLogin: boltAccountUtils.loginAsBoltUser(),
-        boltPayLogo: boltPayLogo || '',
+        boltPayLogo: boltPayLogo,
         config: configuration,
         boltStoredPaymentMethods: boltStoredPaymentMethods,
         boltStoredShippingAddress: boltStoredShippingAddress,
