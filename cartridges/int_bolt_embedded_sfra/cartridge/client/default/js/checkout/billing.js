@@ -14,28 +14,31 @@ base.methods.updatePaymentInformation = function (order) {
 
     if (order.billing.payment && order.billing.payment.selectedPaymentInstruments
         && order.billing.payment.selectedPaymentInstruments.length > 0) {
-        for (var paymentInstrument of order.billing.payment.selectedPaymentInstruments) { // eslint-disable-line no-restricted-syntax
+        order.billing.payment.selectedPaymentInstruments.forEach(function (paymentInstrument) {
             if (paymentInstrument.paymentMethod === 'BOLT_PAY') {
                 htmlToAppend += '<div class="credit-card-type"><span>'
-                    + paymentInstrument.type
-                    + '</span><div class="credit-card-number"><span>'
-                    + paymentInstrument.lastFour
-                    + '</span></div><div class="credit-card-expiration-date"><span>'
-                    + paymentInstrument.expirationMonth
-                    + '/' + paymentInstrument.expirationYear
-                    + '</span></div>';
+                        + paymentInstrument.type
+                        + '</span><div class="credit-card-number"><span>'
+                        + paymentInstrument.lastFour
+                        + '</span></div><div class="credit-card-expiration-date"><span>'
+                        + paymentInstrument.expirationMonth
+                        + '/' + paymentInstrument.expirationYear
+                        + '</span></div>';
             } else if (paymentInstrument.paymentMethod === 'CREDIT_CARD') {
                 htmlToAppend += '<span>' + order.resources.cardType + ' '
-                + order.billing.payment.selectedPaymentInstruments[0].type
-                + '</span><div>'
-                + order.billing.payment.selectedPaymentInstruments[0].maskedCreditCardNumber
-                + '</div><div><span>'
-                + order.resources.cardEnding + ' '
-                + order.billing.payment.selectedPaymentInstruments[0].expirationMonth
-                + '/' + order.billing.payment.selectedPaymentInstruments[0].expirationYear
-                + '</span></div>';
+                    + order.billing.payment.selectedPaymentInstruments[0].type
+                    + '</span><div>'
+                    + order.billing.payment.selectedPaymentInstruments[0].maskedCreditCardNumber
+                    + '</div><div><span>'
+                    + order.resources.cardEnding + ' '
+                    + order.billing.payment.selectedPaymentInstruments[0].expirationMonth
+                    + '/' + order.billing.payment.selectedPaymentInstruments[0].expirationYear
+                    + '</span></div>';
             }
-        }
+        });
+        // for (var paymentInstrument of order.billing.payment.selectedPaymentInstruments) { // eslint-disable-line no-restricted-syntax
+
+        // }
     }
     $paymentSummary.empty().append(htmlToAppend);
 };

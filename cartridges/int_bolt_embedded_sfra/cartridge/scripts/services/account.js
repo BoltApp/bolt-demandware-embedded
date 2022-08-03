@@ -169,7 +169,7 @@ function addPaymentMethodInfoToBasket(basket, boltPaymentMethods) {
     }
     // store all payment methods in the basket so that it can be later chosen by the customer
     Transaction.wrap(function () {
-        basket.getCustom().boltPaymentMethods = JSON.stringify(boltPaymentMethods); // eslint-disable-line no-param-reassign
+        basket.getCustom().boltPaymentMethods = JSON.stringify(boltPaymentMethods);
     });
 
     var creditCardNumber = boltPaymentMethod.last4 ? constants.CC_MASKED_DIGITS + boltPaymentMethod.last4 : '';

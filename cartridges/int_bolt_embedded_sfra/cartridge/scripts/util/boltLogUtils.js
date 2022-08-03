@@ -39,11 +39,11 @@ function actionMaskData(obj) {
             case 'shipping_address':
             case 'phones':
             case 'emails':
-                obj[key] = '***'; // eslint-disable-line no-param-reassign
+                obj[key] = '***';
                 break;
             default:
                 if (typeof obj[key] === 'object') {
-                    obj[key] = actionMaskData(obj[key]); // eslint-disable-line no-param-reassign
+                    obj[key] = actionMaskData(obj[key]);
                 }
                 break;
         }

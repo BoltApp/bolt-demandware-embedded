@@ -1,6 +1,5 @@
 'use strict';
 
-/* eslint-disable no-param-reassign */
 /* eslint-disable no-shadow */
 /**
  * Utility functions for API service

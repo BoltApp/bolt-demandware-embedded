@@ -40,7 +40,7 @@ var clearShippingInformationInBasket = function (basket) {
     });
     // Re-calculate basket since shipping price adjustment might be removed
     Transaction.wrap(function () {
-        basket.custom.boltShippingAddress = null; // eslint-disable-line no-param-reassign
+        basket.custom.boltShippingAddress = null;
         basketCalculationHelpers.calculateTotals(basket);
     });
 };
@@ -54,7 +54,7 @@ var clearBillingInformationInBasket = function (basket) {
     // Reset billing address information
     Transaction.wrap(function () {
         basket.createBillingAddress();
-        basket.custom.boltPaymentMethods = null; // eslint-disable-line no-param-reassign
+        basket.custom.boltPaymentMethods = null;
     });
     // Clear all BOLT_PAY payments
     var boltPaymentInstruments = basket.getPaymentInstruments('BOLT_PAY');
@@ -226,13 +226,14 @@ exports.getBoltPayment = function (basket, selectedBoltPaymentID) {
     if (empty(basket) || empty(basket.custom.boltPaymentMethods)) {
         return null;
     }
+    var selectedBoltPayment = null;
     var boltPayments = JSON.parse(basket.custom.boltPaymentMethods);
-    for (var i = 0; i < boltPayments.length; i++) { // eslint-disable-line no-plusplus
-        if (boltPayments[i].id === selectedBoltPaymentID) {
-            return boltPayments[i];
+    boltPayments.forEach(function (boltPayment) {
+        if (boltPayment.id === selectedBoltPaymentID) {
+            selectedBoltPayment = boltPayment;
         }
-    }
-    return null;
+    });
+    return selectedBoltPayment;
 };
 
 /**

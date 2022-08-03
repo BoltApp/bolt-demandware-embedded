@@ -100,7 +100,7 @@ function authorize(orderNumber, paymentInstrument, paymentProcessor) {
         var saveCardResult = boltAccountUtils.saveCardToBolt(order, paymentInstrument);
         if (saveCardResult.success) {
             Transaction.wrap(function () {
-                paymentInstrument.custom.boltPaymentMethodId = saveCardResult.newPaymentMethodID; // eslint-disable-line no-param-reassign
+                paymentInstrument.custom.boltPaymentMethodId = saveCardResult.newPaymentMethodID;
             });
         }
     }
