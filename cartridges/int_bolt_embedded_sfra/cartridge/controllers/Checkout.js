@@ -25,7 +25,7 @@ server.append('Begin', function (req, res, next) {
     var basket = BasketMgr.getCurrentBasket();
     this.on('route:BeforeComplete', function (req, res) { // eslint-disable-line no-shadow
         var order = res.viewData.order;
-        if (order.billing && empty(order.billing.matchingAddressId) && basket.getDefaultShipment()) { // eslint-disable-line no-undef
+        if (order.billing && empty(order.billing.matchingAddressId) && basket.getDefaultShipment()) {
             order.billing.matchingAddressId = basket.getDefaultShipment().UUID;
             order.billing.billingAddress = new AddressModel(basket.getDefaultShipment().getShippingAddress());
         }

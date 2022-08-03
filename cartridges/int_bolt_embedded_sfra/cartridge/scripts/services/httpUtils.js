@@ -31,7 +31,7 @@ exports.restAPIClient = function (method, endPoint, request, requestContentType,
         createRequest: function (service, args) {
             service.URL = args.endPointUrl;
             service.setRequestMethod(args.method);
-            if (!empty(requestContentType)) { // eslint-disable-line no-undef
+            if (!empty(requestContentType)) {
                 service.addHeader('Content-Type', requestContentType);
             }
             service.addHeader('X-Api-Key', args.boltAPIKey);

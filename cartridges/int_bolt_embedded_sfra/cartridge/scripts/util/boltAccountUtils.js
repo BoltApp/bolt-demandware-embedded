@@ -70,10 +70,10 @@ var clearBillingInformationInBasket = function (basket) {
  * @returns {void} - no return data
  */
 exports.clearBoltSessionData = function () {
-    delete session.custom.boltOAuthToken; // eslint-disable-line no-undef
-    delete session.custom.boltRefreshToken; // eslint-disable-line no-undef
-    delete session.custom.boltRefreshTokenScope; // eslint-disable-line no-undef
-    delete session.custom.boltOAuthTokenExpire; // eslint-disable-line no-undef
+    delete session.custom.boltOAuthToken;
+    delete session.custom.boltRefreshToken;
+    delete session.custom.boltRefreshTokenScope;
+    delete session.custom.boltOAuthTokenExpire;
 };
 
 /**
@@ -94,7 +94,7 @@ exports.clearShopperDataInBasket = function () {
  * @returns {boolean} - if bolt user returns true otherwise false
  */
 exports.loginAsBoltUser = function () {
-    return session.custom.boltOAuthToken !== null; // eslint-disable-line no-undef
+    return session.custom.boltOAuthToken !== null;
 };
 
 /*
@@ -107,7 +107,7 @@ exports.saveCardToBolt = function (order, paymentInstrument) {
     try {
         var errorMsg;
         var boltOAuthToken = oAuth.getOAuthToken();
-        if (empty(boltOAuthToken)) { // eslint-disable-line no-undef
+        if (empty(boltOAuthToken)) {
             errorMsg = 'Bolt OAuth Token is missing';
             log.error(errorMsg);
             return {
@@ -199,7 +199,7 @@ exports.saveAddressToBolt = function (order) {
         };
 
         var boltOAuthToken = oAuth.getOAuthToken();
-        if (empty(boltOAuthToken)) { // eslint-disable-line no-undef
+        if (empty(boltOAuthToken)) {
             errorMsg = 'Bolt OAuth Token is missing';
             log.error(errorMsg);
         }
@@ -209,7 +209,7 @@ exports.saveAddressToBolt = function (order) {
         var response = boltHttpUtils.restAPIClient(constants.HTTP_METHOD_POST, addressUrl, JSON.stringify(request), constants.CONTENT_TYPE_JSON, bearerToken);
         errorMsg = Resource.msg('error.save.address', 'bolt', null);
         if (response.status && response.status === HttpResult.ERROR) {
-            log.error(errorMsg + (!empty(response.errors) && !empty(response.errors[0].message) ? response.errors[0].message : '')); // eslint-disable-line no-undef
+            log.error(errorMsg + (!empty(response.errors) && !empty(response.errors[0].message) ? response.errors[0].message : ''));
         }
         log.info('address successfully saved to bolt');
     } catch (e) {
@@ -223,7 +223,7 @@ exports.saveAddressToBolt = function (order) {
  * @return {Object} null or selected bolt payment data object
  */
 exports.getBoltPayment = function (basket, selectedBoltPaymentID) {
-    if (empty(basket) || empty(basket.custom.boltPaymentMethods)) { // eslint-disable-line no-undef
+    if (empty(basket) || empty(basket.custom.boltPaymentMethods)) {
         return null;
     }
     var boltPayments = JSON.parse(basket.custom.boltPaymentMethods);

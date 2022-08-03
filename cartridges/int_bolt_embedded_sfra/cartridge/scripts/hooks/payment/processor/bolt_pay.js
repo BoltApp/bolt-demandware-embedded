@@ -25,8 +25,8 @@ var log = logUtils.getLogger('Auth');
  * @returns {Object} JSON Object
  */
 function handle(currentBasket, paymentInformation, paymentMethodID, req) { // eslint-disable-line no-unused-vars
-    var useCreditCardToken = !empty(paymentInformation.creditCardToken); // eslint-disable-line no-undef
-    var useExistingCard = boltAccountUtils.loginAsBoltUser() && !empty(paymentInformation.selectedBoltPaymentID); // eslint-disable-line no-undef
+    var useCreditCardToken = !empty(paymentInformation.creditCardToken);
+    var useExistingCard = boltAccountUtils.loginAsBoltUser() && !empty(paymentInformation.selectedBoltPaymentID);
     if (!useCreditCardToken && !useExistingCard) {
         return {
             fieldErrors: {},
@@ -96,7 +96,7 @@ function authorize(orderNumber, paymentInstrument, paymentProcessor) {
     var order = OrderMgr.getOrder(orderNumber);
     // save card to bolt account
     // if save card is success, use the new credit card id for authorization
-    if (boltAccountUtils.loginAsBoltUser() && !empty(paymentInstrument.getCreditCardToken())) { // eslint-disable-line no-undef
+    if (boltAccountUtils.loginAsBoltUser() && !empty(paymentInstrument.getCreditCardToken())) {
         var saveCardResult = boltAccountUtils.saveCardToBolt(order, paymentInstrument);
         if (saveCardResult.success) {
             Transaction.wrap(function () {
@@ -119,10 +119,10 @@ function authorize(orderNumber, paymentInstrument, paymentProcessor) {
         constants.CONTENT_TYPE_JSON
     );
     if (response.status && response.status === HttpResult.ERROR) {
-        var errorMessage = !empty(response.errors) && !empty(response.errors[0].message) // eslint-disable-line no-undef
+        var errorMessage = !empty(response.errors) && !empty(response.errors[0].message)
             ? response.errors[0].message
             : '';
-        var errorCode = !empty(response.errors) && !empty(response.errors[0].code) // eslint-disable-line no-undef
+        var errorCode = !empty(response.errors) && !empty(response.errors[0].code)
             ? response.errors[0].code
             : '';
         log.error('Payment authorization failed, error: ' + errorMessage + ' ; Code: ' + errorCode);
@@ -152,11 +152,11 @@ function authorize(orderNumber, paymentInstrument, paymentProcessor) {
  * @return {Object} returns an response object
  */
 function getAuthRequest(order, paymentInstrument) {
-    if (empty(paymentInstrument)) { // eslint-disable-line no-undef
+    if (empty(paymentInstrument)) {
         return { error: true, errorMsg: 'Missing payment instrument.' };
     }
 
-    if (empty(order.billingAddress)) { // eslint-disable-line no-undef
+    if (empty(order.billingAddress)) {
         return { error: true, errorMsg: 'SFCC basket has not billing address.' };
     }
 
@@ -245,7 +245,7 @@ function getAuthRequest(order, paymentInstrument) {
  * @return {string} DW Session ID
  */
 function getDwsidCookie() {
-    var cookies = request.getHttpCookies(); // eslint-disable-line no-undef
+    var cookies = request.getHttpCookies();
 
     for (var i = 0; i < cookies.cookieCount; i++) { // eslint-disable-line no-plusplus
         if (cookies[i].name === 'dwsid') {

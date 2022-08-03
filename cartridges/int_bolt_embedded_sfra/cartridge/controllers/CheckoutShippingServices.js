@@ -23,7 +23,7 @@ server.append('SubmitShipping', function (req, res, next) {
             var order = res.viewData.order;
             if (order && currentBasket) {
                 var emptyBillingAddressInBasket = boltAccountUtils.isEmptyAddress(currentBasket.getBillingAddress());
-                var noBillingAddressData = empty(order.billing.matchingAddressId) && emptyBillingAddressInBasket; // eslint-disable-line no-undef
+                var noBillingAddressData = empty(order.billing.matchingAddressId) && emptyBillingAddressInBasket;
                 if (noBillingAddressData && order.billing && currentBasket.getDefaultShipment()) {
                     order.billing.matchingAddressId = currentBasket.getDefaultShipment().UUID;
                     order.billing.billingAddress = new AddressModel(currentBasket.getDefaultShipment().getShippingAddress());
@@ -37,7 +37,7 @@ server.append('SubmitShipping', function (req, res, next) {
         }
     });
     // shopper doesn't have a Bolt account or no stored address
-    if (!boltAccountUtils.loginAsBoltUser() || empty(currentBasket.custom.boltShippingAddress)) { // eslint-disable-line no-undef
+    if (!boltAccountUtils.loginAsBoltUser() || empty(currentBasket.custom.boltShippingAddress)) {
         log.info('shopper has no bolt stored address, cannot save bolt address ID');
         return next();
     }

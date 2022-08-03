@@ -33,8 +33,8 @@ exports.fetchNewToken = function (code, scope) {
  */
 exports.getOAuthToken = function () {
     // OAuth token will not expire in 4 seconds, use the current OAuth token in session
-    if ((session.custom.boltOAuthTokenExpire - new Date().getTime()) > constants.OAUTH_TOKEN_REFRESH_TIME) { // eslint-disable-line no-undef
-        return session.custom.boltOAuthToken; // eslint-disable-line no-undef
+    if ((session.custom.boltOAuthTokenExpire - new Date().getTime()) > constants.OAUTH_TOKEN_REFRESH_TIME) {
+        return session.custom.boltOAuthToken;
     }
 
     // refresh OAuth token
@@ -47,28 +47,28 @@ exports.getOAuthToken = function () {
  */
 function refreshToken() {
     var boltOAuthToken;
-    if (!session.custom.boltRefreshToken || !session.custom.boltRefreshTokenScope) { // eslint-disable-line no-undef
+    if (!session.custom.boltRefreshToken || !session.custom.boltRefreshTokenScope) {
         log.error('Refresh token or refresh token scope is missing.');
         return boltOAuthToken;
     }
 
     var config = preferences.getSitePreferences();
     var payload = 'grant_type=refresh_token&refresh_token='
-        .concat(session.custom.boltRefreshToken, '&scope=') // eslint-disable-line no-undef
-        .concat(session.custom.boltRefreshTokenScope, '&client_secret=') // eslint-disable-line no-undef
+        .concat(session.custom.boltRefreshToken, '&scope=')
+        .concat(session.custom.boltRefreshTokenScope, '&client_secret=')
         .concat(config.boltApiKey, '&client_id=')
         .concat(config.boltMultiPublishableKey);
 
     var response = httpUtils.restAPIClient('POST', constants.OAUTH_TOKEN_URL, payload, 'application/x-www-form-urlencoded');
-    if (response.status === HttpResult.OK && !empty(response.result)) { // eslint-disable-line no-undef
-        session.custom.boltOAuthToken = response.result.access_token; // eslint-disable-line no-undef
-        session.custom.boltRefreshToken = response.result.refresh_token; // eslint-disable-line no-undef
-        session.custom.boltRefreshTokenScope = response.result.refresh_token_scope; // eslint-disable-line no-undef
+    if (response.status === HttpResult.OK && !empty(response.result)) {
+        session.custom.boltOAuthToken = response.result.access_token;
+        session.custom.boltRefreshToken = response.result.refresh_token;
+        session.custom.boltRefreshTokenScope = response.result.refresh_token_scope;
         // store OAuth token expire time in milliseconds, 1000 -> ONE_SECOND
-        session.custom.boltOAuthTokenExpire = Date.now() + response.result.expires_in * 1000; // eslint-disable-line no-undef
+        session.custom.boltOAuthTokenExpire = Date.now() + response.result.expires_in * 1000;
         boltOAuthToken = response.result.access_token;
     } else {
-        log.error('Failed to refresh OAuth Token.' + (!empty(response.errors) && !empty(response.errors[0].message) ? response.errors[0].message : '')); // eslint-disable-line no-undef
+        log.error('Failed to refresh OAuth Token.' + (!empty(response.errors) && !empty(response.errors[0].message) ? response.errors[0].message : ''));
     }
 
     return boltOAuthToken;
