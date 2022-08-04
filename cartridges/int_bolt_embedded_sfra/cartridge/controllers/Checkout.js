@@ -2,7 +2,6 @@
 
 var server = require('server');
 var BasketMgr = require('dw/order/BasketMgr');
-var Locale = require('dw/util/Locale');
 var PaymentMgr = require('dw/order/PaymentMgr');
 var URLUtils = require('dw/web/URLUtils');
 var page = module.superModule;
@@ -17,7 +16,11 @@ var AddressModel = require('*/cartridge/models/address');
 var constants = require('~/cartridge/scripts/util/constants');
 
 server.append('Begin', function (req, res, next) {
-    var configuration, boltStoredPaymentMethods, boltStoredShippingAddress, boltAddressId, boltPayLogo;
+    var configuration;
+    var boltStoredPaymentMethods;
+    var boltStoredShippingAddress;
+    var boltAddressId;
+    var boltPayLogo;
     var shippingAddressDataMissing = true;
     var basket = BasketMgr.getCurrentBasket();
     this.on('route:BeforeComplete', function (req, res) { // eslint-disable-line no-shadow
@@ -59,6 +62,6 @@ server.append('Begin', function (req, res, next) {
         shippingAddressDataMissing: shippingAddressDataMissing,
         locale: req.locale.id
     });
-    next();
+    return next();
 });
 module.exports = server.exports();

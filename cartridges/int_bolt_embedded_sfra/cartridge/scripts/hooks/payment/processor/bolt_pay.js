@@ -24,7 +24,7 @@ var log = logUtils.getLogger('Auth');
  * @param {Object} req - request
  * @returns {Object} JSON Object
  */
-function handle(currentBasket, paymentInformation, paymentMethodID, req) {
+function handle(currentBasket, paymentInformation, paymentMethodID, req) { // eslint-disable-line no-unused-vars
     var useCreditCardToken = !empty(paymentInformation.creditCardToken);
     var useExistingCard = boltAccountUtils.loginAsBoltUser() && !empty(paymentInformation.selectedBoltPaymentID);
     if (!useCreditCardToken && !useExistingCard) {
@@ -247,7 +247,7 @@ function getAuthRequest(order, paymentInstrument) {
 function getDwsidCookie() {
     var cookies = request.getHttpCookies();
 
-    for (var i = 0; i < cookies.cookieCount; i++) {
+    for (var i = 0; i < cookies.cookieCount; i++) { // eslint-disable-line no-plusplus
         if (cookies[i].name === 'dwsid') {
             return cookies[i].value;
         }

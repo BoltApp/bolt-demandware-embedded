@@ -10,16 +10,24 @@ var billingHelpers = require('./billing');
 var addressHelpers = require('./address');
 
 (function ($) {
-
+    /**
+     * This wrap function is to used to keep the logic in sync way
+     * @param {function} fn - function
+     * @returns {Object} - Deferred Object
+     */
     function wrapQ(fn) {
         var defer = $.Deferred();
-        fn().then(defer.resolve).catch(defer.reject)
+        fn().then(defer.resolve).catch(defer.reject);
         return defer;
     }
-
+    /**
+     * Trigger event and keep it sync
+     * @param {string} name - event name
+     * @returns {Promise} - Promise
+     */
     function triggerEvent(name) {
-        return new Promise ((resolve, reject) => {
-            $('body').trigger(name, {resolve, reject});
+        return new Promise((resolve, reject) => {
+            $('body').trigger(name, { resolve, reject });
         });
     }
 
@@ -62,10 +70,10 @@ var addressHelpers = require('./address');
          * @param {number} currentStage - The current stage the user is currently on in the checkout
          */
         function updateUrl(currentStage) {
-            history.pushState(
+            history.pushState( // eslint-disable-line no-restricted-globals
                 checkoutStages[currentStage],
                 document.title,
-                location.pathname
+                location.pathname // eslint-disable-line no-restricted-globals
                 + '?stage='
                 + checkoutStages[currentStage]
                 + '#'
@@ -119,7 +127,7 @@ var addressHelpers = require('./address');
                         }
                     });
                     return defer;
-                } else if (stage === 'shipping') {
+                } if (stage === 'shipping') {
                     //
                     // Clear Previous Errors
                     //
@@ -129,8 +137,8 @@ var addressHelpers = require('./address');
                     // Submit the Shipping Address Form
                     //
                     var isMultiShip = $('#checkout-main').hasClass('multi-ship');
-                    var formSelector = isMultiShip ?
-                        '.multi-shipping .active form' : '.single-shipping .shipping-form';
+                    var formSelector = isMultiShip
+                        ? '.multi-shipping .active form' : '.single-shipping .shipping-form';
                     var form = $(formSelector);
 
                     if (isMultiShip && form.length === 0) {
@@ -145,16 +153,18 @@ var addressHelpers = require('./address');
                                 // enable the next:Payment button here
                                 $('body').trigger('checkout:enableButton', '.next-step-button button');
                                 if (!data.error) {
-                                    $('body').trigger('checkout:updateCheckoutView',
-                                        { order: data.order, customer: data.customer });
+                                    $('body').trigger(
+                                        'checkout:updateCheckoutView',
+                                        { order: data.order, customer: data.customer }
+                                    );
                                     defer.resolve();
                                 } else if (data.message && $('.shipping-error .alert-danger').length < 1) {
                                     var errorMsg = data.message;
-                                    var errorHtml = '<div class="alert alert-danger alert-dismissible valid-cart-error ' +
-                                        'fade show" role="alert">' +
-                                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-                                        '<span aria-hidden="true">&times;</span>' +
-                                        '</button>' + errorMsg + '</div>';
+                                    var errorHtml = '<div class="alert alert-danger alert-dismissible valid-cart-error '
+                                        + 'fade show" role="alert">'
+                                        + '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'
+                                        + '<span aria-hidden="true">&times;</span>'
+                                        + '</button>' + errorMsg + '</div>';
                                     $('.shipping-error').append(errorHtml);
                                     scrollAnimate($('.shipping-error'));
                                     defer.reject();
@@ -186,7 +196,7 @@ var addressHelpers = require('./address');
                             type: 'post',
                             data: shippingFormData,
                             success: function (data) {
-                                 // enable the next:Payment button here
+                                // enable the next:Payment button here
                                 $('body').trigger('checkout:enableButton', '.next-step-button button');
                                 shippingHelpers.methods.shippingFormResponse(defer, data);
                             },
@@ -202,8 +212,8 @@ var addressHelpers = require('./address');
                         });
                     }
                     return defer;
-                } else if (stage === 'payment') {
-                    return wrapQ(async () => {
+                } if (stage === 'payment') {
+                    return wrapQ(async () => { // eslint-disable-line consistent-return
                         //
                         // Submit the Billing Address Form
                         //
@@ -238,10 +248,10 @@ var addressHelpers = require('./address');
                         var paymentInfoSelector = '#dwfrm_billing .' + activeTabId + ' .payment-form-fields :input';
                         var paymentInfoForm = $(paymentInfoSelector).serialize();
 
-                        const boltPamentATag = $('[data-method-id="BOLT_PAY"] a');
+                        const boltPaymentATag = $('[data-method-id="BOLT_PAY"] a');
                         const boltPaymentFields = $('bolt-pay');
-                        const shouldTokenize = boltPamentATag && boltPamentATag.hasClass('active') && !boltPaymentFields.hasClass('d-done');
-                        if(shouldTokenize){
+                        const shouldTokenize = boltPaymentATag && boltPaymentATag.hasClass('active') && !boltPaymentFields.hasClass('d-done');
+                        if (shouldTokenize) {
                             await triggerEvent('checkout:tokenize');
                         }
 
@@ -261,25 +271,24 @@ var addressHelpers = require('./address');
                             // if payment method is credit card
                             if ($('.payment-information').data('payment-method-id') === 'CREDIT_CARD') {
                                 if (!($('.payment-information').data('is-new-payment'))) {
-                                    var cvvCode = $('.saved-payment-instrument.' +
-                                        'selected-payment .saved-payment-security-code').val();
+                                    var cvvCode = $('.saved-payment-instrument.'
+                                        + 'selected-payment .saved-payment-security-code').val();
 
                                     if (cvvCode === '') {
-                                        var cvvElement = $('.saved-payment-instrument.' +
-                                            'selected-payment ' +
-                                            '.form-control');
+                                        var cvvElement = $('.saved-payment-instrument.'
+                                            + 'selected-payment '
+                                            + '.form-control');
                                         cvvElement.addClass('is-invalid');
                                         scrollAnimate(cvvElement);
                                         defer.reject();
                                         return defer;
                                     }
 
-                                    var $savedPaymentInstrument = $('.saved-payment-instrument' +
-                                        '.selected-payment'
-                                    );
+                                    var $savedPaymentInstrument = $('.saved-payment-instrument'
+                                        + '.selected-payment');
 
-                                    paymentForm += '&storedPaymentUUID=' +
-                                        $savedPaymentInstrument.data('uuid');
+                                    paymentForm += '&storedPaymentUUID='
+                                        + $savedPaymentInstrument.data('uuid');
 
                                     paymentForm += '&securityCode=' + cvvCode;
                                 }
@@ -288,11 +297,11 @@ var addressHelpers = require('./address');
                         // disable the next:Place Order button here
                         $('body').trigger('checkout:disableButton', '.next-step-button button');
 
-                        //reset payment error message
+                        // reset payment error message
                         $('.bolt-error-message').attr('hidden', true);
                         $('.bolt-error-message-text').text('');
 
-                        //submit payment info to SFCC BED
+                        // submit payment info to SFCC BED
                         await new Promise((resolve, reject) => {
                             $.ajax({
                                 url: $('#dwfrm_billing').attr('action'),
@@ -304,18 +313,18 @@ var addressHelpers = require('./address');
                                     // look for field validation errors
                                     if (data.error) {
                                         if (data.fieldErrors.length) {
-                                            //check if it's bolt payment validation error
-                                            const tokenKey = 'dwfrm_billing_boltCreditCard_token'; 
-                                            const boltPaymentError = data.fieldErrors.find(function(error){
-                                                return  tokenKey in error;
+                                            // check if it's bolt payment validation error
+                                            const tokenKey = 'dwfrm_billing_boltCreditCard_token';
+                                            const boltPaymentError = data.fieldErrors.find(function (error) {
+                                                return tokenKey in error;
                                             });
-                                            if(boltPaymentError){
+                                            if (boltPaymentError) {
                                                 // Actually tokenization process will do the cc field validation
                                                 // So if token or other data is missing, it means the tokenization process is not success
                                                 // We should display a general error message to remind shopper to check the credit card information
-                                                $('.bolt-error-message').removeAttr('hidden')
+                                                $('.bolt-error-message').removeAttr('hidden');
                                                 $('.bolt-error-message-text').text(boltPaymentError[tokenKey]);
-                                            }else{
+                                            } else {
                                                 data.fieldErrors.forEach(function (error) {
                                                     if (Object.keys(error).length) {
                                                         formHelpers.loadFormErrors('.payment-form', error);
@@ -341,8 +350,10 @@ var addressHelpers = require('./address');
                                         //
                                         // Populate the Address Summary
                                         //
-                                        $('body').trigger('checkout:updateCheckoutView',
-                                            { order: data.order, customer: data.customer });
+                                        $('body').trigger(
+                                            'checkout:updateCheckoutView',
+                                            { order: data.order, customer: data.customer }
+                                        );
 
                                         if (data.renderedPaymentInstruments) {
                                             $('.stored-payments').empty().html(
@@ -370,9 +381,9 @@ var addressHelpers = require('./address');
                                 }
                             });
                         });
-                    })
+                    });
                     // return defer;
-                } else if (stage === 'placeOrder') {
+                } if (stage === 'placeOrder') {
                     // disable the placeOrder button here
                     $('body').trigger('checkout:disableButton', '.next-step-button button');
                     $.ajax({
@@ -497,8 +508,8 @@ var addressHelpers = require('./address');
                     // Back button when event state less than current state in ordered
                     // checkoutStages array.
                     //
-                    if (e.state === null ||
-                        checkoutStages.indexOf(e.state) < members.currentStage) {
+                    if (e.state === null
+                        || checkoutStages.indexOf(e.state) < members.currentStage) {
                         members.handlePrevStage(false);
                     } else if (checkoutStages.indexOf(e.state) > members.currentStage) {
                         // Forward button  pressed
@@ -556,7 +567,7 @@ var addressHelpers = require('./address');
             handleNextStage: function (bPushState) {
                 if (members.currentStage < checkoutStages.length - 1) {
                     // move stage forward
-                    members.currentStage++;
+                    members.currentStage++; // eslint-disable-line no-plusplus
 
                     //
                     // show new stage in url (e.g.payment)
@@ -576,7 +587,7 @@ var addressHelpers = require('./address');
             handlePrevStage: function () {
                 if (members.currentStage > 0) {
                     // move state back
-                    members.currentStage--;
+                    members.currentStage--; // eslint-disable-line no-plusplus
                     updateUrl(members.currentStage);
                 }
 
@@ -605,12 +616,12 @@ var addressHelpers = require('./address');
 
 [billingHelpers, addressHelpers].forEach(function (library) {
     Object.keys(library).forEach(function (item) {
-      if (typeof library[item] === 'object') {
-        base[item] = $.extend({}, base[item], library[item]);
-      } else {
-        base[item] = library[item];
-      }
+        if (typeof library[item] === 'object') {
+            base[item] = $.extend({}, base[item], library[item]);
+        } else {
+            base[item] = library[item];
+        }
     });
-  });
+});
 
 module.exports = base;

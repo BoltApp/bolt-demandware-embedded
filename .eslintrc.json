@@ -1,6 +1,11 @@
 {
   "root": true,
   "extends": "airbnb-base/legacy",
+  "globals": {
+    "empty": "readonly",
+    "session": "readonly",
+    "request": "readonly"
+  },
   "rules": {
       "import/no-unresolved": "off",
       "indent": ["error", 4, { "SwitchCase": 1, "VariableDeclarator": 1 }],
@@ -10,6 +15,8 @@
       "vars-on-top": "off",
       "global-require": "off",
       "no-shadow": ["error", { "allow": ["err", "callback"]}],
-      "max-len": "off"
+      "max-len": "off",
+      "no-use-before-define": "off",
+      "no-param-reassign": "off"
   }
 }

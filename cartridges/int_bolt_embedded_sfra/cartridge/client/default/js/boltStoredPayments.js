@@ -1,20 +1,22 @@
+'use strict';
+
 // register the event listener to the radio buttons for selecting stored payments
 $(document).ready(function () {
-    const radioButtonLoaded = setInterval(function (){
+    const radioButtonLoaded = setInterval(function () {
         const useExistingCardBtn = $('#use-existing-card-radio-button');
         const addNewCardBtn = $('#add-a-new-card-radio-button');
-        if (useExistingCardBtn && addNewCardBtn){
+        if (useExistingCardBtn && addNewCardBtn) {
             clearInterval(radioButtonLoaded);
             useExistingCardBtn.click(function () {
-                if(this.checked){
+                if (this.checked) {
                     $('#bolt-stored-payment-selector').removeClass('d-none');
                     $('.bolt-pay').addClass('d-none');
                     setBoltStoredPaymentMethodID();
                 }
             });
 
-            addNewCardBtn.click(function() {
-                if(this.checked){
+            addNewCardBtn.click(function () {
+                if (this.checked) {
                     $('#bolt-stored-payment-selector').addClass('d-none');
                     $('.bolt-pay').removeClass('d-none');
                     $('#bolt-selected-payment-id').val('');
@@ -23,7 +25,7 @@ $(document).ready(function () {
         }
     }, 100);
 
-    const boltPaySelectorLoaded = setInterval(function (){
+    const boltPaySelectorLoaded = setInterval(function () {
         const boltPaySelector = $('#bolt-stored-payment-selector');
         if (boltPaySelector) {
             clearInterval(boltPaySelectorLoaded);
@@ -36,13 +38,19 @@ $(document).ready(function () {
     }, 100);
 });
 
-// adding bolt pay id to payment content so that it's sent to auth when clicking "Place Order"
-function setBoltStoredPaymentMethodID(){
-    const boltPayID = $("#bolt-stored-payment-selector option:selected").val();
+/**
+ * Adding bolt pay id to payment content so that it's sent to auth when clicking "Place Order"
+ * @returns {void}
+ */
+function setBoltStoredPaymentMethodID() {
+    const boltPayID = $('#bolt-stored-payment-selector option:selected').val();
     $('#bolt-selected-payment-id').attr('value', boltPayID);
 }
 
-// update billing address when user choose a different card
+/**
+ * Update billing address when user choose a different card
+ * @returns {void}
+ */
 function updateBillingAddress() {
     var billingAddress = getSelectedCardBillingAddress();
     var form = $('form[name=dwfrm_billing]');
@@ -50,17 +58,17 @@ function updateBillingAddress() {
         return;
     }
 
-    var firstName = billingAddress.first_name || '',
-        lastName = billingAddress.last_name || '',
-        address1 = billingAddress. street_address1 || '',
-        address2 = billingAddress. street_address2 || '',
-        city = billingAddress.locality || '',
-        stateCode = billingAddress.region_code || '',
-        postalCode = billingAddress.postal_code || '',
-        countryCode = billingAddress.country_code || '',
-        phoneNumber = billingAddress.phone_number || '';
+    var firstName = billingAddress.first_name || '';
+    var lastName = billingAddress.last_name || '';
+    var address1 = billingAddress.street_address1 || '';
+    var address2 = billingAddress.street_address2 || '';
+    var city = billingAddress.locality || '';
+    var stateCode = billingAddress.region_code || '';
+    var postalCode = billingAddress.postal_code || '';
+    var countryCode = billingAddress.country_code || '';
+    var phoneNumber = billingAddress.phone_number || '';
 
-    //update billing form
+    // update billing form
     $('input[name$=_firstName]', form).val(firstName);
     $('input[name$=_lastName]', form).val(lastName);
     $('input[name$=_address1]', form).val(address1);
@@ -74,21 +82,25 @@ function updateBillingAddress() {
     // update billing address selector
     var billingAddressSelector = $('#billingAddressSelector option:selected');
     var selectorText = firstName + ' ' + lastName + ' ' + address1 + ' ' + address2 + ' ' + city + ', ' + stateCode + ' ' + postalCode;
-    billingAddressSelector.text(selectorText); 
+    billingAddressSelector.text(selectorText);
 }
 
-// get the corresponding billing address of the selected card stored in Bolt account
+/**
+ * Get the corresponding billing address of the selected card stored in Bolt account
+ * @returns {Object} billing address data if found otherwise null
+ */
 function getSelectedCardBillingAddress() {
     var boltStoredPayment = $('#bolt-stored-paymentmethods').val();
-    if (boltStoredPayment == "") return null;
+    if (boltStoredPayment === '') return null;
 
     boltStoredPayment = JSON.parse(boltStoredPayment);
     var boltPaymentId = $('#bolt-selected-payment-id').val();
-    
+
     // loop all bolt stored payment
-    for (var index in boltStoredPayment){
-        if (boltStoredPayment[index].id == boltPaymentId) {
+    for (var index in boltStoredPayment) { // eslint-disable-line no-restricted-syntax
+        if (boltStoredPayment[index].id === boltPaymentId) {
             return boltStoredPayment[index].billing_address;
         }
     }
+    return null;
 }

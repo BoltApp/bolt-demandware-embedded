@@ -76,16 +76,10 @@ jobs:
     executor: sfcc-executor
     steps:
       - checkout-and-install
-      ## TODO: fix linter as babel breaks the current linter. /cartridges used to be ignored which means
-      ## only /src were linted. Now we don't use babel anymore so we should clean it up
-      # - run:
-      #     name: Lint
-      #     command: |
-      #       npm run lint
-      # - run:
-      #     name: Merchant Lint
-      #     command: |
-      #       npm run eslint:merchant
+      - run:
+          name: Lint
+          command: |
+            npm run lint
 
       # TODO: re-enable once we add in unit tests
 #      - run:

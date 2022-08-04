@@ -2,9 +2,8 @@
 
 var base = require('base/checkout/address');
 
-
 // Overwrite addNewAddress function to clear shipping form boltAddressId when user selects a new address
-base.addNewAddress = function() {
+base.addNewAddress = function () {
     $('.btn-add-new').on('click', function () {
         var $el = $(this);
         if ($el.parents('#dwfrm_billing').length > 0) {
@@ -26,6 +25,6 @@ base.addNewAddress = function() {
             $newEl.parent().trigger('change');
         }
     });
-}
+};
 
 module.exports = base;

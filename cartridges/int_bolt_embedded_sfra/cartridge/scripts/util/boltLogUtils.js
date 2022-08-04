@@ -1,11 +1,5 @@
 'use strict';
 
-function _typeof(obj) {
-    '@babel/helpers - typeof';
-
-    if (typeof Symbol === 'function' && typeof Symbol.iterator === 'symbol') { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === 'function' && obj.constructor === Symbol && obj !== Symbol.prototype ? 'symbol' : typeof obj; }; } return _typeof(obj);
-}
-
 // API Includes
 var Logger = require('dw/system/Logger');
 var LogPrefix = 'bolt';
@@ -34,6 +28,7 @@ exports.maskCustomerData = function (data) {
  * @returns {Object} masked data
  */
 function actionMaskData(obj) {
+    // eslint-disable-next-line
     for (var key in obj) {
         switch (key) {
             case 'first_name':
@@ -47,7 +42,7 @@ function actionMaskData(obj) {
                 obj[key] = '***';
                 break;
             default:
-                if (_typeof(obj[key]) === 'object') {
+                if (typeof obj[key] === 'object') {
                     obj[key] = actionMaskData(obj[key]);
                 }
                 break;
