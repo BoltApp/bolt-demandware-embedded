@@ -80,10 +80,6 @@ jobs:
           name: Lint
           command: |
             npm run lint
-      # - run:
-      #     name: Merchant Lint
-      #     command: |
-      #       npm run eslint:merchant
 
       # TODO: re-enable once we add in unit tests
 #      - run:
