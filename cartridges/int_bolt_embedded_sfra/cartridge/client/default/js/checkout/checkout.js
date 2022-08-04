@@ -11,8 +11,8 @@ var addressHelpers = require('./address');
 
 (function ($) {
     /**
-     * This wrap function is to keep the logic in sync way
-     * @param {function} fn - event name
+     * This wrap function is to used to keep the logic in sync way
+     * @param {function} fn - function
      * @returns {Object} - Deferred Object
      */
     function wrapQ(fn) {
@@ -248,9 +248,9 @@ var addressHelpers = require('./address');
                         var paymentInfoSelector = '#dwfrm_billing .' + activeTabId + ' .payment-form-fields :input';
                         var paymentInfoForm = $(paymentInfoSelector).serialize();
 
-                        const boltPamentATag = $('[data-method-id="BOLT_PAY"] a');
+                        const boltPaymentATag = $('[data-method-id="BOLT_PAY"] a');
                         const boltPaymentFields = $('bolt-pay');
-                        const shouldTokenize = boltPamentATag && boltPamentATag.hasClass('active') && !boltPaymentFields.hasClass('d-done');
+                        const shouldTokenize = boltPaymentATag && boltPaymentATag.hasClass('active') && !boltPaymentFields.hasClass('d-done');
                         if (shouldTokenize) {
                             await triggerEvent('checkout:tokenize');
                         }

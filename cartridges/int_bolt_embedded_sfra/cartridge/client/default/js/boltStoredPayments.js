@@ -40,7 +40,7 @@ $(document).ready(function () {
 
 /**
  * Adding bolt pay id to payment content so that it's sent to auth when clicking "Place Order"
- * @returns {void} - no return value
+ * @returns {void}
  */
 function setBoltStoredPaymentMethodID() {
     const boltPayID = $('#bolt-stored-payment-selector option:selected').val();
@@ -49,7 +49,7 @@ function setBoltStoredPaymentMethodID() {
 
 /**
  * Update billing address when user choose a different card
- * @returns {void} - no return value
+ * @returns {void}
  */
 function updateBillingAddress() {
     var billingAddress = getSelectedCardBillingAddress();

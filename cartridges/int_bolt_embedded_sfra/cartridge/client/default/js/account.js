@@ -33,8 +33,8 @@ async function authorizeUser(email) {
 
 /**
  * Authenticate User With Code
- * @param {string} authCode - input email
- * @param {string} scope - input email
+ * @param {string} authCode - auth Code
+ * @param {string} scope - scope
  * @returns {Object} - result of Ajax call
  */
 function authenticateUserWithCode(authCode, scope) {
@@ -55,7 +55,7 @@ function authenticateUserWithCode(authCode, scope) {
 
 /**
  * Get Account Details
- * @param {string} oAuthToken - input email
+ * @param {string} oAuthToken - oAuth Token
  * @returns {Object} - result of Ajax call to get account details
  */
 function getAccountDetails(oAuthToken) {
@@ -78,7 +78,7 @@ function getAccountDetails(oAuthToken) {
 
 /**
  * Check Account And Fetch Detail
- * @returns {void} - no return value
+ * @returns {void}
  */
 function checkAccountAndFetchDetail() {
     const emailInput = $('#email-guest');
