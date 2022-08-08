@@ -8,7 +8,7 @@
   },
   "scripts": {
     "test": "sgmf-scripts --test",
-    "test:unit": "nyc --reporter=text --check-coverage --lines 63.5 mocha --require test/unit/sinon-chai.js test/unit/**/*.js",
+    "test:unit": "nyc --reporter=text --check-coverage --lines 30 mocha --require test/unit/sinon-chai.js test/unit/**/*.js",
     "test:integration": "sgmf-scripts --integration 'test/integration/**/*.js'",
     "build": "npm run compile",
     "compile": "sgmf-scripts --compile js && sgmf-scripts --compile css",
