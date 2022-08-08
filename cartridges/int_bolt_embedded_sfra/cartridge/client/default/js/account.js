@@ -102,8 +102,16 @@ function checkAccountAndFetchDetail() {
             console.log(error);
         }
     });
-    // Unbiding the callback to avoid triggering OTP modal many times
-    emailInput.unbind('focusout');
+}
+
+/**
+ * Checks if the email value entered is correct format
+ * @param {string} email - email string to check if valid
+ * @returns {boolean} Whether email is valid
+ */
+function validateEmail(email) {
+    var regex = /^[\w.%+-]+@[\w.-]+\.[\w]{2,6}$/;
+    return regex.test(email);
 }
 
 // register the event listener on the $('#email-guest') component
@@ -113,8 +121,16 @@ $(document).ready(function () {
         const emailInput = $('#email-guest');
         if (emailInput) {
             clearInterval(emailInputLoaded);
-            // we chose onfocusout callback to trigger the OTP modal. feel free to use a different callback if you'd like a different user experience
-            emailInput.focusout(checkAccountAndFetchDetail);
+            var checkBoltAccountTimeOut;
+
+            emailInput.keyup(function () {
+                clearTimeout(checkBoltAccountTimeOut);
+                checkBoltAccountTimeOut = setTimeout(function () {
+                    if (validateEmail(emailInput.val())) {
+                        checkAccountAndFetchDetail();
+                    }
+                }, 1000);
+            });
         }
     }, 100);
 });
