@@ -1,7 +1,7 @@
 {
   "name": "bolt-demandware-embedded",
   "version": "21.4.19",
-  "description": "Bolt Cartridge",
+  "description": "Bolt Cartridge for Embedded Account/Checkout",
   "engines": {
     "node": "^10.22.0",
     "npm": "^6.14.6"
@@ -23,13 +23,13 @@
     "upload:all": "npm run upload:embedded_sfra && npm run upload:embedded_sfra_custom ",
     "zipMetadata": "if [ -f metadata/bolt-meta-import-embedded.zip ] ; then rm -r metadata/bolt-meta-import-embedded.zip && cd metadata && zip -r bolt-meta-import-embedded.zip bolt-meta-import-embedded ; else cd metadata && zip -r bolt-meta-import-embedded.zip bolt-meta-import-embedded ; fi",
     "uploadMetadata": "npm run zipMetadata && sfcc-ci instance:upload metadata/bolt-meta-import-embedded.zip && sfcc-ci instance:import bolt-meta-import-embedded.zip -s -j",
-    "configMetadata": "METADATA_PATH=metadata\\/bolt-meta-import\\/meta\\/system-objecttype-extensions.xml;sed -i.bak \"s/MERCHANT_NAME/$npm_config_mx/g\" $METADATA_PATH; rm $METADATA_PATH.bak;"
+    "configMetadata": "METADATA_PATH=metadata\\/bolt-meta-import-embedded\\/meta\\/system-objecttype-extensions.xml;sed -i.bak \"s/MERCHANT_NAME/$npm_config_mx/g\" $METADATA_PATH; rm $METADATA_PATH.bak;"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/BoltApp/bolt-demandware.git"
+    "url": "git+https://github.com/BoltApp/bolt-demandware-embedded.git"
   },
-  "homepage": "https://github.com/BoltApp/bolt-demandware",
+  "homepage": "https://github.com/BoltApp/bolt-demandware-embedded",
   "devDependencies": {
     "@babel/cli": "^7.16.0",
     "@babel/core": "^7.16.0",

@@ -47,7 +47,7 @@ server.get('FetchOAuthToken', server.middleware.https, function (req, res, next)
         session.custom.boltOAuthTokenExpire = response.result.expires_in * 1000 + new Date().getTime();
         log.info('fetching oauth token succeeded');
     } else {
-        var errorMsg = "Failed to fetch OAuth Token." + !empty(response.errors) && !empty(response.errors[0].message) ? response.errors[0].message : "";
+        var errorMsg = 'Failed to fetch OAuth Token.' + !empty(response.errors) && !empty(response.errors[0].message) ? response.errors[0].message : '';
         log.error(errorMsg);
         returnObject.errorMessage = errorMsg;
     }
@@ -59,7 +59,7 @@ server.get('FetchOAuthToken', server.middleware.https, function (req, res, next)
 server.get('GetAccountDetails', server.middleware.https, function (req, res, next) {
     var boltOAuthToken = oAuth.getOAuthToken();
     if (empty(boltOAuthToken)) {
-        let errorMessage = 'Bolt OAuth Token is missing';
+        var errorMessage = 'Bolt OAuth Token is missing';
         log.error(errorMessage);
         res.json({
             success: false,
