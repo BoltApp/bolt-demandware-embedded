@@ -3,9 +3,10 @@
 var util = require('./util.js');
 
 /**
- * Authorize With Email
+ * Authorize With Email. This function creates the Bolt component from embed.js, mount it on the page
+ * and renders the OTP modal to do authentication & authorization with Bolt
  * @param {string} customerEmail - input email
- * @returns {Promise} - authroize promise
+ * @returns {Promise} - the returned promise waits for the user to enter the 6 digis OTP code
  */
 async function authorizeWithEmail(customerEmail) {
     const boltPublishableKey = $('.bolt-publishable-key').val();
@@ -20,11 +21,11 @@ async function authorizeWithEmail(customerEmail) {
 }
 
 /**
- * Authorize Bolt User
+ * Log the user into their bolt account
  * @param {string} email - input email
- * @returns {Promise} Promise for Account Details
+ * @returns {Promise} The returned promise to fetch account details
  */
-async function authorizeUser(email) {
+async function login(email) {
     const authorizeWithEmailResp = await authorizeWithEmail(email);
     if (!authorizeWithEmailResp) return;
     const OAuthResp = await authenticateUserWithCode(authorizeWithEmailResp.authorizationCode, authorizeWithEmailResp.scope);
@@ -32,10 +33,11 @@ async function authorizeUser(email) {
 }
 
 /**
- * Authenticate User With Code
+ * This function uses the authCode and scope returned from authorizeWithEmail after the user enters the 6 digits OTP code
+ * It makes a call to Bolt-FetchOAuthToken controller to fetch Oauth token & refresh token
  * @param {string} authCode - auth Code
- * @param {string} scope - scope
- * @returns {Object} - result of Ajax call
+ * @param {string} scope - scope, both params are returned from authorizeWithEmail
+ * @returns {Object} - an Ajax call to fetch oAuth token
  */
 function authenticateUserWithCode(authCode, scope) {
     const authenticateUserUrl = $('.authenticate-bolt-user').val();
@@ -54,9 +56,10 @@ function authenticateUserWithCode(authCode, scope) {
 }
 
 /**
- * Get Account Details
+ * Get Account Details.
+ * This function passes the Oauth token to bolt and retrieve the account details of a shopper
  * @param {string} oAuthToken - oAuth Token
- * @returns {Object} - result of Ajax call to get account details
+ * @returns {Object} - an ajax call to fetch account details
  */
 function getAccountDetails(oAuthToken) {
     const accountDetailUrl = $('.get-bolt-account-details').val();
@@ -78,6 +81,9 @@ function getAccountDetails(oAuthToken) {
 
 /**
  * Check Account And Fetch Detail
+ * This function makes a call to bolt backend with the user email, and log the user into their bolt account if the user has one
+ * at the end of the login flow we redirect the user to the final page where they can click place order so this function
+ * doesn't return anything
  * @returns {void}
  */
 exports.checkAccountAndFetchDetail = function () {
@@ -94,7 +100,7 @@ exports.checkAccountAndFetchDetail = function () {
         success(data) {
             if (data !== null) {
                 if (data.hasBoltAccount) {
-                    authorizeUser(customerEmail);
+                    login(customerEmail);
                 }
             }
         },
