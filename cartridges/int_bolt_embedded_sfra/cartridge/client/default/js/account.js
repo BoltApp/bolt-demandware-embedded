@@ -80,7 +80,7 @@ function getAccountDetails(oAuthToken) {
  * Check Account And Fetch Detail
  * @returns {void}
  */
-function checkAccountAndFetchDetail() {
+exports.checkAccountAndFetchDetail = function () {
     const emailInput = $('#email-guest');
     const customerEmail = emailInput.val();
     const checkBoltAccountUrl = $('.check-bolt-account-exist').val();
@@ -102,25 +102,12 @@ function checkAccountAndFetchDetail() {
             console.log(error);
         }
     });
-    // Unbiding the callback to avoid triggering OTP modal many times
-    emailInput.unbind('focusout');
-}
+};
 
-// register the event listener on the $('#email-guest') component
-// change the html element ID if you make change to $('#email-guest')
-$(document).ready(function () {
-    const emailInputLoaded = setInterval(function () {
-        const emailInput = $('#email-guest');
-        if (emailInput) {
-            clearInterval(emailInputLoaded);
-            // we chose onfocusout callback to trigger the OTP modal. feel free to use a different callback if you'd like a different user experience
-            emailInput.focusout(checkAccountAndFetchDetail);
-        }
-    }, 100);
-});
-
-// register the event listener on the logout button
-$('#bolt-logout').click(function () {
+/**
+ * making an ajax call to sfcc backend to clear bolt account data
+ */
+exports.logout = function () {
     var url = $('#bolt-logout').attr('data-bolt-logout-url');
     $.ajax({
         url: url,
@@ -137,4 +124,4 @@ $('#bolt-logout').click(function () {
             }
         }
     });
-});
+};
