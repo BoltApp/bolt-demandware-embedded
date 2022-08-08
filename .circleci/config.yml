@@ -81,7 +81,6 @@ jobs:
           command: |
             npm run lint
 
-      TODO: re-enable once we add in unit tests
      - run:
          name: Unit Test
          command: |
