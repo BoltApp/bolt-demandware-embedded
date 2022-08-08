@@ -80,7 +80,7 @@ function getAccountDetails(oAuthToken) {
  * Check Account And Fetch Detail
  * @returns {void}
  */
-function checkAccountAndFetchDetail() {
+exports.checkAccountAndFetchDetail = function () {
     const emailInput = $('#email-guest');
     const customerEmail = emailInput.val();
     const checkBoltAccountUrl = $('.check-bolt-account-exist').val();
@@ -102,41 +102,12 @@ function checkAccountAndFetchDetail() {
             console.log(error);
         }
     });
-}
+};
 
 /**
- * Checks if the email value entered is correct format
- * @param {string} email - email string to check if valid
- * @returns {boolean} Whether email is valid
+ * making an ajax call to sfcc backend to clear bolt account data
  */
-function validateEmail(email) {
-    var regex = /^[\w.%+-]+@[\w.-]+\.[\w]{2,6}$/;
-    return regex.test(email);
-}
-
-// register the event listener on the $('#email-guest') component
-// change the html element ID if you make change to $('#email-guest')
-$(document).ready(function () {
-    const emailInputLoaded = setInterval(function () {
-        const emailInput = $('#email-guest');
-        if (emailInput) {
-            clearInterval(emailInputLoaded);
-            var checkBoltAccountTimeOut;
-
-            emailInput.keyup(function () {
-                clearTimeout(checkBoltAccountTimeOut);
-                checkBoltAccountTimeOut = setTimeout(function () {
-                    if (validateEmail(emailInput.val())) {
-                        checkAccountAndFetchDetail();
-                    }
-                }, 1000);
-            });
-        }
-    }, 100);
-});
-
-// register the event listener on the logout button
-$('#bolt-logout').click(function () {
+exports.logout = function () {
     var url = $('#bolt-logout').attr('data-bolt-logout-url');
     $.ajax({
         url: url,
@@ -153,4 +124,4 @@ $('#bolt-logout').click(function () {
             }
         }
     });
-});
+};

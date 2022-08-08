@@ -7,8 +7,7 @@
     <script id="bolt-embedded" type="text/javascript" src="${pdict.config.boltCdnUrl}/embed.js" defer> </script>
     <isscript>
         var assets = require('*/cartridge/scripts/assets.js');
-        assets.addJs('/js/account.js');
         assets.addJs('/js/tokenization.js');
-        assets.addJs('/js/boltStoredPayments.js');
+        assets.addJs('/js/eventListenerRegistration.js');
     </isscript>
 </isif>
