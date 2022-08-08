@@ -24,14 +24,15 @@ describe('account', function () {
      * @param {dw.order.Basket} currentBasket - current basket
      */
     function verifyBillingAddress(currentBasket) {
-        expect(currentBasket.getBillingAddress().address1).to.be.equal('888 main street');
-        expect(currentBasket.getBillingAddress().phone).to.be.equal('1-867-5309');
-        expect(currentBasket.getBillingAddress().firstName).to.be.equal('Alan');
-        expect(currentBasket.getBillingAddress().lastName).to.be.equal('Watts');
-        expect(currentBasket.getBillingAddress().city).to.be.equal('Brooklyn');
-        expect(currentBasket.getBillingAddress().stateCode).to.be.equal('NY');
-        expect(currentBasket.getBillingAddress().countryCode.value).to.be.equal('US');
-        expect(currentBasket.getBillingAddress().postalCode).to.be.equal('10044');
+        var shopperBillingAddress = shopperDetails.payment_methods[0].billing_address;
+        expect(currentBasket.getBillingAddress().address1).to.be.equal(shopperBillingAddress.street_address1);
+        expect(currentBasket.getBillingAddress().phone).to.be.equal(shopperBillingAddress.phone_number);
+        expect(currentBasket.getBillingAddress().firstName).to.be.equal(shopperBillingAddress.first_name);
+        expect(currentBasket.getBillingAddress().lastName).to.be.equal(shopperBillingAddress.last_name);
+        expect(currentBasket.getBillingAddress().city).to.be.equal(shopperBillingAddress.locality);
+        expect(currentBasket.getBillingAddress().stateCode).to.be.equal(shopperBillingAddress.region_code);
+        expect(currentBasket.getBillingAddress().countryCode.value).to.be.equal(shopperBillingAddress.country_code);
+        expect(currentBasket.getBillingAddress().postalCode).to.be.equal(shopperBillingAddress.postal_code);
         console.log('Billing address is properly populated to the basket according to bolt account!');
     }
 
@@ -40,13 +41,14 @@ describe('account', function () {
      * @param {dw.order.Basket} currentBasket - current basket
      */
     function verifyPaymentInstruments(currentBasket) {
+        var shopperPaymentInstrument = shopperDetails.payment_methods[0];
         var paymentInstruments = currentBasket.getPaymentInstruments().toArray();
         paymentInstruments.forEach(function (paymentInstrument) {
             expect(paymentInstrument.custom.boltPaymentMethodId).to.not.be.null;
-            expect(paymentInstrument.creditCardNumber).to.be.equal('************4021');
-            expect(paymentInstrument.creditCardType).to.be.equal('visa');
-            expect(paymentInstrument.creditCardExpirationMonth).to.be.equal('3');
-            expect(paymentInstrument.creditCardExpirationYear).to.be.equal('2030');
+            expect(paymentInstrument.creditCardNumber).to.be.equal('************' + shopperPaymentInstrument.last4);
+            expect(paymentInstrument.creditCardType).to.be.equal(shopperPaymentInstrument.network);
+            expect(paymentInstrument.creditCardExpirationMonth).to.be.equal(shopperPaymentInstrument.exp_month);
+            expect(paymentInstrument.creditCardExpirationYear).to.be.equal(shopperPaymentInstrument.exp_year);
         });
         console.log('Payment instruments are set properly to the basket according to bolt account');
     }
@@ -56,6 +58,7 @@ describe('account', function () {
      * @param {dw.order.Basket} currentBasket - current basket
      */
     function verifyShipments(currentBasket) {
+        var shopperShippingAddress = shopperDetails.addresses[0];
         var shipments = currentBasket.getShipments().toArray();
         shipments.forEach(function (shipment) {
             var shippingAddress = shipment.getShippingAddress();
@@ -64,14 +67,14 @@ describe('account', function () {
             expect(shippingAddress.custom.boltAddressID).to.not.be.null;
 
             // verify the shipping address is set properly according to account details
-            expect(shippingAddress.address1).to.be.equal('888 main street');
-            expect(shippingAddress.phone).to.be.equal('1-867-5309');
-            expect(shippingAddress.firstName).to.be.equal('Alan');
-            expect(shippingAddress.lastName).to.be.equal('Watts');
-            expect(shippingAddress.city).to.be.equal('Brooklyn');
-            expect(shippingAddress.stateCode).to.be.equal('NY');
-            expect(shippingAddress.countryCode.value).to.be.equal('US');
-            expect(shippingAddress.postalCode).to.be.equal('10044');
+            expect(shippingAddress.address1).to.be.equal(shopperShippingAddress.street_address1);
+            expect(shippingAddress.phone).to.be.equal(shopperShippingAddress.phone_number);
+            expect(shippingAddress.firstName).to.be.equal(shopperShippingAddress.first_name);
+            expect(shippingAddress.lastName).to.be.equal(shopperShippingAddress.last_name);
+            expect(shippingAddress.city).to.be.equal(shopperShippingAddress.locality);
+            expect(shippingAddress.stateCode).to.be.equal(shopperShippingAddress.region_code);
+            expect(shippingAddress.countryCode.value).to.be.equal(shopperShippingAddress.country_code);
+            expect(shippingAddress.postalCode).to.be.equal(shopperShippingAddress.postal_code);
         });
         console.log('Shipping addresses are set properly to basket shipments according to bolt account');
     }
@@ -82,9 +85,7 @@ describe('account', function () {
             'dw/order/ShippingMgr': require('../../../../mocks/dw/order/ShippingMgr'),
             'dw/system/Transaction': require('../../../../mocks/dw/system/Transaction'),
             '~/cartridge/scripts/util/boltLogUtils': require('../../../../mocks/bolt/boltLogUtils'),
-
             '*/cartridge/scripts/util/collections': collections,
-
             '~/cartridge/scripts/util/constants': require('../../../../../cartridges/int_bolt_embedded_sfra/cartridge/scripts/util/constants'),
             '~/cartridge/scripts/util/boltAccountUtils': require('../../../../mocks/bolt/boltAccountUtils.js')
         });
@@ -174,7 +175,7 @@ describe('account', function () {
         expect(currentBasket.custom.boltPaymentMethods).to.not.be.null;
     });
 
-    it('redirect to shipping step if the default shipping address is missing from bolt account', function () {
+    it('redirects to shipping step if the default shipping address is missing from bolt account', function () {
         shopperDetails.addresses = [];
         var res = account.addAccountDetailsToBasket(shopperDetails);
         var currentBasket = BasketMgr.getCurrentBasket();
@@ -192,7 +193,7 @@ describe('account', function () {
         verifyPaymentInstruments(currentBasket);
     });
 
-    it('redirect to billing step if default payment method is missing from bolt account', function () {
+    it('redirects to billing step if default payment method is missing from bolt account', function () {
         shopperDetails.payment_methods = [];
         var res = account.addAccountDetailsToBasket(shopperDetails);
         var currentBasket = BasketMgr.getCurrentBasket();

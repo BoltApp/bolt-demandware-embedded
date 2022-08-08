@@ -16,7 +16,7 @@ describe('oAuth', function () {
         '~/cartridge/scripts/util/preferences': require('../../../../mocks/bolt/preferences.js')
     });
 
-    it('Returns a new oauth token without errors', function () {
+    it('returns a new oauth token without errors', function () {
         var response = oAuth.fetchNewToken();
 
         expect(response.result.access_token).to.not.be.null;
