@@ -80,12 +80,10 @@ jobs:
           name: Lint
           command: |
             npm run lint
-
-      # TODO: re-enable once we add in unit tests
-#      - run:
-#          name: Unit Test
-#          command: |
-#            npm run test:unit
+      - run:
+         name: Unit Test
+         command: |
+           npm run test:unit
       - notify-buildcop
 
   # TODO: fix this to run against embedded cartridge. This currently runs on zzgv-002 which is for V1
