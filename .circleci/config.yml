@@ -80,7 +80,7 @@ jobs:
           name: Lint
           command: |
             npm run lint
-     - run:
+      - run:
          name: Unit Test
          command: |
            npm run test:unit
