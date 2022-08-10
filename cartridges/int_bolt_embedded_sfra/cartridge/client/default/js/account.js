@@ -15,7 +15,9 @@ async function authorizeWithEmail(customerEmail) {
     const boltEmbedded = Bolt(boltPublishableKey, { language: util.getISOCodeByLocale(locale) }); // eslint-disable-line no-undef
 
     const authorizationComponent = boltEmbedded.create('authorization_component', { style: { position: 'right' } });
-    await authorizationComponent.mount('.card.customer-section'); // mount on the div container otherwise the iframe won't render
+    const containerToMount = $('#email-guest').parent().get(0); // there is only 1 occurance of $('#email-guest')
+    containerToMount.classList.add('containerToMount');
+    await authorizationComponent.mount('.containerToMount'); // mount on the div container otherwise the iframe won't render
 
     return authorizationComponent.authorize({ email: customerEmail });
 }
