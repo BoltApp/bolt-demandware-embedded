@@ -9,7 +9,7 @@
 
     <field formid="expiration" type="string" mandatory="true" missing-error="creditcard.general.error"/>
 
-    <field formid="tokenType" type="string"/>
+    <field formid="tokenType" type="string" mandatory="true" missing-error="creditcard.general.error"/>
 
     <field formid="network" type="string" />
 
