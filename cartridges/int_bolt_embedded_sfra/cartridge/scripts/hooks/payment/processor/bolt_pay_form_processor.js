@@ -58,16 +58,17 @@ function processForm(req, paymentForm, viewFormData) {
             cardType: boltCreditCardForm.network.value || '',
             expirationMonth: parseInt(expMonthAndYear[1], 10),
             expirationYear: parseInt(expMonthAndYear[0], 10),
-            creditCardToken: boltCreditCardForm.token.value || '',
-            bin: boltCreditCardForm.bin.value || '',
-            lastFourDigits: boltCreditCardForm.lastDigits.value || '',
-            token_type: boltCreditCardForm.tokenType.value || ''
+            creditCardToken: boltCreditCardForm.token.value,
+            bin: boltCreditCardForm.bin.value,
+            lastFourDigits: boltCreditCardForm.lastDigits.value,
+            token_type: boltCreditCardForm.tokenType.value
         };
-        if (boltAccountUtils.loginAsBoltUser()) {
-            viewData.paymentInformation.createAccount = false;
-        } else {
-            viewData.paymentInformation.createAccount = boltCreditCardForm.createAccount.value === true;
-        }
+    }
+
+    if (boltAccountUtils.loginAsBoltUser()) {
+        viewData.paymentInformation.createAccount = false;
+    } else {
+        viewData.paymentInformation.createAccount = boltCreditCardForm.createAccount.value === true;
     }
 
     return {
