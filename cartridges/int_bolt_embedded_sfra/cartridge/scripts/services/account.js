@@ -28,7 +28,8 @@ exports.addAccountDetailsToBasket = function (shopperDetails) {
                 boltDefaultAddress = address;
             }
         });
-
+        // preset phone number in shipping/billing address if missing
+        presetPhoneNumber(shopperDetails);
         // save bolt shipping addresses in basket
         if (shopperDetails.addresses) {
             var shopperAddresses = JSON.stringify(shopperDetails.addresses);
@@ -67,16 +68,8 @@ exports.addAccountDetailsToBasket = function (shopperDetails) {
             res.redirectShipping = true;
         }
 
-        // adding payment methods to the baskek's custom field
+        // adding payment methods to the basket's custom field
         var addPaymentResult = addPaymentMethodInfoToBasket(basket, shopperDetails.payment_methods);
-
-        // hacky fix for missing phone number in the billing address
-        // note: there could be email only account so we need to check if there is a phone number for this account
-        if (!basket.getBillingAddress().getPhone() && shopperDetails.profile.phone) {
-            Transaction.wrap(function () {
-                basket.getBillingAddress().setPhone(shopperDetails.profile.phone);
-            });
-        }
 
         if (addPaymentResult.missingValue) {
             res.redirectBilling = true;
@@ -207,4 +200,24 @@ function addPaymentMethodInfoToBasket(basket, boltPaymentMethods) {
         res.missingValue = true;
     }
     return res;
+}
+
+/**
+ * Iterate each shipping address and billing address, if phone number value
+ * is missing, preset it with phone number in profile.
+ * @param {Object}shopperDetails - shopper details data from bolt
+ */
+function presetPhoneNumber(shopperDetails) {
+    if (shopperDetails.profile.phone) {
+        shopperDetails.addresses.forEach(function (address) {
+            if (empty(address.phone_number)) {
+                address.phone_number = shopperDetails.profile.phone;
+            }
+        });
+        shopperDetails.payment_methods.forEach(function (paymentMethod) {
+            if (!empty(paymentMethod.billing_address) && empty(paymentMethod.billing_address.phone_number)) {
+                paymentMethod.billing_address.phone_number = shopperDetails.profile.phone;
+            }
+        });
+    }
 }
