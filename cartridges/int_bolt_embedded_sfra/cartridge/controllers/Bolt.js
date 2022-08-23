@@ -16,23 +16,6 @@ var boltAccountUtils = require('~/cartridge/scripts/util/boltAccountUtils');
 
 var log = LogUtils.getLogger('Bolt');
 
-server.get('AccountExists', server.middleware.https, function (req, res, next) {
-    var email = req.querystring.email;
-    var response = httpUtils.restAPIClient(constants.HTTP_METHOD_GET, constants.CHECK_ACCOUNT_EXIST_URL + encodeURIComponent(email));
-
-    var returnObject = {};
-    if (response.status === HttpResult.OK) {
-        returnObject.hasBoltAccount = response.result.has_bolt_account;
-    } else {
-        returnObject.hasBoltAccount = false;
-        returnObject.errorMessage = response.errors;
-    }
-    log.debug('{0} has bolt account: {1}', req.querystring.email, returnObject.hasBoltAccount);
-
-    res.json(returnObject);
-    next();
-});
-
 server.get('FetchOAuthToken', server.middleware.https, function (req, res, next) {
     var response = oAuth.fetchNewToken(req.querystring.code, req.querystring.scope);
     var returnObject = {};
