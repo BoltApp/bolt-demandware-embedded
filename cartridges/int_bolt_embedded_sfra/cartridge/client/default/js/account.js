@@ -91,17 +91,13 @@ function getAccountDetails(oAuthToken) {
 exports.checkAccountAndFetchDetail = function () {
     const emailInput = $('#email-guest');
     const customerEmail = emailInput.val();
-    const checkBoltAccountUrl = $('.check-bolt-account-exist').val();
-    const reqBody = {
-        email: customerEmail
-    };
+    const checkBoltAccountUrl = $('.check-bolt-account-exist').val() + '=' + encodeURIComponent(customerEmail);
     $.ajax({
         url: checkBoltAccountUrl,
         method: 'GET',
-        data: reqBody,
         success(data) {
             if (data !== null) {
-                if (data.hasBoltAccount) {
+                if (data.has_bolt_account) {
                     login(customerEmail);
                 }
             }
