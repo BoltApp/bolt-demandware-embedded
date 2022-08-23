@@ -1,10 +1,10 @@
-
 <div class="tab-pane bolt-content" id="bolt-content" role="tabpanel">
-    <isif condition="${pdict.boltStoredPaymentMethods}">
-        <!-------------------------------------------------------------------------->
-        <!-- Bolt Stored Payment Options Radio Button                             -->
-        <!-------------------------------------------------------------------------->
-        <div class="form-group">
+    <div class="form-group">
+        <isif condition="${pdict.boltStoredPaymentMethods}">
+            <!-------------------------------------------------------------------------->
+            <!-- Bolt Stored Payment Options Radio Button                             -->
+            <!-------------------------------------------------------------------------->
+
             <input id="use-existing-card-radio-button" type="radio" class="form-check-input"
                 name="paymentMethodSelection" checked />
 
@@ -29,41 +29,44 @@
             <label class="form-control-label" for="new-card-payment">
                 <span>${Resource.msg('add.new.card', 'bolt', null)}</span>
             </label>
-    </isif>
-    <div class="bolt-pay ${pdict.isBoltShopperLoggedIn && pdict.boltStoredPaymentMethods && pdict.boltStoredPaymentMethods.length ? 'd-none' : ''}">
-        <fieldset class="payment-form-fields">
-            <input type="hidden" class="form-control" name="${pdict.forms.billingForm.paymentMethod.htmlName}"
-                value="${paymentOption.ID}">
-
-            <input type="hidden" class="form-control" id="bolt-cc-token"
-                name="${pdict.forms.billingForm.boltCreditCard.token.htmlName}">
-            <input type="hidden" class="form-control" id="bolt-cc-bin"
-                name="${pdict.forms.billingForm.boltCreditCard.bin.htmlName}">
-            <input type="hidden" class="form-control" id="bolt-cc-last-digits"
-                name="${pdict.forms.billingForm.boltCreditCard.lastDigits.htmlName}">
-            <input type="hidden" class="form-control" id="bolt-cc-exp"
-                name="${pdict.forms.billingForm.boltCreditCard.expiration.htmlName}">
-            <input type="hidden" class="form-control" id="bolt-cc-token-type"
-                name="${pdict.forms.billingForm.boltCreditCard.tokenType.htmlName}">
-            <input type="hidden" class="form-control" id="bolt-cc-network"
-                name="${pdict.forms.billingForm.boltCreditCard.network.htmlName}">
-            <input type="hidden" class="form-control" id="bolt-cc-postal"
-                name="${pdict.forms.billingForm.boltCreditCard.postalCode.htmlName}">
-            <isif condition="${pdict.isBoltShopperLoggedIn}">
-                <input type="hidden" class="form-control" id="bolt-stored-paymentmethods" value="${dw.order.BasketMgr.currentBasket.custom.boltPaymentMethods}" >
-                <input type="hidden" class="form-control" id="bolt-selected-payment-id"
-                    name="${pdict.forms.billingForm.boltCreditCard.selectedBoltPaymentID.htmlName}">
-            <iselse/>
-                <input type="hidden" class="form-control" id="bolt-cc-create-account"
-                    name="${pdict.forms.billingForm.boltCreditCard.createAccount.htmlName}">
-            </isif>
-        </fieldset>
-        <div class="alert alert-danger bolt-error-message" hidden>
-            <p class="bolt-error-message-text"></p>
-        </div>
-        <div id="div-to-inject-field-into"></div>
-        <isif condition="${!pdict.isBoltShopperLoggedIn}">
-            <div id="acct-checkbox"></div>
         </isif>
+        <div
+            class="bolt-pay ${pdict.isBoltShopperLoggedIn && pdict.boltStoredPaymentMethods && pdict.boltStoredPaymentMethods.length ? 'd-none' : ''}">
+            <fieldset class="payment-form-fields">
+                <input type="hidden" class="form-control" name="${pdict.forms.billingForm.paymentMethod.htmlName}"
+                    value="${paymentOption.ID}">
+
+                <input type="hidden" class="form-control" id="bolt-cc-token"
+                    name="${pdict.forms.billingForm.boltCreditCard.token.htmlName}">
+                <input type="hidden" class="form-control" id="bolt-cc-bin"
+                    name="${pdict.forms.billingForm.boltCreditCard.bin.htmlName}">
+                <input type="hidden" class="form-control" id="bolt-cc-last-digits"
+                    name="${pdict.forms.billingForm.boltCreditCard.lastDigits.htmlName}">
+                <input type="hidden" class="form-control" id="bolt-cc-exp"
+                    name="${pdict.forms.billingForm.boltCreditCard.expiration.htmlName}">
+                <input type="hidden" class="form-control" id="bolt-cc-token-type"
+                    name="${pdict.forms.billingForm.boltCreditCard.tokenType.htmlName}">
+                <input type="hidden" class="form-control" id="bolt-cc-network"
+                    name="${pdict.forms.billingForm.boltCreditCard.network.htmlName}">
+                <input type="hidden" class="form-control" id="bolt-cc-postal"
+                    name="${pdict.forms.billingForm.boltCreditCard.postalCode.htmlName}">
+                <isif condition="${pdict.isBoltShopperLoggedIn}">
+                    <input type="hidden" class="form-control" id="bolt-stored-paymentmethods"
+                        value="${dw.order.BasketMgr.currentBasket.custom.boltPaymentMethods}">
+                    <input type="hidden" class="form-control" id="bolt-selected-payment-id"
+                        name="${pdict.forms.billingForm.boltCreditCard.selectedBoltPaymentID.htmlName}">
+                <iselse/>
+                    <input type="hidden" class="form-control" id="bolt-cc-create-account"
+                        name="${pdict.forms.billingForm.boltCreditCard.createAccount.htmlName}">
+                </isif>
+            </fieldset>
+            <div class="alert alert-danger bolt-error-message" hidden>
+                <p class="bolt-error-message-text"></p>
+            </div>
+            <div id="div-to-inject-field-into"></div>
+            <isif condition="${!pdict.isBoltShopperLoggedIn}">
+                <div id="acct-checkbox"></div>
+            </isif>
+        </div>
     </div>
 </div>
