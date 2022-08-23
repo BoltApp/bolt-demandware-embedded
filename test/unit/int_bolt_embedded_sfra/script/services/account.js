@@ -15,6 +15,10 @@ var collections = proxyquire(
     }
 );
 
+global.empty = function(obj){
+    return !obj;
+}
+
 describe('account', function () {
     var account;
     var shopperDetails;
@@ -203,5 +207,38 @@ describe('account', function () {
 
         // verify the shipping address is set properly according to account profile
         verifyShipments(currentBasket);
+    });
+
+    it('preset phone number if shipping/billing address data is missing phone number', function () {
+        delete shopperDetails.addresses[0].phone_number;
+        delete shopperDetails.payment_methods[0].billing_address.phone_number;
+        shopperDetails.profile.phone = '1234567890';
+
+        var currentBasket = BasketMgr.getCurrentBasket();
+
+        // clear the current basket mock
+        currentBasket.defaultShipment.shippingAddress = null;
+        currentBasket.billingAddress = null;
+        var res = account.addAccountDetailsToBasket(shopperDetails);
+
+        expect(shopperDetails.addresses[0].phone_number).to.be.equal(shopperDetails.profile.phone);
+        expect(shopperDetails.payment_methods[0].billing_address.phone_number).to.be.equal(shopperDetails.profile.phone);
+
+        // verify that no redirects are needed
+        expect(res.redirectShipping).to.be.undefined;
+        expect(res.redirectBilling).to.be.undefined;
+
+        // verify the billing address is set properly according to account profile
+        verifyBillingAddress(currentBasket);
+
+        // verify the shipping address is set properly according to account profile
+        verifyShipments(currentBasket);
+
+        // verify the payment instrument is set properly according to account profile
+        verifyPaymentInstruments(currentBasket);
+
+        // test that the custom attributes are added to the basket
+        expect(currentBasket.custom.boltPaymentMethods).to.not.be.null;
+
     });
 });
