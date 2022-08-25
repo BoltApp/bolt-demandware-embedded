@@ -12,13 +12,13 @@ $(document).ready(function () {
         if (emailInput) {
             clearInterval(emailInputLoaded);
             var checkBoltAccountTimeOut;
-            $('.submit-customer').attr('disabled','true'); // disable the checkout button by default
+            $('.submit-customer').attr('disabled', 'true'); // disable the checkout button by default
             emailInput.keyup(function () {
                 clearTimeout(checkBoltAccountTimeOut);
                 checkBoltAccountTimeOut = setTimeout(function () {
                     if (util.validateEmail(emailInput.val())) {
                         // disable the checkout button in case that we checked Bolt account with the typing unfinished email address and checkout button was enabled after that
-                        $('.submit-customer').attr('disabled','true');
+                        $('.submit-customer').attr('disabled', 'true');
                         account.checkAccountAndFetchDetail();
                     }
                 }, 1000);
