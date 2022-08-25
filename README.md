@@ -45,6 +45,7 @@ Use the provided NPM scripts to compile and upload changes to your Sandbox.
 #Testing
 
 ## TODO: Running unit tests
+`npm run test:unit` - Run the unit tests
 
 ## TODO: Running integration tests
 
@@ -52,4 +53,4 @@ Use the provided NPM scripts to compile and upload changes to your Sandbox.
 
 supported locales: `en-US`, `en-CA`, `fr-CA`
 
-# Features
+For more information please read https://docs.google.com/document/d/1rEZKW0WddAokSuOmiaYCwlemdQu0YOPFD8YTZ53SXc0/edit#heading=h.f7ms38g1zlf2
