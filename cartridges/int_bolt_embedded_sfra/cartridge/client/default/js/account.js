@@ -29,6 +29,7 @@ async function authorizeWithEmail(customerEmail) {
  */
 async function login(email) {
     const authorizeWithEmailResp = await authorizeWithEmail(email);
+    $('.submit-customer').removeAttr('disabled'); // enable checkout button after OTP modal is rendered
     if (!authorizeWithEmailResp) return;
     const OAuthResp = await authenticateUserWithCode(authorizeWithEmailResp.authorizationCode, authorizeWithEmailResp.scope);
     return getAccountDetails(OAuthResp.accessToken); // eslint-disable-line consistent-return
@@ -99,6 +100,8 @@ exports.checkAccountAndFetchDetail = function () {
             if (data !== null) {
                 if (data.has_bolt_account) {
                     login(customerEmail);
+                } else {
+                    $('.submit-customer').removeAttr('disabled'); // enable checkout button for non Bolt shopper
                 }
             }
         },
