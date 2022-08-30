@@ -202,6 +202,7 @@ exports.saveAddressToBolt = function (order) {
         if (empty(boltOAuthToken)) {
             errorMsg = 'Bolt OAuth Token is missing';
             log.error(errorMsg);
+            return;
         }
         var bearerToken = 'Bearer '.concat(boltOAuthToken);
 
