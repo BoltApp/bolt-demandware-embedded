@@ -63,6 +63,20 @@ function getCurrentBasket() {
                     },
                     setShippingMethod(shippingMethod) {
                         this.shippingMethod = shippingMethod;
+                    },
+                    getShippingLineItems(){
+                        return new ArrayList([
+                            {
+                                getShippingPriceAdjustments(){
+                                    return new ArrayList([
+                                        {
+                                            promotionID : 'promotionID'
+                                        }
+                                    ]);
+                                },
+                                removeShippingPriceAdjustment(){}
+                            }
+                        ]);
                     }
                 }
             ]);
