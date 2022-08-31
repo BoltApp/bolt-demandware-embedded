@@ -37,8 +37,8 @@ function actionMaskData(obj) {
             case 'expiration':
             case 'billing_address':
             case 'shipping_address':
-            case 'phones':
-            case 'emails':
+            case 'phone':
+            case 'email':
                 obj[key] = '***';
                 break;
             default:
