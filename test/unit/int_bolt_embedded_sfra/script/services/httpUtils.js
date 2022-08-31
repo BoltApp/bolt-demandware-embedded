@@ -7,6 +7,7 @@ var expect = chai.expect;
 chai.use(sinonChai);
 var proxyquire = require('proxyquire').noCallThru().noPreserveCache();
 var HttpResult = require('../../../../mocks/dw/svc/Result');
+var service = require('../../../../mocks/dw/svc/LocalServiceRegistry');
 
 describe('httpUtils happy path', function () {
     var httpUtils = proxyquire('../../../../../cartridges/int_bolt_embedded_sfra/cartridge/scripts/services/httpUtils', {
@@ -20,10 +21,11 @@ describe('httpUtils happy path', function () {
 
     it('returns no error and status ok for rest api call', function () {
         var response = httpUtils.restAPIClient();
+        console.log(response)
 
         expect(response.status).to.be.equal(HttpResult.OK);
         expect(response.errors.length).to.be.equal(0);
-        expect(response.result).to.not.be.null;
+        expect(response.result).to.be.equal(service.returnedResult);
     });
 
 });
