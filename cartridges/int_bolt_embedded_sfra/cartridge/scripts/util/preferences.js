@@ -15,7 +15,7 @@ exports.getSitePreferences = function () {
     var site = Site.getCurrent();
 
     var boltMultiPublishableKey = site.getCustomPreferenceValue('boltMultiPublishableKey') || '';
-    var boltApiUrl = this.getBoltApiServiceURL();
+    var boltApiUrl = boltApiURL();
     var boltCdnUrl = boltConnectURL();
     var boltEnable = Site.getCurrent().getCustomPreferenceValue('boltEnable');
     var boltMerchantDivisionID = Site.getCurrent().getCustomPreferenceValue('boltMerchantDivisionID') || '';
@@ -56,7 +56,7 @@ exports.getBoltAPIKey = function () {
  * Return API URL
  * @returns {string} API URL to load connect from
  */
-exports.getBoltApiServiceURL = function boltApiURL() {
+function boltApiURL() {
     var boltEnv = Site.getCurrent().getCustomPreferenceValue('boltEnvironment').valueOf();
     switch (boltEnv) {
         case 'sandbox':
@@ -67,7 +67,7 @@ exports.getBoltApiServiceURL = function boltApiURL() {
         default:
             return 'https://api.bolt.com';
     }
-};
+}
 
 /**
  * Return CDN URL
