@@ -1,8 +1,6 @@
 var HttpResult = require('./Result');
 
-const returnedResult = {
-    key: 'value'
-};
+
 exports.returnedResult = returnedResult;
 
 exports.createService = function () {
