@@ -88,7 +88,7 @@ describe('boltAccountUtils', function () {
     beforeEach(function () {
         boltAccountUtils = proxyquire(boltAccountUtilsPath, boltAccountUtilsRequires);
         address = {
-            firstName : 'first name',
+            firstName : 'firstName',
             lastName : 'lastName',
             address1 : 'address1',
             city : 'city',
@@ -102,13 +102,13 @@ describe('boltAccountUtils', function () {
     });
 
     describe('loginAsBoltUser', function () {
-        it('should return false if a shopper is using Bolt Account', function () {
+        it('should return true if a shopper is using Bolt Account', function () {
             setBoltUserDataInSession();
             var loginAsBoltUser = boltAccountUtils.loginAsBoltUser();
             assert.equal(loginAsBoltUser, true);
         });
 
-        it('should return false if a shopper is mpt using Bolt Account.', function () {
+        it('should return false if a shopper is not using Bolt Account.', function () {
             clearBoltUserDataInSession();
             var loginAsBoltUser = boltAccountUtils.loginAsBoltUser();
             assert.equal(loginAsBoltUser, false);
