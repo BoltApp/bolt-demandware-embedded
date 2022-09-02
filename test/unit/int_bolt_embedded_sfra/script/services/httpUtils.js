@@ -38,7 +38,6 @@ describe('httpUtils happy path', function () {
             object: result
         });
         var response = httpUtils.restAPIClient();
-        console.log(response)
 
         expect(response.status).to.be.equal(HttpResult.OK);
         expect(response.errors.length).to.be.equal(0);
