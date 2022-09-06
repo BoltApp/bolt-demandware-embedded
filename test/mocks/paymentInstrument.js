@@ -7,7 +7,21 @@ module.exports = {
     creditCardExpirationYear: 30,
     custom: {
         boltCardBin : '4111',
-        boltTokenType : ''
+        boltTokenType : '',
+        boltPaymentMethodId : '8888888888'
+    },
+    paymentTransaction : {
+        paymentProcessor : '',
+        transactionID : '',
+        setPaymentProcessor(val){
+            this.paymentProcessor = val;
+        },
+        setTransactionID(val){
+            this.transactionID = val;
+        }
+    },
+    getPaymentTransaction() {
+        return this.paymentTransaction;
     },
     getCreditCardToken() {
         return '411111111111';

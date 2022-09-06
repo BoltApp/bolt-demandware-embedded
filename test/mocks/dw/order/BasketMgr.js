@@ -33,10 +33,12 @@ const paymentInstrument = {
     creditCardExpirationMonth: '03',
     creditCardExpirationYear: '30',
     custom: {},
+    creditCardToken:'9999999999',
     setCreditCardNumber(number) { this.creditCardNumber = number; },
     setCreditCardType(type) { this.creditCardType = type; },
     setCreditCardExpirationMonth(month) { this.creditCardExpirationMonth = month; },
-    setCreditCardExpirationYear(year) { this.creditCardExpirationYear = year; }
+    setCreditCardExpirationYear(year) { this.creditCardExpirationYear = year; },
+    setCreditCardToken(creditCardToken) {this.creditCardToken = creditCardToken}
 };
 
 function getCurrentBasket() {
@@ -45,6 +47,9 @@ function getCurrentBasket() {
             shippingAddress: shippingAddress
         },
         totalGrossPrice: {
+            subtract(){
+                return 200;
+            },
             value: 250.00
         },
         custom: {},
