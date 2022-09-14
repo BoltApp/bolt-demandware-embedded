@@ -4,6 +4,7 @@
     <input type="hidden" class="get-bolt-account-details" value="${URLUtils.https('Bolt-GetAccountDetails')}" />
     <input type="hidden" class="bolt-publishable-key" value="${pdict.config.boltMultiPublishableKey}" />
     <input type="hidden" class="bolt-locale" value="${pdict.locale}" />
+    <input type="hidden" class="bolt-is-shopper-logged-in" value="${pdict.isBoltShopperLoggedIn}" />
     <script id="bolt-embedded" type="text/javascript" src="${pdict.config.boltCdnUrl}/embed.js" defer> </script>
     <isscript>
         var assets = require('*/cartridge/scripts/assets.js');

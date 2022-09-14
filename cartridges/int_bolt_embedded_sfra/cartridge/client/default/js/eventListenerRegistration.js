@@ -12,9 +12,14 @@ $(document).ready(function () {
         if (emailInput) {
             clearInterval(emailInputLoaded);
             var checkBoltAccountTimeOut;
+            var emailEnterBegan = false;
             $('.submit-customer').attr('disabled', 'true'); // disable the checkout button by default
             emailInput.keyup(function () {
                 clearTimeout(checkBoltAccountTimeOut);
+                if (!emailEnterBegan) {
+                    window.BoltAnalytics.checkoutStepComplete('Detail entry began');
+                }
+                emailEnterBegan = true;
                 checkBoltAccountTimeOut = setTimeout(function () {
                     if (util.validateEmail(emailInput.val())) {
                         // disable the checkout button in case that we checked Bolt account with the typing unfinished email address and checkout button was enabled after that

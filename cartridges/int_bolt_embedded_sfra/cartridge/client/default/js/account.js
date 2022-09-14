@@ -103,6 +103,7 @@ exports.checkAccountAndFetchDetail = function () {
                 } else {
                     $('.submit-customer').removeAttr('disabled'); // enable checkout button for non Bolt shopper
                 }
+                window.BoltAnalytics.checkoutStepComplete('Account recognition check performed', { hasBoltAccount: data.has_bolt_account, detectionMethod: 'email' });
             }
         },
         error: function (jqXHR, error) {

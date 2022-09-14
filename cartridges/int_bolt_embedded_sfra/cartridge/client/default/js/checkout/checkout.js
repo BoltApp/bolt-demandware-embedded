@@ -211,6 +211,13 @@ var addressHelpers = require('./address');
                             }
                         });
                     }
+                    const isBoltShopperLoggedIn = $('.bolt-is-shopper-logged-in').val();
+                    const eventPayload = { loginStatus: isBoltShopperLoggedIn ? 'logged-in' : 'guest' };
+
+                    // sending both shipping event here as we don't know when the action is complete unless
+                    // shopper clicks continue button
+                    window.BoltAnalytics.checkoutStepComplete('Shipping details fully entered', eventPayload);
+                    window.BoltAnalytics.checkoutStepComplete('Shipping method step complete');
                     return defer;
                 } if (stage === 'payment') {
                     return wrapQ(async () => { // eslint-disable-line consistent-return
@@ -381,6 +388,10 @@ var addressHelpers = require('./address');
                                 }
                             });
                         });
+                        // sending both shipping event here as we don't know when the action is complete unless
+                        // shopper clicks continue button
+                        window.BoltAnalytics.checkoutStepComplete('Payment method selected');
+                        window.BoltAnalytics.checkoutStepComplete('Payment details fully entered');
                     });
                     // return defer;
                 } if (stage === 'placeOrder') {
@@ -422,15 +433,18 @@ var addressHelpers = require('./address');
                                         value: data.orderToken
                                     });
 
+                                window.BoltAnalytics.checkoutStepComplete('Payment complete');
                                 redirect.submit();
                                 defer.resolve(data);
                             }
                         },
                         error: function () {
                             // enable the placeOrder button here
+                            window.BoltAnalytics.checkoutStepComplete('Payment rejected');
                             $('body').trigger('checkout:enableButton', $('.next-step-button button'));
                         }
                     });
+                    window.BoltAnalytics.checkoutStepComplete('Clicks pay button');
 
                     return defer;
                 }
