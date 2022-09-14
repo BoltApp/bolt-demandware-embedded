@@ -444,7 +444,6 @@ var addressHelpers = require('./address');
             /**
              * Initialize the checkout stage.
              *
-             * TODO: update this to allow stage to be set from server?
              */
             initialize: function () {
                 // set the initial state of checkout

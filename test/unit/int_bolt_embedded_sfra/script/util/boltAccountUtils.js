@@ -17,27 +17,27 @@ var collections = proxyquire(
 
 /* Global SFCC object mock */
 global.session = {
-    custom: {}
+    privacy: {}
 };
 
 /**
  * Set Bolt OAuth Data in SFCC session
  */
 var setBoltUserDataInSession = function (){
-    session.custom.boltOAuthToken = 'boltOAuthToken';
-    session.custom.boltRefreshToken = 'boltRefreshToken';
-    session.custom.boltRefreshTokenScope = 'boltRefreshTokenScope';
-    session.custom.boltOAuthTokenExpire = 'boltOAuthTokenExpire';
+    session.privacy.boltOAuthToken = 'boltOAuthToken';
+    session.privacy.boltRefreshToken = 'boltRefreshToken';
+    session.privacy.boltRefreshTokenScope = 'boltRefreshTokenScope';
+    session.privacy.boltOAuthTokenExpire = 'boltOAuthTokenExpire';
 }
 
 /**
  * Clear Bolt OAuth Data in SFCC session
  */
 var clearBoltUserDataInSession = function (){
-    session.custom.boltOAuthToken = null;
-    session.custom.boltRefreshToken = null;
-    session.custom.boltRefreshTokenScope = null;
-    session.custom.boltOAuthTokenExpire = null;
+    session.privacy.boltOAuthToken = null;
+    session.privacy.boltRefreshToken = null;
+    session.privacy.boltRefreshTokenScope = null;
+    session.privacy.boltOAuthTokenExpire = null;
 }
 
 
@@ -226,10 +226,10 @@ describe('boltAccountUtils', function () {
         it('should have no bolt related data in SFCC session', function () {
             setBoltUserDataInSession();
             boltAccountUtils.clearBoltSessionData();
-            expect(empty(session.custom.boltOAuthToken)).to.be.true;
-            expect(empty(session.custom.boltRefreshToken)).to.be.true;
-            expect(empty(session.custom.boltRefreshTokenScope)).to.be.true;
-            expect(empty(session.custom.boltOAuthTokenExpire)).to.be.true;
+            expect(empty(session.privacy.boltOAuthToken)).to.be.true;
+            expect(empty(session.privacy.boltRefreshToken)).to.be.true;
+            expect(empty(session.privacy.boltRefreshTokenScope)).to.be.true;
+            expect(empty(session.privacy.boltOAuthTokenExpire)).to.be.true;
         });
     });
 

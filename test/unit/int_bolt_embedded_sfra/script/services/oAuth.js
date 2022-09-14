@@ -24,5 +24,4 @@ describe('oAuth', function () {
         expect(response.result.expires_in).to.not.be.null;
     });
 
-    // TODO: Figure out if there is a good way to test session behaviors
 });
