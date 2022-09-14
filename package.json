@@ -1,6 +1,6 @@
 {
   "name": "bolt-demandware-embedded",
-  "version": "21.4.19",
+  "version": "22.1.1",
   "description": "Bolt Cartridge for Embedded Account/Checkout",
   "engines": {
     "node": "^10.22.0",
@@ -9,7 +9,6 @@
   "scripts": {
     "test": "sgmf-scripts --test",
     "test:unit": "nyc --reporter=text --check-coverage --lines 30 mocha --require test/unit/sinon-chai.js test/unit/**/*.js",
-    "test:integration": "sgmf-scripts --integration 'test/integration/**/*.js'",
     "build": "npm run compile",
     "compile": "sgmf-scripts --compile js && sgmf-scripts --compile css",
     "eslint": "npm run eslint:base -- .",
@@ -39,7 +38,7 @@
     "@babel/preset-env": "^7.16.4",
     "@tridnguyen/config": "^2.3.1",
     "@types/mocha": "^8.0.3",
-    "autoprefixer": "^9.0.0",
+    "autoprefixer": "^10.4.11",
     "babel-eslint": "^10.1.0",
     "babel-loader": "^8.2.3",
     "chai": "^4.3.4",
