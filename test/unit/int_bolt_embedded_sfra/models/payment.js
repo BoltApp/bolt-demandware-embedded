@@ -15,8 +15,12 @@ var collections = proxyquire(
 
 var PaymentModel;
 
+const MASKED_DIGITS = '************';
+
 describe('paymentModel', function () {
   var basketMock;
+  var maskedCreditCardNumber = MASKED_DIGITS + '1111';
+  var maskedGiftCertificateCode = MASKED_DIGITS + '1234';
   before(function () {
     basketMock = {};
     mockSuperModule.create(basePaymentModelMock);
@@ -42,7 +46,7 @@ describe('paymentModel', function () {
           creditCardExpirationMonth : '10',
           creditCardExpirationYear : '2023',
           creditCardType : 'visa',
-          maskedCreditCardNumber : '************1111',
+          maskedCreditCardNumber : maskedCreditCardNumber,
       },
     ]);
 
@@ -52,7 +56,7 @@ describe('paymentModel', function () {
     expect(payment.selectedPaymentInstruments[0].expirationYear).to.be.equal('2023');
     expect(payment.selectedPaymentInstruments[0].expirationMonth).to.be.equal('10');
     expect(payment.selectedPaymentInstruments[0].type).to.be.equal('visa');
-    expect(payment.selectedPaymentInstruments[0].maskedCreditCardNumber).to.be.equal('************1111');
+    expect(payment.selectedPaymentInstruments[0].maskedCreditCardNumber).to.be.equal(maskedCreditCardNumber);
   });
 
   it('should set basic credit card data in payment model', function () {
@@ -69,7 +73,7 @@ describe('paymentModel', function () {
           creditCardExpirationYear : '2023',
           creditCardHolder : 'test',
           creditCardType : 'visa',
-          maskedCreditCardNumber : '************1111',
+          maskedCreditCardNumber : maskedCreditCardNumber,
       },
     ]);
 
@@ -80,7 +84,7 @@ describe('paymentModel', function () {
     expect(payment.selectedPaymentInstruments[0].expirationYear).to.be.equal('2023');
     expect(payment.selectedPaymentInstruments[0].expirationMonth).to.be.equal('10');
     expect(payment.selectedPaymentInstruments[0].type).to.be.equal('visa');
-    expect(payment.selectedPaymentInstruments[0].maskedCreditCardNumber).to.be.equal('************1111');
+    expect(payment.selectedPaymentInstruments[0].maskedCreditCardNumber).to.be.equal(maskedCreditCardNumber);
   });
 
   it('should set gift certificate data in payment model', function () {
@@ -93,13 +97,13 @@ describe('paymentModel', function () {
               },
           },
           giftCertificateCode : '1234123412341234',
-          maskedGiftCertificateCode : '************1234',
+          maskedGiftCertificateCode : maskedGiftCertificateCode,
       },
     ]);
 
     var payment = new PaymentModel(basketMock);
     expect(payment.selectedPaymentInstruments[0].giftCertificateCode).to.be.equal('1234123412341234');
-    expect(payment.selectedPaymentInstruments[0].maskedGiftCertificateCode).to.be.equal('************1234');
+    expect(payment.selectedPaymentInstruments[0].maskedGiftCertificateCode).to.be.equal(maskedGiftCertificateCode);
   });
 
   it('should no set payment data in payment model if payment data is missing in basket', function () {
