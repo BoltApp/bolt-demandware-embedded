@@ -5,7 +5,7 @@
           ? URLUtils.url('CheckoutAddressServices-AddNewAddress')
           : URLUtils.url('CheckoutShippingServices-SubmitShipping')}"
           data-address-mode="${((pdict.isBoltShopperLoggedIn && pdict.boltAddressId && !pdict.shippingAddressDataMissing) || shippingModel.matchingAddressId) ? 'edit' : 'new'}"
-          <isprint value=${pdict.forms.shippingForm.attributes} encoding="off"/>
+          <isprint value=${pdict.forms.shippingForm.attributes} encoding="htmlsinglequote"/>
     >
         <isif condition="${lineItem}">
             <input name="productLineItemUUID" type="hidden" value="${lineItem.UUID}" />
