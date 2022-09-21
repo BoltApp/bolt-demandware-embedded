@@ -131,10 +131,8 @@ function authorize(orderNumber, paymentInstrument, paymentProcessor) {
 
     // set payment transaction
     Transaction.wrap(function () {
-        var transactionRef = response.transaction && response.transaction.reference
-            ? response.transaction.reference
-            : orderNumber;
-        paymentInstrument.getPaymentTransaction().setTransactionID(transactionRef);
+        order.custom.boltTransactionReference = response.result.transaction && response.result.transaction.reference ? response.result.transaction.reference : '';
+        paymentInstrument.getPaymentTransaction().setTransactionID(orderNumber);
     });
 
     // save shipping address to bolt account
