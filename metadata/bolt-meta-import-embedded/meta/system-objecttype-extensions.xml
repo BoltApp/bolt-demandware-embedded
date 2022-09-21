@@ -132,4 +132,22 @@
       </attribute-definition>
     </custom-attribute-definitions>
   </type-extension>
+
+  <type-extension type-id="Order">
+    <custom-attribute-definitions>
+      <attribute-definition attribute-id="boltTransactionReference">
+        <display-name xml:lang="x-default">Bolt Transaction Reference</display-name>
+        <type>string</type>
+        <mandatory-flag>false</mandatory-flag>
+        <externally-managed-flag>false</externally-managed-flag>
+        <min-length>0</min-length>
+      </attribute-definition>
+    </custom-attribute-definitions>
+      <group-definitions>
+        <attribute-group group-id="Bolt Attributes">
+          <display-name xml:lang="x-default">Bolt Attributes</display-name>
+          <attribute attribute-id="boltTransactionReference"/>
+        </attribute-group>
+      </group-definitions>
+  </type-extension>
 </metadata>
