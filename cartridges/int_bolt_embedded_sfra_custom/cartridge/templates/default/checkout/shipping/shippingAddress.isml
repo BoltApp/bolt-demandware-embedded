@@ -16,7 +16,7 @@
                 ${Resource.msg('field.shipping.address.first.name','address',null)}
             </label>
             <input autofocus type="text" class="form-control shippingFirstName" id="shippingFirstName${lineItem ? lineItem.UUID : 'default'}" aria-describedby="${lineItem ? lineItem.UUID : 'default'}FirstName"
-                value="${shippingAddress.firstName||''}" <isprint value="${addressFields.firstName.attributes}" encoding="off"/>
+                value="${shippingAddress.firstName||''}" <isprint value="${addressFields.firstName.attributes}" encoding="htmlsinglequote"/>
                 autocomplete="shipping given-name" >
             <div class="invalid-feedback" id="${lineItem ? lineItem.UUID : 'default'}FirstName"><isprint value="${addressFields.firstName.error}" ></div>
         </div>
@@ -29,7 +29,7 @@
                 ${Resource.msg('field.shipping.address.last.name','address',null)}
             </label>
             <input type="text" class="form-control shippingLastName" id="shippingLastName${lineItem ? lineItem.UUID : 'default'}" aria-describedby="${lineItem ? lineItem.UUID : 'default'}LastName"
-                value="${shippingAddress.lastName||''}" <isprint value="${addressFields.lastName.attributes}" encoding="off"/>
+                value="${shippingAddress.lastName||''}" <isprint value="${addressFields.lastName.attributes}" encoding="htmlsinglequote"/>
                 autocomplete="shipping family-name">
             <div class="invalid-feedback" id="${lineItem ? lineItem.UUID : 'default'}LastName"><isprint value="${addressFields.lastName.error}" ></div>
         </div>
@@ -45,7 +45,7 @@
                 ${Resource.msg('field.shipping.address.one','address',null)}
             </label>
             <input type="text" class="form-control shippingAddressOne" id="shippingAddressOne${lineItem ? lineItem.UUID : 'default'}" aria-describedby="${lineItem ? lineItem.UUID : 'default'}AddressLine1"
-                value="${shippingAddress.address1||''}" <isprint value="${addressFields.address1.attributes}" encoding="off"/>
+                value="${shippingAddress.address1||''}" <isprint value="${addressFields.address1.attributes}" encoding="htmlsinglequote"/>
                 autocomplete="shipping address-line1">
             <div class="invalid-feedback" id="${lineItem ? lineItem.UUID : 'default'}AddressLine1"><isprint value="${addressFields.address1.error}" ></div>
         </div>
@@ -62,7 +62,7 @@
                 ${Resource.msg('field.shipping.address.two','address',null)}
             </label>
             <input type="text" class="form-control shippingAddressTwo" id="shippingAddressTwo${lineItem ? lineItem.UUID : 'default'}" aria-describedby="${lineItem ? lineItem.UUID : 'default'}AddressLine2"
-                value="${shippingAddress.address2||''}" <isprint value="${addressFields.address2.attributes}" encoding="off"/>
+                value="${shippingAddress.address2||''}" <isprint value="${addressFields.address2.attributes}" encoding="htmlsinglequote"/>
                 autocomplete="shipping address-line2">
             <div class="invalid-feedback" id="${lineItem ? lineItem.UUID : 'default'}AddressLine2"><isprint value="${addressFields.address2.error}" ></div>
         </div>
@@ -79,7 +79,7 @@
                 ${Resource.msg('field.shipping.address.country','address',null)}
             </label>
             <select class="form-control shippingCountry custom-select" id="shippingCountry${lineItem ? lineItem.UUID : 'default'}"
-                <isprint value=${addressFields.country.attributes} encoding="off"/>
+                <isprint value=${addressFields.country.attributes} encoding="htmlsinglequote"/>
                 autocomplete="shipping country"
                 aria-describedby="${lineItem ? lineItem.UUID : 'default'}Country">
                     <option label=" "></option>
@@ -98,7 +98,7 @@
                 ${Resource.msg('field.shipping.address.state','address',null)}
             </label>
             <select class="form-control shippingState custom-select" id="shippingState${lineItem ? lineItem.UUID : 'default'}"
-                <isprint value=${addressFields.states.stateCode.attributes} encoding="off"/>
+                <isprint value=${addressFields.states.stateCode.attributes} encoding="htmlsinglequote"/>
                 autocomplete="shipping address-level1"
                 aria-describedby="${lineItem ? lineItem.UUID : 'default'}State">
                 <isloop items=${addressFields.states.stateCode.options} var="state">
@@ -119,7 +119,7 @@
                 ${Resource.msg('field.shipping.address.city','address',null)}
             </label>
             <input type="text" class="form-control shippingAddressCity" id="shippingAddressCity${lineItem ? lineItem.UUID : 'default'}" aria-describedby="${lineItem ? lineItem.UUID : 'default'}City"
-                value="${shippingAddress.city||''}" <isprint value="${addressFields.city.attributes}" encoding="off"/>
+                value="${shippingAddress.city||''}" <isprint value="${addressFields.city.attributes}" encoding="htmlsinglequote"/>
                 autocomplete="shipping address-level2">
             <div class="invalid-feedback" id="${lineItem ? lineItem.UUID : 'default'}City"><isprint value="${addressFields.city.error}" ></div>
         </div>
@@ -132,7 +132,7 @@
                 ${Resource.msg('field.shipping.address.zip.code','address',null)}
             </label>
             <input type="text" class="form-control shippingZipCode" id="shippingZipCode${lineItem ? lineItem.UUID : 'default'}" aria-describedby="${lineItem ? lineItem.UUID : 'default'}ZipCode"
-                value="${shippingAddress.postalCode||''}" <isprint value="${addressFields.postalCode.attributes}" encoding="off"/>
+                value="${shippingAddress.postalCode||''}" <isprint value="${addressFields.postalCode.attributes}" encoding="htmlsinglequote"/>
                 autocomplete="shipping postal-code">
             <div class="invalid-feedback" id="${lineItem ? lineItem.UUID : 'default'}ZipCode"><isprint value="${addressFields.postalCode.error}" ></div>
             <span>${Resource.msg('example.postalcode','forms',null)}</span>
@@ -149,7 +149,7 @@
                 ${Resource.msg('field.shipping.address.phone','address',null)}
             </label>
             <input type="tel" class="form-control shippingPhoneNumber" id="shippingPhoneNumber${lineItem ? lineItem.UUID : 'default'}" aria-describedby="${lineItem ? lineItem.UUID : 'default'}TelephoneNumber"
-                value="${shippingAddress.phone||''}" <isprint value="${addressFields.phone.attributes}" encoding="off"/>
+                value="${shippingAddress.phone||''}" <isprint value="${addressFields.phone.attributes}" encoding="htmlsinglequote"/>
                    autocomplete="shipping tel">
             <div class="invalid-feedback" id="${lineItem ? lineItem.UUID : 'default'}TelephoneNumber"><isprint value="${addressFields.phone.error}" ></div>
             <span>${Resource.msg('example.phone','forms',null)}</span>

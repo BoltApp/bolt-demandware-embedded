@@ -70,10 +70,10 @@ var clearBillingInformationInBasket = function (basket) {
  * @returns {void} - no return data
  */
 exports.clearBoltSessionData = function () {
-    delete session.custom.boltOAuthToken;
-    delete session.custom.boltRefreshToken;
-    delete session.custom.boltRefreshTokenScope;
-    delete session.custom.boltOAuthTokenExpire;
+    delete session.privacy.boltOAuthToken;
+    delete session.privacy.boltRefreshToken;
+    delete session.privacy.boltRefreshTokenScope;
+    delete session.privacy.boltOAuthTokenExpire;
 };
 
 /**
@@ -94,7 +94,7 @@ exports.clearShopperDataInBasket = function () {
  * @returns {boolean} - if bolt user returns true otherwise false
  */
 exports.loginAsBoltUser = function () {
-    return session.custom.boltOAuthToken !== null;
+    return session.privacy.boltOAuthToken !== null;
 };
 
 /*

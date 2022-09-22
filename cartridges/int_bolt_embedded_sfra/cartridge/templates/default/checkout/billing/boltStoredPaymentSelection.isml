@@ -3,7 +3,8 @@
         <isloop items="${pdict.boltStoredPaymentMethods}" var="paymentMethod">
             <option value="${paymentMethod.id}" data-exp-month="${paymentMethod.exp_month || ''}"
                 data-exp-year="${paymentMethod.exp_year || ''}" data-last4="${paymentMethod.last4 || ''}">
-                ${paymentMethod.network || ''} - ending ${paymentMethod.last4 || ''} expires
+                ${paymentMethod.network || ''} - ${Resource.msg('payment.stored.card.ending', 'bolt', null)}
+                ${paymentMethod.last4 || ''} ${Resource.msg('payment.stored.card.expires', 'bolt', null)}
                 ${paymentMethod.exp_month || ''}/${paymentMethod.exp_year || ''}
             </option>
         </isloop>

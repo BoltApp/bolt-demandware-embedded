@@ -23,11 +23,11 @@ server.get('FetchOAuthToken', server.middleware.https, function (req, res, next)
     if (response.status === HttpResult.OK) {
         returnObject.accessToken = response.result.access_token;
         returnObject.refreshToken = response.result.refresh_token;
-        session.custom.boltOAuthToken = response.result.access_token;
-        session.custom.boltRefreshToken = response.result.refresh_token;
-        session.custom.boltRefreshTokenScope = response.result.refresh_token_scope;
+        session.privacy.boltOAuthToken = response.result.access_token;
+        session.privacy.boltRefreshToken = response.result.refresh_token;
+        session.privacy.boltRefreshTokenScope = response.result.refresh_token_scope;
         // store OAuth token expire time in milliseconds, 1000 -> ONE_SECOND
-        session.custom.boltOAuthTokenExpire = response.result.expires_in * 1000 + new Date().getTime();
+        session.privacy.boltOAuthTokenExpire = response.result.expires_in * 1000 + new Date().getTime();
         log.info('fetching oauth token succeeded');
     } else {
         var errorMsg = 'Failed to fetch OAuth Token.' + !empty(response.errors) && !empty(response.errors[0].message) ? response.errors[0].message : '';
