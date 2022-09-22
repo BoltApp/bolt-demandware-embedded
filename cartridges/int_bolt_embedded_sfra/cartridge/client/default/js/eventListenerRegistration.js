@@ -3,6 +3,7 @@
 const account = require('./account');
 const util = require('./util');
 const boltStoredPayment = require('./boltStoredPayments');
+const constants = require('./constant');
 
 // register the event listener on the $('#email-guest') component
 // change the html element ID if you make change to $('#email-guest')
@@ -12,9 +13,14 @@ $(document).ready(function () {
         if (emailInput) {
             clearInterval(emailInputLoaded);
             var checkBoltAccountTimeOut;
+            var emailEnterBegan = false;
             $('.submit-customer').attr('disabled', 'true'); // disable the checkout button by default
             emailInput.keyup(function () {
                 clearTimeout(checkBoltAccountTimeOut);
+                if (!emailEnterBegan) {
+                    window.BoltAnalytics.checkoutStepComplete(constants.EventDetailEntryBegan);
+                }
+                emailEnterBegan = true;
                 checkBoltAccountTimeOut = setTimeout(function () {
                     if (util.validateEmail(emailInput.val())) {
                         // disable the checkout button in case that we checked Bolt account with the typing unfinished email address and checkout button was enabled after that
