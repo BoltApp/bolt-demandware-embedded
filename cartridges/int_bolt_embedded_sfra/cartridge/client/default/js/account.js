@@ -1,6 +1,7 @@
 'use strict';
 
 var util = require('./util.js');
+var constants = require('./constant.js');
 
 /**
  * Authorize With Email. This function creates the Bolt component from embed.js, mount it on the page
@@ -103,7 +104,7 @@ exports.checkAccountAndFetchDetail = function () {
                 } else {
                     $('.submit-customer').removeAttr('disabled'); // enable checkout button for non Bolt shopper
                 }
-                window.BoltAnalytics.checkoutStepComplete('Account recognition check performed', { hasBoltAccount: data.has_bolt_account, detectionMethod: 'email' });
+                window.BoltAnalytics.checkoutStepComplete(constants.EventAccountRecognitionCheckPerformed, { hasBoltAccount: data.has_bolt_account, detectionMethod: 'email' });
             }
         },
         error: function (jqXHR, error) {

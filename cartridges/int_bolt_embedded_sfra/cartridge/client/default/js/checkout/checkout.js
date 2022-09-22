@@ -8,6 +8,7 @@ var scrollAnimate = require('base/components/scrollAnimate');
 
 var billingHelpers = require('./billing');
 var addressHelpers = require('./address');
+var constants = require('../constant');
 
 (function ($) {
     /**
@@ -216,8 +217,8 @@ var addressHelpers = require('./address');
 
                     // sending both shipping event here as we don't know when the action is complete unless
                     // shopper clicks continue button
-                    window.BoltAnalytics.checkoutStepComplete('Shipping details fully entered', eventPayload);
-                    window.BoltAnalytics.checkoutStepComplete('Shipping method step complete');
+                    window.BoltAnalytics.checkoutStepComplete(constants.EventShippingDetailsFullyEntered, eventPayload);
+                    window.BoltAnalytics.checkoutStepComplete(constants.EventShippingMethodStepComplete);
                     return defer;
                 } if (stage === 'payment') {
                     return wrapQ(async () => { // eslint-disable-line consistent-return
@@ -390,8 +391,8 @@ var addressHelpers = require('./address');
                         });
                         // sending both shipping event here as we don't know when the action is complete unless
                         // shopper clicks continue button
-                        window.BoltAnalytics.checkoutStepComplete('Payment method selected');
-                        window.BoltAnalytics.checkoutStepComplete('Payment details fully entered');
+                        window.BoltAnalytics.checkoutStepComplete(constants.EventPaymentMethodSelected);
+                        window.BoltAnalytics.checkoutStepComplete(constants.EventPaymentDetailsFullyEntered);
                     });
                     // return defer;
                 } if (stage === 'placeOrder') {
@@ -433,18 +434,18 @@ var addressHelpers = require('./address');
                                         value: data.orderToken
                                     });
 
-                                window.BoltAnalytics.checkoutStepComplete('Payment complete');
+                                window.BoltAnalytics.checkoutStepComplete(constants.EventPaymentComplete);
                                 redirect.submit();
                                 defer.resolve(data);
                             }
                         },
                         error: function () {
                             // enable the placeOrder button here
-                            window.BoltAnalytics.checkoutStepComplete('Payment rejected');
+                            window.BoltAnalytics.checkoutStepComplete(constants.EventPaymentRejected);
                             $('body').trigger('checkout:enableButton', $('.next-step-button button'));
                         }
                     });
-                    window.BoltAnalytics.checkoutStepComplete('Clicks pay button');
+                    window.BoltAnalytics.checkoutStepComplete(constants.EventClickPayButton);
 
                     return defer;
                 }

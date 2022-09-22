@@ -3,6 +3,7 @@
 const account = require('./account');
 const util = require('./util');
 const boltStoredPayment = require('./boltStoredPayments');
+const constants = require('./constant');
 
 // register the event listener on the $('#email-guest') component
 // change the html element ID if you make change to $('#email-guest')
@@ -17,7 +18,7 @@ $(document).ready(function () {
             emailInput.keyup(function () {
                 clearTimeout(checkBoltAccountTimeOut);
                 if (!emailEnterBegan) {
-                    window.BoltAnalytics.checkoutStepComplete('Detail entry began');
+                    window.BoltAnalytics.checkoutStepComplete(constants.EventDetailEntryBegan);
                 }
                 emailEnterBegan = true;
                 checkBoltAccountTimeOut = setTimeout(function () {
