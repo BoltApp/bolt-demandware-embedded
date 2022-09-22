@@ -127,7 +127,9 @@ describe('bolt pay payment processor', function () {
 
         it('should not return error if auth call succeeds.', function () {
             responseMock = {
-                status : 0
+                status : 0,
+                errors: [],
+                result: {}
             };
             loginAsBoltUserStub.returns(true);
             var orderNo = '123456789';

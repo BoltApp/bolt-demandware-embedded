@@ -53,6 +53,9 @@ var order = {
             return this.phone;
         }
     },
+    custom: {
+        boltTransactionReference: 'HRMY-3R2Z-PMVQ'
+    },
     getCustomerEmail() {
         return this.customerEmail;
     },
