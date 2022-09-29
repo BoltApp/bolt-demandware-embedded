@@ -95,6 +95,14 @@ exports.restAPIClient = function (method, endPoint, request, requestContentType,
 
     log.error('Error on Service execution: ' + result);
 
+    if (result && result.status === HttpResult.SERVICE_UNAVAILABLE) {
+        return {
+            status: HttpResult.ERROR,
+            errors: [new Error(result.unavailableReason)],
+            result: null
+        };
+    }
+
     if (result.errorMessage) {
         try {
             var responseError = JSON.parse(result.errorMessage);
