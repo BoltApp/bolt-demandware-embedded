@@ -94,6 +94,10 @@ exports.checkAccountAndFetchDetail = function () {
     const emailInput = $('#email-guest');
     const customerEmail = emailInput.val();
     const checkBoltAccountUrl = $('.check-bolt-account-exist').val() + '=' + encodeURIComponent(customerEmail);
+    const $accountCheckbox = $('#acct-checkbox');
+    if ($accountCheckbox) {
+        $accountCheckbox.show();
+    }
     $.ajax({
         url: checkBoltAccountUrl,
         method: 'GET',
@@ -101,6 +105,9 @@ exports.checkAccountAndFetchDetail = function () {
             if (data !== null) {
                 if (data.has_bolt_account) {
                     login(customerEmail);
+                    if ($accountCheckbox) {
+                        $('#acct-checkbox').hide();
+                    }
                 } else {
                     $('.submit-customer').removeAttr('disabled'); // enable checkout button for non Bolt shopper
                 }
