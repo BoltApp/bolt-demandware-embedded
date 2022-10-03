@@ -24,9 +24,15 @@ var log = logUtils.getLogger('Auth');
  * @param {Object} req - request
  * @returns {Object} JSON Object
  */
-function handle(currentBasket, paymentInformation, paymentMethodID, req) { // eslint-disable-line no-unused-vars
+function handle(
+    currentBasket,
+    paymentInformation,
+    paymentMethodID,
+    req // eslint-disable-line no-unused-vars
+) {
     var useCreditCardToken = !empty(paymentInformation.creditCardToken);
-    var useExistingCard = boltAccountUtils.loginAsBoltUser() && !empty(paymentInformation.selectedBoltPaymentID);
+    var useExistingCard = boltAccountUtils.loginAsBoltUser()
+        && !empty(paymentInformation.selectedBoltPaymentID);
     if (!useCreditCardToken && !useExistingCard) {
         return {
             fieldErrors: {},
@@ -43,7 +49,9 @@ function handle(currentBasket, paymentInformation, paymentMethodID, req) { // es
         collections.forEach(paymentInstruments, function (item) {
             currentBasket.removePaymentInstrument(item);
         });
-        var nonGCTotal = currentBasket.totalGrossPrice.subtract(currentBasket.giftCertificateTotalGrossPrice);
+        var nonGCTotal = currentBasket.totalGrossPrice.subtract(
+            currentBasket.giftCertificateTotalGrossPrice
+        );
         paymentInstrument = currentBasket.createPaymentInstrument(paymentMethodID, nonGCTotal);
     });
 
@@ -60,7 +68,9 @@ function handle(currentBasket, paymentInformation, paymentMethodID, req) { // es
             };
         }
         Transaction.wrap(function () {
-            paymentInstrument.setCreditCardNumber(constants.CC_MASKED_DIGITS + selectedBoltPayment.last4);
+            paymentInstrument.setCreditCardNumber(
+                constants.CC_MASKED_DIGITS + selectedBoltPayment.last4
+            );
             paymentInstrument.setCreditCardType(selectedBoltPayment.network);
             paymentInstrument.setCreditCardExpirationMonth(selectedBoltPayment.exp_month);
             paymentInstrument.setCreditCardExpirationYear(selectedBoltPayment.exp_year);
@@ -68,7 +78,9 @@ function handle(currentBasket, paymentInformation, paymentMethodID, req) { // es
         });
     } else {
         Transaction.wrap(function () {
-            paymentInstrument.setCreditCardNumber(constants.CC_MASKED_DIGITS + paymentInformation.lastFourDigits);
+            paymentInstrument.setCreditCardNumber(
+                constants.CC_MASKED_DIGITS + paymentInformation.lastFourDigits
+            );
             paymentInstrument.setCreditCardType(paymentInformation.cardType);
             paymentInstrument.setCreditCardExpirationMonth(paymentInformation.expirationMonth);
             paymentInstrument.setCreditCardExpirationYear(paymentInformation.expirationYear);
@@ -86,7 +98,8 @@ function handle(currentBasket, paymentInformation, paymentMethodID, req) { // es
  * Send authorize request to Bolt
  * @param {string} orderNumber - order number
  * @param {dw.order.PaymentInstrument} paymentInstrument - payment instrument to authorize
- * @param {dw.order.PaymentProcessor} paymentProcessor -  payment processor of current payment method
+ * @param {dw.order.PaymentProcessor} paymentProcessor -
+ *         payment processor of the current payment method
  * @return {Object} returns an response object
  */
 function authorize(orderNumber, paymentInstrument, paymentProcessor) {

@@ -47,7 +47,8 @@ function getSelectedPaymentInstruments(selectedPaymentInstruments) {
 function Payment(currentBasket, currentCustomer, countryCode) {
     base.call(this, currentBasket, currentCustomer, countryCode);
     var paymentInstruments = currentBasket.paymentInstruments;
-    this.selectedPaymentInstruments = paymentInstruments ? getSelectedPaymentInstruments(paymentInstruments) : null;
+    this.selectedPaymentInstruments = paymentInstruments
+        ? getSelectedPaymentInstruments(paymentInstruments) : null;
 }
 
 module.exports = Payment;

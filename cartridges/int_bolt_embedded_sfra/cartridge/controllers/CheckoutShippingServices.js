@@ -14,7 +14,8 @@ var AddressModel = require('*/cartridge/models/address');
 server.extend(module.superModule);
 
 /**
- * Set billing address data with default shipping address if no billing matching address id is set. Save Bolt shippping address id.
+ * Set billing address data with default shipping address
+ * if no billing matching address id is set. Save Bolt shippping address id.
  */
 server.append('SubmitShipping', function (req, res, next) {
     var currentBasket = BasketMgr.getCurrentBasket();
@@ -22,11 +23,16 @@ server.append('SubmitShipping', function (req, res, next) {
         try {
             var order = res.viewData.order;
             if (order && currentBasket) {
-                var emptyBillingAddressInBasket = boltAccountUtils.isEmptyAddress(currentBasket.getBillingAddress());
-                var noBillingAddressData = empty(order.billing.matchingAddressId) && emptyBillingAddressInBasket;
+                var emptyBillingAddressInBasket = boltAccountUtils.isEmptyAddress(
+                    currentBasket.getBillingAddress()
+                );
+                var noBillingAddressData = empty(order.billing.matchingAddressId)
+                    && emptyBillingAddressInBasket;
                 if (noBillingAddressData && order.billing && currentBasket.getDefaultShipment()) {
                     order.billing.matchingAddressId = currentBasket.getDefaultShipment().UUID;
-                    order.billing.billingAddress = new AddressModel(currentBasket.getDefaultShipment().getShippingAddress());
+                    order.billing.billingAddress = new AddressModel(
+                        currentBasket.getDefaultShipment().getShippingAddress()
+                    );
                     res.json({
                         order: order
                     });

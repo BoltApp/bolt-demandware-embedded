@@ -24,7 +24,12 @@ exports.fetchNewToken = function (code, scope) {
         .concat(scope, '&client_secret=')
         .concat(boltAPIKey, '&client_id=')
         .concat(config.boltMultiPublishableKey);
-    return httpUtils.restAPIClient(constants.HTTP_METHOD_POST, constants.OAUTH_TOKEN_URL, payload, constants.CONTENT_TYPE_URL_ENCODED);
+    return httpUtils.restAPIClient(
+        constants.HTTP_METHOD_POST,
+        constants.OAUTH_TOKEN_URL,
+        payload,
+        constants.CONTENT_TYPE_URL_ENCODED
+    );
 };
 
 /**
@@ -33,7 +38,8 @@ exports.fetchNewToken = function (code, scope) {
  */
 exports.getOAuthToken = function () {
     // OAuth token will not expire in 4 seconds, use the current OAuth token in session
-    if ((session.privacy.boltOAuthTokenExpire - new Date().getTime()) > constants.OAUTH_TOKEN_REFRESH_TIME) {
+    if ((session.privacy.boltOAuthTokenExpire - new Date().getTime())
+        > constants.OAUTH_TOKEN_REFRESH_TIME) {
         return session.privacy.boltOAuthToken;
     }
 
@@ -59,7 +65,12 @@ function refreshToken() {
         .concat(config.boltApiKey, '&client_id=')
         .concat(config.boltMultiPublishableKey);
 
-    var response = httpUtils.restAPIClient(constants.HTTP_METHOD_POST, constants.OAUTH_TOKEN_URL, payload, constants.CONTENT_TYPE_URL_ENCODED);
+    var response = httpUtils.restAPIClient(
+        constants.HTTP_METHOD_POST,
+        constants.OAUTH_TOKEN_URL,
+        payload,
+        constants.CONTENT_TYPE_URL_ENCODED
+    );
     if (response.status === HttpResult.OK && !empty(response.result)) {
         session.privacy.boltOAuthToken = response.result.access_token;
         session.privacy.boltRefreshToken = response.result.refresh_token;

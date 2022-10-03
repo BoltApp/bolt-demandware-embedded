@@ -36,9 +36,6 @@ base.methods.updatePaymentInformation = function (order) {
                     + '</span></div>';
             }
         });
-        // for (var paymentInstrument of order.billing.payment.selectedPaymentInstruments) { // eslint-disable-line no-restricted-syntax
-
-        // }
     }
     $paymentSummary.empty().append(htmlToAppend);
 };

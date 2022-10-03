@@ -106,7 +106,8 @@ var constants = require('../constant');
                     //
                     // Submit the Customer Form
                     //
-                    var customerFormSelector = customerHelpers.methods.isGuestFormActive() ? customerHelpers.vars.GUEST_FORM : customerHelpers.vars.REGISTERED_FORM;
+                    var customerFormSelector = customerHelpers.methods.isGuestFormActive()
+                        ? customerHelpers.vars.GUEST_FORM : customerHelpers.vars.REGISTERED_FORM;
                     var customerForm = $(customerFormSelector);
                     $.ajax({
                         url: customerForm.attr('action'),
@@ -215,10 +216,15 @@ var constants = require('../constant');
                     const isBoltShopperLoggedIn = $('.bolt-is-shopper-logged-in').val();
                     const eventPayload = { loginStatus: isBoltShopperLoggedIn ? 'logged-in' : 'guest' };
 
-                    // sending both shipping event here as we don't know when the action is complete unless
-                    // shopper clicks continue button
-                    window.BoltAnalytics.checkoutStepComplete(constants.EventShippingDetailsFullyEntered, eventPayload);
-                    window.BoltAnalytics.checkoutStepComplete(constants.EventShippingMethodStepComplete);
+                    // sending both shipping event here as we don't know
+                    // when the action is complete unless shopper clicks continue button
+                    window.BoltAnalytics.checkoutStepComplete(
+                        constants.EventShippingDetailsFullyEntered,
+                        eventPayload
+                    );
+                    window.BoltAnalytics.checkoutStepComplete(
+                        constants.EventShippingMethodStepComplete
+                    );
                     return defer;
                 } if (stage === 'payment') {
                     return wrapQ(async () => { // eslint-disable-line consistent-return
@@ -323,13 +329,16 @@ var constants = require('../constant');
                                         if (data.fieldErrors.length) {
                                             // check if it's bolt payment validation error
                                             const tokenKey = 'dwfrm_billing_boltCreditCard_token';
+                                            // eslint-disable-next-line max-len
                                             const boltPaymentError = data.fieldErrors.find(function (error) {
                                                 return tokenKey in error;
                                             });
                                             if (boltPaymentError) {
+                                                /* eslint-disable max-len */
                                                 // Actually tokenization process will do the cc field validation
                                                 // So if token or other data is missing, it means the tokenization process is not success
                                                 // We should display a general error message to remind shopper to check the credit card information
+                                                /* eslint-disable max-len */
                                                 $('.bolt-error-message').removeAttr('hidden');
                                                 $('.bolt-error-message-text').text(boltPaymentError[tokenKey]);
                                             } else {
