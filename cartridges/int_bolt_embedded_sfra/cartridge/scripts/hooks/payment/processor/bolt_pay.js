@@ -28,7 +28,7 @@ function handle(
     currentBasket,
     paymentInformation,
     paymentMethodID,
-    req// eslint-disable-line no-unused-vars
+    req // eslint-disable-line no-unused-vars
 ) {
     var useCreditCardToken = !empty(paymentInformation.creditCardToken);
     var useExistingCard = boltAccountUtils.loginAsBoltUser()
