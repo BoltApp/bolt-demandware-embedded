@@ -24,7 +24,13 @@ var log = logUtils.getLogger('HttpUtils');
  * @param {string} authenticationHeader - bearer header for authentication
  * @returns {ServiceResponse} service response
  */
-exports.restAPIClient = function (method, endPoint, request, requestContentType, authenticationHeader) {
+exports.restAPIClient = function (
+    method,
+    endPoint,
+    request,
+    requestContentType,
+    authenticationHeader
+) {
     var isProductionEnv = System.getInstanceType() === System.PRODUCTION_SYSTEM;
     var service = LocalServiceRegistry.createService('bolt.http', {
         createRequest: function (service, args) {

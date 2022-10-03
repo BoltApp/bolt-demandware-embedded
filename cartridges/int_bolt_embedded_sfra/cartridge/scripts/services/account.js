@@ -13,7 +13,8 @@ var boltAccountUtils = require('~/cartridge/scripts/util/boltAccountUtils');
 /**
  * This returns the JSON encoded result for the return value of token exchange endpoint
  * @param {Object} shopperDetails - shopper's profile
- * @returns {Object} result - if we need to redirect to shipping & billing page when there are missing values
+ * @returns {Object} result - if we need to redirect to shipping
+ *                   & billing page when there are missing values
  */
 exports.addAccountDetailsToBasket = function (shopperDetails) {
     var res = {};
@@ -57,7 +58,10 @@ exports.addAccountDetailsToBasket = function (shopperDetails) {
                     shippingAddress.custom.boltAddressId = boltDefaultAddress.id;
                 });
 
-                var addAddressResult = addAccountDetailsToAddress(boltDefaultAddress, shippingAddress);
+                var addAddressResult = addAccountDetailsToAddress(
+                    boltDefaultAddress,
+                    shippingAddress
+                );
                 if (addAddressResult.missingValue) {
                     res.redirectShipping = true;
                 }
@@ -110,7 +114,9 @@ function addAccountDetailsToAddress(boltAddress, address) {
         address.setCountryCode(countryCode);
         address.setPostalCode(postalCode);
     });
-    if (boltAccountUtils.checkEmptyValue([phone, firstName, lastName, address1, city, stateCode, countryCode, postalCode])) {
+    if (boltAccountUtils.checkEmptyValue(
+        [phone, firstName, lastName, address1, city, stateCode, countryCode, postalCode]
+    )) {
         log.warn('address information incomplete');
         return {
             missingValue: true
@@ -135,13 +141,16 @@ function addPaymentMethodInfoToBasket(basket, boltPaymentMethods) {
     var boltPaymentMethod;
     var res = {};
     Transaction.wrap(function () {
-        billingAddress = basket.getBillingAddress() ? basket.getBillingAddress() : basket.createBillingAddress();
+        billingAddress = basket.getBillingAddress()
+            ? basket.getBillingAddress() : basket.createBillingAddress();
     });
 
     boltPaymentMethods.forEach(function (paymentMethod) {
-        // default payment method on bolt account can only be card at this point but might change in the future
+        // default payment method on bolt account can only be card at this point
+        // but might change in the future
         // for embedded we only integrate with credit card payments
-        if (paymentMethod.default === true && paymentMethod.type === constants.PAYMENT_METHOD_CARD) {
+        if (paymentMethod.default === true
+            && paymentMethod.type === constants.PAYMENT_METHOD_CARD) {
             boltBillingAddress = paymentMethod.billing_address;
             boltPaymentMethod = paymentMethod;
         }
@@ -212,7 +221,8 @@ function presetPhoneNumber(shopperDetails) {
             }
         });
         shopperDetails.payment_methods.forEach(function (paymentMethod) {
-            if (!empty(paymentMethod.billing_address) && empty(paymentMethod.billing_address.phone_number)) {
+            if (!empty(paymentMethod.billing_address)
+                && empty(paymentMethod.billing_address.phone_number)) {
                 paymentMethod.billing_address.phone_number = shopperDetails.profile.phone;
             }
         });

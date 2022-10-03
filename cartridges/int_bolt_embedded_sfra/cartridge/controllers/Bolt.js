@@ -27,7 +27,8 @@ server.get('FetchOAuthToken', server.middleware.https, function (req, res, next)
         session.privacy.boltRefreshToken = response.result.refresh_token;
         session.privacy.boltRefreshTokenScope = response.result.refresh_token_scope;
         // store OAuth token expire time in milliseconds, 1000 -> ONE_SECOND
-        session.privacy.boltOAuthTokenExpire = response.result.expires_in * 1000 + new Date().getTime();
+        session.privacy.boltOAuthTokenExpire = response.result.expires_in * 1000
+            + new Date().getTime();
         log.info('fetching oauth token succeeded');
     } else {
         var errorMsg = 'Failed to fetch OAuth Token.' + !empty(response.errors) && !empty(response.errors[0].message) ? response.errors[0].message : '';
@@ -74,7 +75,8 @@ server.get('GetAccountDetails', server.middleware.https, function (req, res, nex
 });
 
 /**
- * Bolt-AccountLogOut : This endpoint is used to clear Bolt user information in the SFCC basket and session
+ * Bolt-AccountLogOut : This endpoint is used to clear Bolt user information
+ * in the SFCC basket and session
  * @param {middleware} - server.middleware.https
  * @param {category} - sensitive
  * @param {returns} - json

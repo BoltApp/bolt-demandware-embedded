@@ -4,8 +4,8 @@ var util = require('./util.js');
 var constants = require('./constant.js');
 
 /**
- * Authorize With Email. This function creates the Bolt component from embed.js, mount it on the page
- * and renders the OTP modal to do authentication & authorization with Bolt
+ * Authorize With Email. This function creates the Bolt component from embed.js,
+ * mount it on the page and renders the OTP modal to do authentication & authorization with Bolt
  * @param {string} customerEmail - input email
  * @returns {Promise} - the returned promise waits for the user to enter the 6 digis OTP code
  */
@@ -13,7 +13,9 @@ async function authorizeWithEmail(customerEmail) {
     const boltPublishableKey = $('.bolt-publishable-key').val();
     const locale = $('.bolt-locale').val();
 
-    const boltEmbedded = Bolt(boltPublishableKey, { language: util.getISOCodeByLocale(locale) }); // eslint-disable-line no-undef
+    const boltEmbedded = Bolt(boltPublishableKey, { // eslint-disable-line no-undef
+        language: util.getISOCodeByLocale(locale)
+    });
 
     const authorizationComponent = boltEmbedded.create('authorization_component', { style: { position: 'right' } });
     const containerToMount = $('#email-guest').parent().get(0); // there is only 1 occurance of $('#email-guest')
@@ -32,12 +34,16 @@ async function login(email) {
     const authorizeWithEmailResp = await authorizeWithEmail(email);
     $('.submit-customer').removeAttr('disabled'); // enable checkout button after OTP modal is rendered
     if (!authorizeWithEmailResp) return;
-    const OAuthResp = await authenticateUserWithCode(authorizeWithEmailResp.authorizationCode, authorizeWithEmailResp.scope);
+    const OAuthResp = await authenticateUserWithCode(
+        authorizeWithEmailResp.authorizationCode,
+        authorizeWithEmailResp.scope
+    );
     return getAccountDetails(OAuthResp.accessToken); // eslint-disable-line consistent-return
 }
 
 /**
- * This function uses the authCode and scope returned from authorizeWithEmail after the user enters the 6 digits OTP code
+ * This function uses the authCode and scope returned from authorizeWithEmail
+ * after the user enters the 6 digits OTP code
  * It makes a call to Bolt-FetchOAuthToken controller to fetch Oauth token & refresh token
  * @param {string} authCode - auth Code
  * @param {string} scope - scope, both params are returned from authorizeWithEmail
@@ -85,8 +91,10 @@ function getAccountDetails(oAuthToken) {
 
 /**
  * Check Account And Fetch Detail
- * This function makes a call to bolt backend with the user email, and log the user into their bolt account if the user has one
- * at the end of the login flow we redirect the user to the final page where they can click place order so this function
+ * This function makes a call to bolt backend with the user email,
+ * and log the user into their bolt account if the user has one
+ * at the end of the login flow we redirect the user to the final page
+ * where they can click place order so this function
  * doesn't return anything
  * @returns {void}
  */
