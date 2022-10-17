@@ -5,7 +5,8 @@
     <input type="hidden" class="bolt-publishable-key" value="${pdict.config.boltMultiPublishableKey}" />
     <input type="hidden" class="bolt-locale" value="${pdict.locale}" />
     <input type="hidden" class="bolt-is-shopper-logged-in" value="${pdict.isBoltShopperLoggedIn}" />
-    <script id="bolt-embedded" type="text/javascript" src="${pdict.config.boltCdnUrl}/embed.js" data-publishable-key="${pdict.config.boltMultiPublishableKey}" defer> </script>
+    <script id="bolt-embed" type="text/javascript" src="${pdict.config.boltCdnUrl}/embed.js"
+        data-publishable-key="${pdict.config.boltMultiPublishableKey}" defer> </script>
     <isscript>
         var assets = require('*/cartridge/scripts/assets.js');
         assets.addJs('/js/tokenization.js');
