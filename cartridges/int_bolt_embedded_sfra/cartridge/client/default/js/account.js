@@ -4,12 +4,12 @@ var util = require('./util.js');
 var constants = require('./constant.js');
 
 /**
- * Authorize With Email. This function creates the Bolt component from embed.js,
+ * This function creates the Bolt component from embed.js,
  * mount it on the page and renders the OTP modal to do authentication & authorization with Bolt
  * @param {string} customerEmail - input email
  * @returns {Promise} - the returned promise waits for the user to enter the 6 digis OTP code
  */
-async function authorizeWithEmail(customerEmail) {
+async function authorize(customerEmail) {
     const boltPublishableKey = $('.bolt-publishable-key').val();
     const locale = $('.bolt-locale').val();
 
@@ -18,11 +18,15 @@ async function authorizeWithEmail(customerEmail) {
     });
 
     const authorizationComponent = boltEmbedded.create('authorization_component', { style: { position: 'right' } });
-    const containerToMount = $('#email-guest').parent().get(0); // there is only 1 occurance of $('#email-guest')
-    containerToMount.classList.add('containerToMount');
-    await authorizationComponent.mount('.containerToMount'); // mount on the div container otherwise the iframe won't render
-
-    return authorizationComponent.authorize({ email: customerEmail });
+    if (customerEmail != null) {
+        const containerToMount = $('#email-guest').parent().get(0); // there is only 1 occurance of $('#email-guest')
+        containerToMount.classList.add('containerToMount');
+        await authorizationComponent.mount('.containerToMount'); // mount on the div container otherwise the iframe won't render
+        return authorizationComponent.authorize({ email: customerEmail });
+    }
+    // if no email, then auto login
+    await authorizationComponent.mount('.auto-login-div'); // mount on the div container
+    return authorizationComponent.authorize({});
 }
 
 /**
@@ -31,12 +35,12 @@ async function authorizeWithEmail(customerEmail) {
  * @returns {Promise} The returned promise to fetch account details
  */
 async function login(email) {
-    const authorizeWithEmailResp = await authorizeWithEmail(email);
+    const authorizeResp = await authorize(email);
     $('.submit-customer').removeAttr('disabled'); // enable checkout button after OTP modal is rendered
-    if (!authorizeWithEmailResp) return;
+    if (!authorizeResp) return;
     const OAuthResp = await authenticateUserWithCode(
-        authorizeWithEmailResp.authorizationCode,
-        authorizeWithEmailResp.scope
+        authorizeResp.authorizationCode,
+        authorizeResp.scope
     );
     return getAccountDetails(OAuthResp.accessToken); // eslint-disable-line consistent-return
 }
@@ -132,7 +136,7 @@ exports.checkAccountAndFetchDetail = function () {
  * making an ajax call to sfcc backend to clear bolt account data
  */
 exports.logout = function () {
-    var url = $('#bolt-logout').attr('data-bolt-logout-url');
+    var url = $('.data-bolt-platform-side-logout-url').val();
     $.ajax({
         url: url,
         method: 'POST',
@@ -148,4 +152,50 @@ exports.logout = function () {
             }
         }
     });
+};
+
+/**
+ * detect bolt auto login
+ */
+exports.detectAutoLogin = function () {
+    login(null);
+};
+
+/**
+ * mount bolt login status component
+ */
+exports.mountLoginStatusComponent = function () {
+    const boltPublishableKey = $('.bolt-publishable-key').val();
+    const locale = $('.bolt-locale').val();
+    const boltEmbedded = Bolt(boltPublishableKey, { // eslint-disable-line no-undef
+        language: util.getISOCodeByLocale(locale)
+    });
+    const loginStatusComponent = boltEmbedded.create('login_status', {
+        listeners: {
+            logout: () => {
+                this.logout();
+            }
+        }
+    });
+    if ($('#login-status').length > 0) {
+        loginStatusComponent.mount('#login-status');
+    }
+};
+
+/**
+ * Display Bolt login status from iframe
+ */
+exports.displayBoltStatus = function () {
+    $('#login-status').show();
+    $('#bolt-platform-side-logout').hide();
+    $('#default-customer-status').hide();
+};
+
+/**
+ * Display Storefront Customer Information
+ */
+exports.displayCustomerInfo = function () {
+    $('#bolt-platform-side-logout').show();
+    $('#default-customer-status').show();
+    $('#login-status').hide();
 };

@@ -40,7 +40,7 @@ $(document).ready(function () {
 });
 
 // register the event listener on the logout button
-$('#bolt-logout').click(function () {
+$('#bolt-platform-side-logout').click(function () {
     account.logout();
 });
 
@@ -80,4 +80,56 @@ $(document).ready(function () {
             });
         }
     }, 100);
+});
+
+// detect auto login
+$(document).ready(function () {
+    var isBoltEmbeddedExists = setInterval(function () {
+        if (typeof Bolt !== 'undefined') {
+            clearInterval(isBoltEmbeddedExists);
+            const isBoltShopperLoggedIn = $('.bolt-is-shopper-logged-in').val();
+            if (isBoltShopperLoggedIn === 'false') {
+                account.detectAutoLogin();
+            }
+        }
+    }, 500);
+});
+
+// mount login status component
+$(document).ready(function () {
+    var isBoltEmbeddedExists = setInterval(function () {
+        if (typeof Bolt !== 'undefined') {
+            clearInterval(isBoltEmbeddedExists);
+            account.mountLoginStatusComponent();
+        }
+    }, 500);
+});
+
+/**
+ * Due to a limitation of login status component
+ * Some browser like safari/chrome incognito is not
+ * able to display the login status component.
+ * The purpose of this function is to wait 2 seconds
+ * and see if the login status component is able to be
+ * displayed, otherwise display the default content, which
+ * is same as the previous one.
+ */
+$(document).ready(function () {
+    const isBoltShopperLoggedIn = $('.bolt-is-shopper-logged-in').val();
+    if (isBoltShopperLoggedIn === 'true') {
+        setTimeout(function () {
+            var isBoltStatusComponentDisplay = false;
+            var $boltLoginStatusDiv = $('#login-status');
+            if ($boltLoginStatusDiv.contents().length > 0) {
+                isBoltStatusComponentDisplay = $boltLoginStatusDiv.contents().get(0).style.display !== '';
+            }
+            if (isBoltStatusComponentDisplay) {
+                account.displayBoltStatus();
+            } else {
+                account.displayCustomerInfo();
+            }
+        }, 2000);
+    } else {
+        account.displayCustomerInfo();
+    }
 });
