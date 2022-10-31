@@ -19,7 +19,8 @@
     <h1 class="page-title">
         ${Resource.msg('title.checkout', 'checkout', null)}
     </h1>
-    <div id="checkout-main" class="container data-checkout-stage <isif condition=" ${pdict.order.usingMultiShipping && pdict.order.shipping.length > 1}">multi-ship</isif>" data-customer-type="${pdict.isBoltShopperLoggedIn ? 'boltShopper' : (pdict.customer.registeredUser ? 'registered' : 'guest')}" data-checkout-stage="${pdict.currentStage}"
+    <div id="checkout-main" class="container data-checkout-stage <isif condition=" ${pdict.order.usingMultiShipping && pdict.order.shipping.length > 1}">multi-ship</isif>" data-customer-type="${pdict.isBoltShopperLoggedIn ? 'boltShopper' : (pdict.customer.registeredUser ? 'registered' : 'guest')}"
+        data-checkout-stage="${pdict.currentStage}"
         data-checkout-get-url="${URLUtils.https('CheckoutServices-Get')}">
         <!----------------------------------------------------------------------------------->
         <!-- Help and Phone -->
@@ -59,8 +60,8 @@
                     <div class="card-header clearfix">
                         <h2 class="pull-left card-header-custom">${Resource.msg('heading.checkout.customer', 'checkout', null)}</h2>
                         <isif condition="${pdict.isBoltShopperLoggedIn}">
-                            <button class="pull-right" id="bolt-logout"
-                                data-bolt-logout-url="${URLUtils.https('Bolt-AccountLogOut')}">${Resource.msg('customer.logout', 'bolt', null)}</button>
+                            <button class="pull-right" id="bolt-platform-side-logout"
+                                style="display:none;">${Resource.msg('customer.logout', 'bolt', null)}</button>
                         <iselse/>
                             <isif condition="${!pdict.customer.registeredUser}">
                                 <button class="edit-button pull-right"
@@ -69,7 +70,16 @@
                         </isif>
                     </div>
                     <div class="card-body">
-                        <isinclude template="checkout/customer/customerSummary" />
+                        <isif condition="${pdict.isBoltShopperLoggedIn}">
+                            <div id="login-status" style="height:60px;display:none;"></div>
+                            <div id="default-customer-status" style="display:none;">
+                                <isinclude template="checkout/customer/customerSummary" />
+                            </div>
+                        <iselse/>
+                            <div id="default-customer-status">
+                                <isinclude template="checkout/customer/customerSummary" />
+                            </div>
+                        </isif>
                     </div>
                 </div>
 

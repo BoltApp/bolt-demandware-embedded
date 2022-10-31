@@ -5,6 +5,7 @@
     <input type="hidden" class="bolt-publishable-key" value="${pdict.config.boltMultiPublishableKey}" />
     <input type="hidden" class="bolt-locale" value="${pdict.locale}" />
     <input type="hidden" class="bolt-is-shopper-logged-in" value="${pdict.isBoltShopperLoggedIn}" />
+    <input type="hidden" class="data-bolt-platform-side-logout-url" value="${URLUtils.https('Bolt-AccountLogOut')}" />
     <script id="bolt-embed" type="text/javascript" src="${pdict.config.boltCdnUrl}/embed.js"
         data-publishable-key="${pdict.config.boltMultiPublishableKey}" defer> </script>
     <isscript>
@@ -13,3 +14,4 @@
         assets.addJs('/js/eventListenerRegistration.js');
     </isscript>
 </isif>
+<div class="auto-login-div"></div>
