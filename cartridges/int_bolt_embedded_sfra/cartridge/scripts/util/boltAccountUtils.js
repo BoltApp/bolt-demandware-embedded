@@ -188,7 +188,7 @@ exports.saveAddressToBolt = function (order) {
         var shippingAddress = order.getDefaultShipment().getShippingAddress();
         var errorMsg;
         // add bolt address id to endpoint if shopper is updating existing address
-        var addressUrl = shippingAddress.custom.boltAddressId ? (constants.SHOPPER_ADDRESS_URL + '/' + shippingAddress.custom.boltAddressId) : constants.SHOPPER_ADDRESS_URL;
+        var addressUrl = !empty(shippingAddress.custom.boltAddressId) ? (constants.SHOPPER_ADDRESS_URL + '/' + shippingAddress.custom.boltAddressId) : constants.SHOPPER_ADDRESS_URL;
         var isGift = order.getDefaultShipment().isGift();
 
         var request = {
