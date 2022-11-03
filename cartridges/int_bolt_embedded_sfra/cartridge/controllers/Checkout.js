@@ -41,7 +41,7 @@ server.append('Begin', function (req, res, next) {
         boltStoredShippingAddress = boltAccountUtils.loginAsBoltUser()
             && basket.custom.boltShippingAddress
             ? JSON.parse(basket.custom.boltShippingAddress) : null;
-        boltAddressId = basket.getDefaultShipment() && basket.getDefaultShipment().getShippingAddress() ? basket.getDefaultShipment().getShippingAddress().custom.boltAddressId : '';
+        boltAddressId = basket.getDefaultShipment() && basket.getDefaultShipment().getShippingAddress() && !empty(basket.getDefaultShipment().getShippingAddress().custom.boltAddressId) ? basket.getDefaultShipment().getShippingAddress().custom.boltAddressId : '';
         if (basket.getDefaultShipment() && basket.getDefaultShipment().getShippingAddress()) {
             shippingAddressDataMissing = boltAccountUtils.isAnyAddressDataMissing(
                 basket.getDefaultShipment().getShippingAddress()
