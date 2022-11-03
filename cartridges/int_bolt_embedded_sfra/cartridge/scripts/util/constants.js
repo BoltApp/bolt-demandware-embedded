@@ -24,7 +24,7 @@ exports.PAYMENT_METHOD_CARD = 'card';
  * Cartridge Version
  */
 exports.BOLT_SOURCE_NAME = 'commerce_cloud';
-exports.BOLT_CARTRIDGE_VERSION = '22.1.2';
+exports.BOLT_CARTRIDGE_VERSION = '22.2.1';
 
 /**
  * HTTP Method
