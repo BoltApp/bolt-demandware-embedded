@@ -86,7 +86,6 @@ function getAccountDetails(oAuthToken) {
         data: reqBody,
         success: function (data) {
             window.location.href = data.redirectUrl;
-            console.log(data.redirectUrl);
             if (data.redirectUrl.includes('placeOrder')) {
                 // if the redirect url is placeOrder, all the user data are populated properly.
                 // Note that if the redirect url is a stage prior to place order, we don't have to
