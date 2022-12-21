@@ -136,6 +136,7 @@ exports.checkAccountAndFetchDetail = function () {
         method: 'GET',
         success(data) {
             if (data !== null) {
+                window.BoltAnalytics.checkoutStepComplete(constants.EventAccountRecognitionCheckPerformed, { hasBoltAccount: data.has_bolt_account, detectionMethod: 'email' });
                 if (data.has_bolt_account) {
                     login(customerEmail);
                     if ($accountCheckbox) {
@@ -144,7 +145,6 @@ exports.checkAccountAndFetchDetail = function () {
                 } else {
                     $('.submit-customer').removeAttr('disabled'); // enable checkout button for non Bolt shopper
                 }
-                window.BoltAnalytics.checkoutStepComplete(constants.EventAccountRecognitionCheckPerformed, { hasBoltAccount: data.has_bolt_account, detectionMethod: 'email' });
             }
         },
         error: function (jqXHR, error) {
