@@ -88,6 +88,7 @@ describe('account', function () {
             'dw/order/BasketMgr': require('../../../../mocks/dw/order/BasketMgr'),
             'dw/order/ShippingMgr': require('../../../../mocks/dw/order/ShippingMgr'),
             'dw/system/Transaction': require('../../../../mocks/dw/system/Transaction'),
+            'dw/web/Cookie': require('../../../../mocks/dw/web/Cookie'),
             '~/cartridge/scripts/util/boltLogUtils': require('../../../../mocks/bolt/boltLogUtils'),
             '*/cartridge/scripts/util/collections': collections,
             '~/cartridge/scripts/util/constants': require('../../../../../cartridges/int_bolt_embedded_sfra/cartridge/scripts/util/constants'),

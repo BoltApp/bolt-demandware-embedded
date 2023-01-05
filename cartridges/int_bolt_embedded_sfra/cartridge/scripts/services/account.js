@@ -3,6 +3,7 @@
 var BasketMgr = require('dw/order/BasketMgr');
 var ShippingMgr = require('dw/order/ShippingMgr');
 var Transaction = require('dw/system/Transaction');
+var Cookie = require('dw/web/Cookie');
 
 var LogUtils = require('~/cartridge/scripts/util/boltLogUtils');
 var collections = require('*/cartridge/scripts/util/collections');
@@ -228,3 +229,23 @@ function presetPhoneNumber(shopperDetails) {
         });
     }
 }
+
+/**
+ * Set fallback logout flag as true
+ * @param {Object} res - sfcc request
+ */
+exports.setFallbackLogoutCookie = function (res) {
+    var fallbackLogoutCookie = new Cookie('bolt_sfcc_session_logout', 'true');
+    fallbackLogoutCookie.setMaxAge(31536000); // cookie will expire after 1 year
+    res.base.addHttpCookie(fallbackLogoutCookie);
+};
+
+/**
+ * remove fallback logout flag
+ * @param {Object} res - sfcc request
+ */
+exports.removeFallbackLogoutCookie = function (res) {
+    var fallbackLogoutCookie = new Cookie('bolt_sfcc_session_logout', '');
+    fallbackLogoutCookie.setMaxAge(0); // 0 means delete the cookie
+    res.base.addHttpCookie(fallbackLogoutCookie);
+};

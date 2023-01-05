@@ -29,6 +29,7 @@ server.get('FetchOAuthToken', server.middleware.https, function (req, res, next)
         // store OAuth token expire time in milliseconds, 1000 -> ONE_SECOND
         session.privacy.boltOAuthTokenExpire = response.result.expires_in * 1000
             + new Date().getTime();
+        account.removeFallbackLogoutCookie(res);
         log.info('fetching oauth token succeeded');
     } else {
         var errorMsg = 'Failed to fetch OAuth Token.' + !empty(response.errors) && !empty(response.errors[0].message) ? response.errors[0].message : '';
@@ -87,6 +88,7 @@ server.post('AccountLogOut', server.middleware.https, function (req, res, next) 
         boltAccountUtils.clearBoltSessionData();
         boltAccountUtils.clearShopperDataInBasket();
         var redirectURL = URLUtils.https('Checkout-Begin').append('stage', 'shipping');
+        account.setFallbackLogoutCookie(res);
         res.json({
             success: true,
             redirectUrl: redirectURL.toString()

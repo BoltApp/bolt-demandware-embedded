@@ -88,7 +88,8 @@ $(document).ready(function () {
         if (typeof Bolt !== 'undefined') {
             clearInterval(isBoltEmbeddedExists);
             const isBoltShopperLoggedIn = $('.bolt-is-shopper-logged-in').val();
-            if (isBoltShopperLoggedIn === 'false') {
+            var boltSFCCSessionLogoutCookie = account.getCookie('bolt_sfcc_session_logout');
+            if (isBoltShopperLoggedIn === 'false' && boltSFCCSessionLogoutCookie !== 'true') {
                 account.detectAutoLogin();
             }
         }
@@ -114,7 +115,7 @@ $(document).ready(function () {
  * displayed, otherwise display the default content, which
  * is same as the previous one.
  */
-$(document).ready(function () {
+$(window).on('load', function () {
     const isBoltShopperLoggedIn = $('.bolt-is-shopper-logged-in').val();
     if (isBoltShopperLoggedIn === 'true') {
         setTimeout(function () {
