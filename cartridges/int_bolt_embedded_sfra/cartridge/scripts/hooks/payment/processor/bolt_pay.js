@@ -13,6 +13,7 @@ var collections = require('*/cartridge/scripts/util/collections');
 var boltHttpUtils = require('~/cartridge/scripts/services/httpUtils');
 var constants = require('~/cartridge/scripts/util/constants');
 var boltAccountUtils = require('~/cartridge/scripts/util/boltAccountUtils');
+var boltPaymentUtils = require('~/cartridge/scripts/util/boltPaymentUtils');
 var logUtils = require('~/cartridge/scripts/util/boltLogUtils');
 var log = logUtils.getLogger('Auth');
 
@@ -49,9 +50,8 @@ function handle(
         collections.forEach(paymentInstruments, function (item) {
             currentBasket.removePaymentInstrument(item);
         });
-        var nonGCTotal = currentBasket.totalGrossPrice.subtract(
-            currentBasket.giftCertificateTotalGrossPrice
-        );
+        var gcTotal = boltPaymentUtils.getGiftCertificatesAmount(currentBasket);
+        var nonGCTotal = currentBasket.totalGrossPrice.subtract(gcTotal);
         paymentInstrument = currentBasket.createPaymentInstrument(paymentMethodID, nonGCTotal);
     });
 

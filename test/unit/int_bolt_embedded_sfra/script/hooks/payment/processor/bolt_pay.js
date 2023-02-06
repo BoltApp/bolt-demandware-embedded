@@ -49,7 +49,8 @@ describe('bolt pay payment processor', function () {
         },
         '~/cartridge/scripts/util/constants':require('../../../../../../../cartridges/int_bolt_embedded_sfra/cartridge/scripts/util/constants'),
         '~/cartridge/scripts/util/boltAccountUtils': boltAccountUtilsMock,
-        '~/cartridge/scripts/util/boltLogUtils':require('../../../../../../mocks/bolt/boltLogUtils')
+        '~/cartridge/scripts/util/boltLogUtils':require('../../../../../../mocks/bolt/boltLogUtils'),
+        '~/cartridge/scripts/util/boltPaymentUtils':require('../../../../../../mocks/bolt/boltPaymentUtils')
     };
 
     beforeEach(function () {
