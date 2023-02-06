@@ -237,6 +237,7 @@ function presetPhoneNumber(shopperDetails) {
 exports.setFallbackLogoutCookie = function (res) {
     var fallbackLogoutCookie = new Cookie('bolt_sfcc_session_logout', 'true');
     fallbackLogoutCookie.setMaxAge(31536000); // cookie will expire after 1 year
+    fallbackLogoutCookie.setPath('/');
     res.base.addHttpCookie(fallbackLogoutCookie);
 };
 
