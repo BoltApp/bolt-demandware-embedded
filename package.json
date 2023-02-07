@@ -55,7 +55,7 @@
     "eslint-plugin-sitegenesis": "^1.0.0",
     "globalize": "^1.7.0",
     "husky": "^8.0.1",
-    "lint-staged": "^12.4.1",
+    "lint-staged": "^13.1.1",
     "lodash": "^4.17.21",
     "minimist": "^1.2.6",
     "mocha": "^9.1.3",
