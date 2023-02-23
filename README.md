@@ -24,8 +24,8 @@
 }
 ```
 
-5. From the top-level `/bolt-demandware-embedded`, run `npm run compile:js && npm run compile:scss`
-6. From the top-level `/bolt-demandware-embedded`, run `npm run uploadCartridge`
+5. From the top-level `/bolt-demandware-embedded`, run `npm run build`
+6. From the top-level `/bolt-demandware-embedded`, run `npm run upload:all`
 
 Note: if you upload the bolt cartridge with a new `code-version`, you will need to re-run step 5 and 6.
 
