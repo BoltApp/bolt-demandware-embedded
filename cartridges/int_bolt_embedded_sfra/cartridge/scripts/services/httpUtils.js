@@ -44,7 +44,7 @@ exports.restAPIClient = function (
             service.addHeader('X-Nonce', new Date().getTime());
             service.addHeader('X-Bolt-Source-Name', constants.BOLT_SOURCE_NAME);
             service.addHeader('X-Bolt-Source-Version', constants.BOLT_CARTRIDGE_VERSION);
-            if (authenticationHeader) {
+            if (authenticationHeader && authenticationHeader != null) {
                 service.addHeader('Authorization', authenticationHeader);
             }
             return args.request;

@@ -14,6 +14,7 @@ var boltHttpUtils = require('~/cartridge/scripts/services/httpUtils');
 var constants = require('~/cartridge/scripts/util/constants');
 var boltAccountUtils = require('~/cartridge/scripts/util/boltAccountUtils');
 var boltPaymentUtils = require('~/cartridge/scripts/util/boltPaymentUtils');
+var oAuth = require('~/cartridge/scripts/services/oAuth');
 var logUtils = require('~/cartridge/scripts/util/boltLogUtils');
 var log = logUtils.getLogger('Auth');
 
@@ -124,12 +125,20 @@ function authorize(orderNumber, paymentInstrument, paymentProcessor) {
         log.error(authRequestObj.errorMsg);
     }
 
+    // only attach oauth token if it is available and the user has not logged out
+    var boltOAuthToken = oAuth.getOAuthToken();
+    var bearerToken = null
+    if (!empty(boltOAuthToken)) {
+        bearerToken = 'Bearer '.concat(boltOAuthToken);
+    }
+
     // send auth call
     var response = boltHttpUtils.restAPIClient(
         constants.HTTP_METHOD_POST,
         constants.AUTH_CARD_URL,
         JSON.stringify(authRequestObj.authRequest),
-        constants.CONTENT_TYPE_JSON
+        constants.CONTENT_TYPE_JSON,
+        bearerToken
     );
     if (response.status && response.status === HttpResult.ERROR) {
         var errorMessage = !empty(response.errors) && !empty(response.errors[0].message)
