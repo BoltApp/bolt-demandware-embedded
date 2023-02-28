@@ -11,10 +11,10 @@ var HttpResult = require('dw/svc/Result');
 // Script includes
 var collections = require('*/cartridge/scripts/util/collections');
 var boltHttpUtils = require('~/cartridge/scripts/services/httpUtils');
+var oAuth = require('~/cartridge/scripts/services/oAuth');
 var constants = require('~/cartridge/scripts/util/constants');
 var boltAccountUtils = require('~/cartridge/scripts/util/boltAccountUtils');
 var boltPaymentUtils = require('~/cartridge/scripts/util/boltPaymentUtils');
-var oAuth = require('~/cartridge/scripts/services/oAuth');
 var logUtils = require('~/cartridge/scripts/util/boltLogUtils');
 var log = logUtils.getLogger('Auth');
 
@@ -127,7 +127,7 @@ function authorize(orderNumber, paymentInstrument, paymentProcessor) {
 
     // only attach oauth token if it is available and the user has not logged out
     var boltOAuthToken = oAuth.getOAuthToken();
-    var bearerToken = null
+    var bearerToken = null;
     if (!empty(boltOAuthToken)) {
         bearerToken = 'Bearer '.concat(boltOAuthToken);
     }
