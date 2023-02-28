@@ -30,6 +30,7 @@ describe('bolt pay payment processor', function () {
     var boltPay;
     var boltPayFilePath = '../../../../../../../cartridges/int_bolt_embedded_sfra/cartridge/scripts/hooks/payment/processor/bolt_pay';
     var responseMock = {};
+    var oAuthTokenMock;
     var boltAccountUtilsMock = require('../../../../../../mocks/bolt/boltAccountUtils.js');
     boltAccountUtilsMock.loginAsBoltUser = loginAsBoltUserStub;
     var requiredModulesMock = {
