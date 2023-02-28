@@ -127,7 +127,7 @@ function authorize(orderNumber, paymentInstrument, paymentProcessor) {
 
     // only attach oauth token if it is available and the user has not logged out
     var boltOAuthToken = oAuth.getOAuthToken();
-    var bearerToken = null;
+    var bearerToken;
     if (!empty(boltOAuthToken)) {
         bearerToken = 'Bearer '.concat(boltOAuthToken);
     }
