@@ -128,7 +128,7 @@ function authorize(orderNumber, paymentInstrument, paymentProcessor) {
     // only attach oauth token if it is available and the user has not logged out
     var boltOAuthToken = oAuth.getOAuthToken();
     var bearerToken;
-    if (!empty(boltOAuthToken)) {
+    if (!empty(boltOAuthToken) && !sessionLogoutCookieSet()) {
         bearerToken = 'Bearer '.concat(boltOAuthToken);
     }
 
@@ -274,6 +274,22 @@ function getDwsidCookie() {
     }
 
     return '';
+}
+
+/**
+ * sessionLogoutCookieSet returns true if the bolt_sfcc_session_logout is set
+ * @return {boolean} true if the cookie is set otherwise false
+ */
+function sessionLogoutCookieSet() {
+    var cookies = request.getHttpCookies();
+
+    for (var i = 0; i < cookies.cookieCount; i++) { // eslint-disable-line no-plusplus
+        if (cookies[i].name === 'bolt_sfcc_session_logout') {
+            return cookies[i].value == 'true' ? true : false;
+        }
+    }
+
+    return false;
 }
 
 module.exports = {
