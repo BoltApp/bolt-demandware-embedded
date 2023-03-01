@@ -285,7 +285,7 @@ function sessionLogoutCookieSet() {
 
     for (var i = 0; i < cookies.cookieCount; i++) { // eslint-disable-line no-plusplus
         if (cookies[i].name === 'bolt_sfcc_session_logout') {
-            return cookies[i].value == 'true' ? true : false;
+            return cookies[i].value === 'true' ? true : false;
         }
     }
 
