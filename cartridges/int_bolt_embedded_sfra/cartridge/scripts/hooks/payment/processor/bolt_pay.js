@@ -11,6 +11,7 @@ var HttpResult = require('dw/svc/Result');
 // Script includes
 var collections = require('*/cartridge/scripts/util/collections');
 var boltHttpUtils = require('~/cartridge/scripts/services/httpUtils');
+var oAuth = require('~/cartridge/scripts/services/oAuth');
 var constants = require('~/cartridge/scripts/util/constants');
 var boltAccountUtils = require('~/cartridge/scripts/util/boltAccountUtils');
 var boltPaymentUtils = require('~/cartridge/scripts/util/boltPaymentUtils');
@@ -124,12 +125,20 @@ function authorize(orderNumber, paymentInstrument, paymentProcessor) {
         log.error(authRequestObj.errorMsg);
     }
 
+    // only attach oauth token if it is available and the user has not logged out
+    var boltOAuthToken = oAuth.getOAuthToken();
+    var bearerToken;
+    if (!empty(boltOAuthToken) && !sessionLogoutCookieSet()) {
+        bearerToken = 'Bearer '.concat(boltOAuthToken);
+    }
+
     // send auth call
     var response = boltHttpUtils.restAPIClient(
         constants.HTTP_METHOD_POST,
         constants.AUTH_CARD_URL,
         JSON.stringify(authRequestObj.authRequest),
-        constants.CONTENT_TYPE_JSON
+        constants.CONTENT_TYPE_JSON,
+        bearerToken
     );
     if (response.status && response.status === HttpResult.ERROR) {
         var errorMessage = !empty(response.errors) && !empty(response.errors[0].message)
@@ -265,6 +274,22 @@ function getDwsidCookie() {
     }
 
     return '';
+}
+
+/**
+ * sessionLogoutCookieSet returns true if the bolt_sfcc_session_logout is set
+ * @return {boolean} true if the cookie is set otherwise false
+ */
+function sessionLogoutCookieSet() {
+    var cookies = request.getHttpCookies();
+
+    for (var i = 0; i < cookies.cookieCount; i++) { // eslint-disable-line no-plusplus
+        if (cookies[i].name === 'bolt_sfcc_session_logout') {
+            return cookies[i].value === 'true';
+        }
+    }
+
+    return false;
 }
 
 module.exports = {
