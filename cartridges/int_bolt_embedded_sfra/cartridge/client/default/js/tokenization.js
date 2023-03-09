@@ -5,10 +5,11 @@ var util = require('./util.js');
 var paymentComponent;
 var boltEmbedded;
 var accountCheck;
-var boltCreateAccount = true;
+var accountCheckboxDefaultValue = true
+var boltCreateAccount = accountCheckboxDefaultValue;
 
 var accountCheckOptions = {
-    defaultValue: true,
+    defaultValue: accountCheckboxDefaultValue,
     version: 'compact',
     listeners: {
         change: function (value) {
