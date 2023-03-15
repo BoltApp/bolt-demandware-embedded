@@ -6,11 +6,11 @@ var paymentComponent;
 var boltEmbedded;
 var accountCheck;
 // set this value to false for the account creation checkbox to be default off
-var boltAccountCheckboxDefault = true;
-var boltCreateAccount = boltAccountCheckboxDefault;
+var boltCreateAccountCheckboxDefault = true;
+var boltCreateAccount = boltCreateAccountCheckboxDefault;
 
 var accountCheckOptions = {
-    defaultValue: boltAccountCheckboxDefault,
+    defaultValue: boltCreateAccountCheckboxDefault,
     version: 'compact',
     listeners: {
         change: function (value) {
