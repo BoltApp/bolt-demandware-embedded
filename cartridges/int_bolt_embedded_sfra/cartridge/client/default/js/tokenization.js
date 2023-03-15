@@ -5,10 +5,12 @@ var util = require('./util.js');
 var paymentComponent;
 var boltEmbedded;
 var accountCheck;
-var boltCreateAccount = true;
+// set this value to false for the account creation checkbox to be default off
+var boltCreateAccountCheckboxDefault = true;
+var boltCreateAccount = boltCreateAccountCheckboxDefault;
 
 var accountCheckOptions = {
-    defaultValue: true,
+    defaultValue: boltCreateAccountCheckboxDefault,
     version: 'compact',
     listeners: {
         change: function (value) {
