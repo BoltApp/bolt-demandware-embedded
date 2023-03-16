@@ -86,6 +86,27 @@ function getAccountDetails(oAuthToken) {
         data: reqBody,
         success: function (data) {
             window.location.href = data.redirectUrl;
+            if (data.redirectUrl.includes('placeOrder')) {
+                // if the redirect url is placeOrder, all the user data are populated properly.
+                // Note that if the redirect url is a stage prior to place order, we don't have to
+                // fire any events because checkout.js will handle those
+
+                // Fire the corresponding events
+                // shipping events
+                window.BoltAnalytics.checkoutStepComplete(
+                    constants.EventShippingDetailsFullyEntered,
+                    { loginStatus: 'logged-in' }
+                );
+                window.BoltAnalytics.checkoutStepComplete(
+                    constants.EventShippingMethodStepComplete
+                );
+
+                // payment events
+                window.BoltAnalytics.checkoutStepComplete(constants.EventPaymentMethodSelected);
+                window.BoltAnalytics.checkoutStepComplete(
+                    constants.EventPaymentDetailsFullyEntered
+                );
+            }
         },
         error: function (jqXHR, error) {
             console.log(error);
@@ -115,6 +136,7 @@ exports.checkAccountAndFetchDetail = function () {
         method: 'GET',
         success(data) {
             if (data !== null) {
+                window.BoltAnalytics.checkoutStepComplete(constants.EventAccountRecognitionCheckPerformed, { hasBoltAccount: data.has_bolt_account, detectionMethod: 'email' });
                 if (data.has_bolt_account) {
                     login(customerEmail);
                     if ($accountCheckbox) {
@@ -123,7 +145,6 @@ exports.checkAccountAndFetchDetail = function () {
                 } else {
                     $('.submit-customer').removeAttr('disabled'); // enable checkout button for non Bolt shopper
                 }
-                window.BoltAnalytics.checkoutStepComplete(constants.EventAccountRecognitionCheckPerformed, { hasBoltAccount: data.has_bolt_account, detectionMethod: 'email' });
             }
         },
         error: function (jqXHR, error) {
