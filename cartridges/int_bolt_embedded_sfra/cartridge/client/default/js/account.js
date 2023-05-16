@@ -6,7 +6,7 @@ var constants = require('./constant.js');
 /**
  * This function creates the Bolt component from embed.js,
  * mount it on the page and renders the OTP modal to do authentication & authorization with Bolt
- * @param {string} customerEmail - input email
+ * @param {string | null} customerEmail - input email
  * @returns {Promise} - the returned promise waits for the user to enter the 6 digis OTP code
  */
 async function authorize(customerEmail) {
@@ -30,13 +30,11 @@ async function authorize(customerEmail) {
 }
 
 /**
- * Log the user into their bolt account
- * @param {string} email - input email
+ * Auto log the user into their bolt account
  * @returns {Promise} The returned promise to fetch account details
  */
-async function login(email) {
-    const authorizeResp = await authorize(email);
-    $('.submit-customer').removeAttr('disabled'); // enable checkout button after OTP modal is rendered
+async function autoLogin() {
+    const authorizeResp = await authorize(null);
     if (!authorizeResp) return;
     const OAuthResp = await authenticateUserWithCode(
         authorizeResp.authorizationCode,
@@ -94,45 +92,6 @@ function getAccountDetails(oAuthToken) {
 }
 
 /**
- * Check Account And Fetch Detail
- * This function makes a call to bolt backend with the user email,
- * and log the user into their bolt account if the user has one
- * at the end of the login flow we redirect the user to the final page
- * where they can click place order so this function
- * doesn't return anything
- * @returns {void}
- */
-exports.checkAccountAndFetchDetail = function () {
-    const emailInput = $('#email-guest');
-    const customerEmail = emailInput.val();
-    const checkBoltAccountUrl = $('.check-bolt-account-exist').val() + '=' + encodeURIComponent(customerEmail);
-    const $accountCheckbox = $('#acct-checkbox');
-    if ($accountCheckbox) {
-        $accountCheckbox.show();
-    }
-    $.ajax({
-        url: checkBoltAccountUrl,
-        method: 'GET',
-        success(data) {
-            if (data !== null) {
-                if (data.has_bolt_account) {
-                    login(customerEmail);
-                    if ($accountCheckbox) {
-                        $('#acct-checkbox').hide();
-                    }
-                } else {
-                    $('.submit-customer').removeAttr('disabled'); // enable checkout button for non Bolt shopper
-                }
-                window.BoltAnalytics.checkoutStepComplete(constants.EventAccountRecognitionCheckPerformed, { hasBoltAccount: data.has_bolt_account, detectionMethod: 'email' });
-            }
-        },
-        error: function (jqXHR, error) {
-            console.log(error);
-        }
-    });
-};
-
-/**
  * making an ajax call to sfcc backend to clear bolt account data
  */
 exports.logout = function () {
@@ -158,7 +117,7 @@ exports.logout = function () {
  * detect bolt auto login
  */
 exports.detectAutoLogin = function () {
-    login(null);
+    autoLogin();
 };
 
 /**
@@ -219,4 +178,39 @@ exports.getCookie = function (cookieName) {
         }
     }
     return '';
+};
+
+exports.setupListeners = async function (authorizationComponent) {
+    authorizationComponent.on('auto_authorize_complete', response => {
+        if (!(response.result instanceof Error)) {
+            (async function (authorizeResp) {
+                const OAuthResp = await authenticateUserWithCode(
+                    authorizeResp.authorizationCode,
+                    authorizeResp.scope
+                );
+                return getAccountDetails(OAuthResp.accessToken);
+            }(response.result));
+        }
+    });
+
+    authorizationComponent.on('auto_account_check_complete', response => {
+        const $accountCheckbox = $('#acct-checkbox');
+        if (response.result instanceof Error) {
+            if (response.result.message === 'Invalid email') {
+                $('.submit-customer').attr('disabled', 'true');
+            }
+            return;
+        }
+        if (response.result) {
+            if ($accountCheckbox) {
+                $accountCheckbox.hide();
+            }
+        } else {
+            $('.submit-customer').removeAttr('disabled');
+            if ($accountCheckbox) {
+                $accountCheckbox.show();
+            }
+        }
+        window.BoltAnalytics.checkoutStepComplete(constants.EventAccountRecognitionCheckPerformed, { hasBoltAccount: response.result, detectionMethod: 'email' });
+    });
 };
