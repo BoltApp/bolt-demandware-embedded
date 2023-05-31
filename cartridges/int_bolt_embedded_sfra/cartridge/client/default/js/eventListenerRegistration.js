@@ -27,7 +27,13 @@ $(document).ready(function () {
         });
         containerToMount.classList.add('containerToMount');
         await authorizationComponent.mount('.containerToMount'); // mount on the div container otherwise the iframe won't render
-        account.setupListeners(authorizationComponent);
+
+        const isBoltShopperLoggedIn = $('.bolt-is-shopper-logged-in').val();
+        var boltSFCCSessionLogoutCookie = account.getCookie('bolt_sfcc_session_logout');
+        if (isBoltShopperLoggedIn === 'false' && boltSFCCSessionLogoutCookie !== 'true') {
+            account.detectAutoLogin(authorizationComponent);
+        }
+        account.setupListeners();
     }, 500);
 });
 
@@ -72,20 +78,6 @@ $(document).ready(function () {
             });
         }
     }, 100);
-});
-
-// detect auto login
-$(document).ready(function () {
-    var isBoltEmbeddedExists = setInterval(function () {
-        if (typeof Bolt !== 'undefined') {
-            clearInterval(isBoltEmbeddedExists);
-            const isBoltShopperLoggedIn = $('.bolt-is-shopper-logged-in').val();
-            var boltSFCCSessionLogoutCookie = account.getCookie('bolt_sfcc_session_logout');
-            if (isBoltShopperLoggedIn === 'false' && boltSFCCSessionLogoutCookie !== 'true') {
-                account.detectAutoLogin();
-            }
-        }
-    }, 500);
 });
 
 // mount login status component

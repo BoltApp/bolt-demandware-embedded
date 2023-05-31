@@ -4,37 +4,12 @@ var util = require('./util.js');
 var constants = require('./constant.js');
 
 /**
- * This function creates the Bolt component from embed.js,
- * mount it on the page and renders the OTP modal to do authentication & authorization with Bolt
- * @param {string | null} customerEmail - input email
- * @returns {Promise} - the returned promise waits for the user to enter the 6 digis OTP code
- */
-async function authorize(customerEmail) {
-    const boltPublishableKey = $('.bolt-publishable-key').val();
-    const locale = $('.bolt-locale').val();
-
-    const boltEmbedded = Bolt(boltPublishableKey, { // eslint-disable-line no-undef
-        language: util.getISOCodeByLocale(locale)
-    });
-
-    const authorizationComponent = boltEmbedded.create('authorization_component', { style: { position: 'right' } });
-    if (customerEmail != null) {
-        const containerToMount = $('#email-guest').parent().get(0); // there is only 1 occurance of $('#email-guest')
-        containerToMount.classList.add('containerToMount');
-        await authorizationComponent.mount('.containerToMount'); // mount on the div container otherwise the iframe won't render
-        return authorizationComponent.authorize({ email: customerEmail });
-    }
-    // if no email, then auto login
-    await authorizationComponent.mount('.auto-login-div'); // mount on the div container
-    return authorizationComponent.authorize({});
-}
-
-/**
  * Auto log the user into their bolt account
+ * @param {Object} authorizationComponent - authorization component
  * @returns {Promise} The returned promise to fetch account details
  */
-async function autoLogin() {
-    const authorizeResp = await authorize(null);
+async function autoLogin(authorizationComponent) {
+    const authorizeResp = await authorizationComponent.authorize({});
     if (!authorizeResp) return;
     const OAuthResp = await authenticateUserWithCode(
         authorizeResp.authorizationCode,
@@ -115,9 +90,10 @@ exports.logout = function () {
 
 /**
  * detect bolt auto login
+ * @param {Object} authorizationComponent - authorization component
  */
-exports.detectAutoLogin = function () {
-    autoLogin();
+exports.detectAutoLogin = function (authorizationComponent) {
+    autoLogin(authorizationComponent);
 };
 
 /**
@@ -180,8 +156,9 @@ exports.getCookie = function (cookieName) {
     return '';
 };
 
-exports.setupListeners = async function (authorizationComponent) {
-    authorizationComponent.on('auto_authorize_complete', response => {
+exports.setupListeners = async function () {
+    // eslint-disable-next-line no-undef
+    Bolt.getInstance().on('auto_authorize_complete', response => {
         if (!(response.result instanceof Error)) {
             (async function (authorizeResp) {
                 const OAuthResp = await authenticateUserWithCode(
@@ -193,7 +170,8 @@ exports.setupListeners = async function (authorizationComponent) {
         }
     });
 
-    authorizationComponent.on('auto_account_check_complete', response => {
+    // eslint-disable-next-line no-undef
+    Bolt.getInstance().on('auto_account_check_complete', response => {
         const $accountCheckbox = $('#acct-checkbox');
         if (response.result instanceof Error) {
             if (response.result.message === 'Invalid email') {
