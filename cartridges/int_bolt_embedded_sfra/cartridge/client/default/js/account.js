@@ -157,6 +157,7 @@ exports.getCookie = function (cookieName) {
 };
 
 exports.setupListeners = async function () {
+    // eslint-disable-next-line no-undef
     Bolt.getInstance().on('auto_authorize_complete', response => {
         if (!(response.result instanceof Error)) {
             (async function (authorizeResp) {
@@ -169,6 +170,7 @@ exports.setupListeners = async function () {
         }
     });
 
+    // eslint-disable-next-line no-undef
     Bolt.getInstance().on('auto_account_check_complete', response => {
         const $accountCheckbox = $('#acct-checkbox');
         if (response.result instanceof Error) {
