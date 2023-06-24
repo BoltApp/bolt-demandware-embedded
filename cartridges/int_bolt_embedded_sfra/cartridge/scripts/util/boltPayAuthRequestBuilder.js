@@ -117,7 +117,7 @@ function buildCartField(order, paymentInstrument) {
         tax_amount: taxAmount,
         currency: order.getCurrencyCode(),
         billing_address: buildBillingAddressField(order),
-        in_store_cart_shipments: buildInStoreShipmentsField(order),
+        in_store_cart_shipments: [],
         items: buildCarItemField(order),
         discounts: buildDiscountsField(order),
         shipments: buildShipmentsField(order)
@@ -134,51 +134,16 @@ function buildShipmentsField(order) {
     var shipmentsField = [];
     var shipments = order.getShipments();
     collections.forEach(shipments, function (shipment) {
-        if (!isNonStandardShippingMethod(shipment.getShippingMethodID())) {
-            var shippingAddress = shipment.getShippingAddress();
-            var shipmentField = {
-                shipping_address: buildShippingAddressField(shippingAddress, order),
-                cost: getShipmentCostInCents(shipment),
-                service: shipment.getShippingMethod().getDisplayName()
-            };
-            shipmentsField.push(shipmentField);
-        }
+        var shippingAddress = shipment.getShippingAddress();
+        var shipmentField = {
+            shipping_address: buildShippingAddressField(shippingAddress, order),
+            cost: getShipmentCostInCents(shipment),
+            service: shipment.getShippingMethod().getDisplayName()
+        };
+        shipmentsField.push(shipmentField);
     });
 
     return shipmentsField;
-}
-
-/**
- * Build in store shipment field
- * @param {dw.order.Order} order SFCC Order
- * @returns {Object} returns request's shipments
- */
-function buildInStoreShipmentsField(order) {
-    var inStoreShipmentsField = [];
-    var shipments = order.getShipments();
-    collections.forEach(shipments, function (shipment) {
-        if (isInStorePickUpShippingMethod(shipment.getShippingMethodID())) {
-            var shippingAddress = shipment.getShippingAddress();
-            var storeName = '';
-            if ('fromStoreId' in shipment.custom && shipment.custom.fromStoreId != null) {
-                storeName = shipment.custom.fromStoreId;
-            }
-            var shipmentField = {
-                cart_shipment: {
-                    shipping_address: buildShippingAddressField(shippingAddress, order),
-                    cost: getShipmentCostInCents(shipment),
-                    service: shipment.getShippingMethod().getDisplayName()
-                },
-                in_store_pickup_address: buildShippingAddressField(shippingAddress, order),
-                store_name: storeName,
-                distance_unit: 'mile'
-
-            };
-            inStoreShipmentsField.push(shipmentField);
-        }
-    });
-
-    return inStoreShipmentsField;
 }
 
 /**
@@ -215,6 +180,7 @@ function buildShippingAddressField(shippingAddress, order) {
         phone: shippingAddress.getPhone() || '',
         street_address1: shippingAddress.getAddress1() || '',
         street_address2: shippingAddress.getAddress2() || '',
+        company: shippingAddress.getCompanyName() || '',
         locality: shippingAddress.getCity() || '',
         region: shippingAddress.getStateCode() || '',
         postal_code: shippingAddress.getPostalCode() || '',
@@ -234,6 +200,7 @@ function buildBillingAddressField(order) {
     return {
         street_address1: billingAddress.getAddress1() || '',
         street_address2: billingAddress.getAddress2() || '',
+        company: billingAddress.getCompanyName() || '',
         locality: billingAddress.getCity() || '',
         region: billingAddress.getStateCode() || '',
         postal_code: billingAddress.getPostalCode() || '',
@@ -246,26 +213,6 @@ function buildBillingAddressField(order) {
         email: order.getCustomerEmail() || '',
         phone: billingAddress.getPhone() || ''
     };
-}
-
-/**
- * Get product image URL
- *
- * @param {dw.order.ProductLineItem} productLineItem - product line item
- * @returns {string | null} image URL if exists, null otherwise
- */
-function getImageURL(productLineItem) {
-    var product = productLineItem.getProduct();
-    var imageSizes = ['small', 'large'];
-    var imageURL = null;
-    if (product != null) {
-        imageSizes.forEach(function (imageSize) {
-            if (product.getImage(imageSize, 0)) {
-                imageURL = product.getImage(imageSize, 0).getAbsURL().toString();
-            }
-        });
-    }
-    return imageURL;
 }
 
 /**
@@ -283,7 +230,6 @@ function buildCarItemField(order) {
         var totalAmount;
         var unitPrice;
         var quantity;
-
         totalAmount = getProductTotalPriceInCents(productLineItem);
         quantity = productLineItem.getQuantityValue();
         unitPrice = Math.round(totalAmount / quantity);
@@ -292,31 +238,24 @@ function buildCarItemField(order) {
             reference: productLineItem.getProductID(),
             quantity: quantity,
             type: 'physical',
-            image_url: getImageURL(productLineItem),
+            msrp: Math.round(productLineItem.getBasePrice().getValue() * 100),
             total_amount: totalAmount,
             unit_price: unitPrice
         };
+
         cartItems.push(item);
     });
 
     // GiftCertificate LineItems
     var giftCertificateLineItems = order.getGiftCertificateLineItems();
     collections.forEach(giftCertificateLineItems, function (giftCertificateLineItem) {
-        var item;
-        var giftCertificateDetails = JSON.stringify({
-            recipientEmail: giftCertificateLineItem.getRecipientEmail(),
-            recipientName: giftCertificateLineItem.getRecipientName(),
-            senderName: giftCertificateLineItem.getSenderName(),
-            message: giftCertificateLineItem.getMessage()
-        });
-        item = {
-            name: giftCertificateLineItem.getLineItemText(),
+        var item = {
+            name: 'Gift Certificate',
             reference: giftCertificateLineItem.getUUID(),
-            total_amount: Math.round(giftCertificateLineItem.getGrossPrice().getValue() * 100),
+            total_amount: Math.round(giftCertificateLineItem.getNetPrice().getValue() * 100),
             unit_price: Math.round(giftCertificateLineItem.getPrice().getValue() * 100),
             quantity: 1,
-            type: 'digital',
-            options: giftCertificateDetails
+            type: 'digital'
         };
         cartItems.push(item);
     });
@@ -448,34 +387,4 @@ function getProductTotalPriceInCents(productLineItem) {
         totalPrice += optionProductLineItemAmount;
     }
     return Math.round(totalPrice * 100);
-}
-
-/**
- * Check shipping method is non standard shipping method
- * standard shipping method means ship to home with carrier
- * @param {string} shippingMethodID SFCC Product Line Item
- * @param {dw.order.Order} order SFCC Order
- * @returns {boolean} indicate if the shipping method is non standard shipping method
- */
-function isNonStandardShippingMethod(shippingMethodID) {
-    var nonStandardShippingMethods = ['ShipToStore', 'PickUpInStore'];
-    if (nonStandardShippingMethods.indexOf(shippingMethodID) !== -1) {
-        return true;
-    }
-    return false;
-}
-
-/**
- * Check shipping method is in store pickup shipping method
- *
- * @param {string} shippingMethodID SFCC Product Line Item
- * @param {dw.order.Order} order SFCC Order
- * @returns {boolean} indicate if the shipping method is in store pickup shipping method
- */
-function isInStorePickUpShippingMethod(shippingMethodID) {
-    var inStorePickUpShippingMethods = ['ShipToStore', 'PickUpInStore'];
-    if (inStorePickUpShippingMethods.indexOf(shippingMethodID) !== -1) {
-        return true;
-    }
-    return false;
 }

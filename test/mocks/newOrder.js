@@ -3,6 +3,9 @@
 var ArrayList = require('./dw.util.Collection');
 
 var billingAddress = {
+    getCompanyName(){
+        return 'bolt';
+    },
     getPostalCode(){
         return '02135';
     },
@@ -72,6 +75,9 @@ var shippingAddress = {
     phone : '617-555-1234',
     custom:{
         boltAddressId : 'boltAddressId'
+    },
+    getCompanyName(){
+        return 'bolt';
     },
     getPostalCode(){
         return this.postalCode;
@@ -339,6 +345,16 @@ var sonyPlayStationProduct = {
             }
         };
     },
+    getBasePrice(){
+        return {
+            getValue(){
+                return 399.99;
+            }
+        };
+    },
+    getShipment(){
+        return defaultShipment;
+    },
     getPriceAdjustments(){
         return sonyPlayStationProductAdjustments;
     },
@@ -377,6 +393,16 @@ var earringProduct = {
                 return 27.00;
             }
         };
+    },
+    getBasePrice(){
+        return {
+            getValue(){
+                return 30.00;
+            }
+        };
+    },
+    getShipment(){
+        return inStoreShipment;
     },
     getPriceAdjustments(){
         return earringProductAdjustments;
@@ -476,9 +502,16 @@ var giftCertificateLineItems = new ArrayList([
             return 'text';
         },
         getUUID(){
-            return 'UUID';
+            return 'giftCert';
         },
         getGrossPrice(){
+            return {
+                getValue(){
+                    return 20.00;
+                }
+            };
+        },
+        getNetPrice(){
             return {
                 getValue(){
                     return 20.00;
