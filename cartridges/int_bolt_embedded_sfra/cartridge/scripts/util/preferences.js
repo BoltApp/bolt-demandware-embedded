@@ -18,6 +18,7 @@ exports.getSitePreferences = function () {
     var boltApiUrl = boltApiURL();
     var boltCdnUrl = boltConnectURL();
     var boltEnable = Site.getCurrent().getCustomPreferenceValue('boltEnable');
+    var boltEnableSSO = Site.getCurrent().getCustomPreferenceValue('boltEnableSSO');
     var boltMerchantDivisionID = Site.getCurrent().getCustomPreferenceValue('boltMerchantDivisionID') || '';
 
     if (!boltEnable) {
@@ -33,7 +34,9 @@ exports.getSitePreferences = function () {
         boltMerchantDivisionID: boltMerchantDivisionID,
         boltApiUrl: boltApiUrl,
         boltCdnUrl: boltCdnUrl,
-        boltMultiPublishableKey: boltMultiPublishableKey
+        boltMultiPublishableKey: boltMultiPublishableKey,
+        boltEnableSSO: boltEnableSSO,
+        boltAccountURL: boltAccountURL(),
     };
 };
 
@@ -83,5 +86,22 @@ function boltConnectURL() {
         case 'production':
         default:
             return 'https://connect.bolt.com';
+    }
+}
+
+/**
+ * Return Account URL
+ * @returns {string} Account URL to access Bolt account related feature (SSO)
+ */
+function boltAccountURL() {
+    var boltEnv = Site.getCurrent().getCustomPreferenceValue('boltEnvironment').valueOf();
+    switch (boltEnv) {
+        case 'sandbox':
+            return 'https://account-sandbox.bolt.com';
+        case 'staging':
+            return 'https://account-staging.bolt.com';
+        case 'production':
+        default:
+            return 'https://account.bolt.com';
     }
 }
