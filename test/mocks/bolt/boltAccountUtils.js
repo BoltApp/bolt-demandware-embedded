@@ -24,9 +24,14 @@ function saveAddressToBolt() {
     
 }
 
+function isEmptyAddress(){
+    return false;
+}
+
 module.exports = {
     checkEmptyValue: checkEmptyValue,
     getBoltPayment: getBoltPayment,
     saveCardToBolt: saveCardToBolt,
-    saveAddressToBolt: saveAddressToBolt
+    saveAddressToBolt: saveAddressToBolt,
+    isEmptyAddress: isEmptyAddress
 };

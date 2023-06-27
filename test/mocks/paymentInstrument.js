@@ -13,12 +13,22 @@ module.exports = {
     paymentTransaction : {
         paymentProcessor : '',
         transactionID : '',
+        amount: {
+            value: 10.00,
+            getValue(){
+                return this.value;
+            }
+        },
         setPaymentProcessor(val){
             this.paymentProcessor = val;
         },
         setTransactionID(val){
             this.transactionID = val;
+        },
+        getAmount(){
+            return this.amount;
         }
+
     },
     getPaymentTransaction() {
         return this.paymentTransaction;
