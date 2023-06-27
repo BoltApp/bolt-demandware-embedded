@@ -3,40 +3,38 @@
 const account = require('./account');
 const util = require('./util');
 const boltStoredPayment = require('./boltStoredPayments');
-const constants = require('./constant');
 
 // register the event listener on the $('#email-guest') component
 // change the html element ID if you make change to $('#email-guest')
 $(document).ready(function () {
-    const emailInputLoaded = setInterval(function () {
-        const emailInput = $('#email-guest');
-        if (emailInput) {
-            clearInterval(emailInputLoaded);
-            var checkBoltAccountTimeOut;
-            var emailEnterBegan = false;
-            $('.submit-customer').attr('disabled', 'true'); // disable the checkout button by default
-            emailInput.keyup(function () {
-                clearTimeout(checkBoltAccountTimeOut);
-                if (!emailEnterBegan) {
-                    window.BoltAnalytics.checkoutStepComplete(constants.EventDetailEntryBegan);
-                }
-                emailEnterBegan = true;
-                checkBoltAccountTimeOut = setTimeout(function () {
-                    if (util.validateEmail(emailInput.val())) {
-                        // disable the checkout button in case that we checked Bolt account
-                        // with the typing unfinished email address and checkout
-                        // button was enabled after that
-                        $('.submit-customer').attr('disabled', 'true');
-                        account.checkAccountAndFetchDetail();
-                    }
-                }, 1000);
-
-                if (!util.validateEmail(emailInput.val())) {
-                    $('.submit-customer').attr('disabled', 'true'); // keep the checkout button disabled if the email is invalid
-                }
-            });
+    $('.submit-customer').attr('disabled', 'true');
+    const isBoltEmbeddedExists = setInterval(async function () {
+        const containerToMount = $('#email-guest').parent().get(0);
+        if (typeof Bolt === 'undefined' || containerToMount.offsetParent === null) {
+            return;
         }
-    }, 100);
+        clearInterval(isBoltEmbeddedExists);
+        const boltPublishableKey = $('.bolt-publishable-key').val();
+        const locale = $('.bolt-locale').val();
+
+        const boltEmbedded = Bolt(boltPublishableKey, { // eslint-disable-line no-undef
+            language: util.getISOCodeByLocale(locale)
+        });
+
+        const authorizationComponent = boltEmbedded.create('authorization_component', {
+            style: { position: 'right' },
+            autoAuthorize: true
+        });
+        containerToMount.classList.add('containerToMount');
+        await authorizationComponent.mount('.containerToMount'); // mount on the div container otherwise the iframe won't render
+
+        const isBoltShopperLoggedIn = $('.bolt-is-shopper-logged-in').val();
+        var boltSFCCSessionLogoutCookie = account.getCookie('bolt_sfcc_session_logout');
+        if (isBoltShopperLoggedIn === 'false' && boltSFCCSessionLogoutCookie !== 'true') {
+            account.detectAutoLogin(authorizationComponent);
+        }
+        account.setupListeners();
+    }, 500);
 });
 
 // register the event listener on the logout button
@@ -80,20 +78,6 @@ $(document).ready(function () {
             });
         }
     }, 100);
-});
-
-// detect auto login
-$(document).ready(function () {
-    var isBoltEmbeddedExists = setInterval(function () {
-        if (typeof Bolt !== 'undefined') {
-            clearInterval(isBoltEmbeddedExists);
-            const isBoltShopperLoggedIn = $('.bolt-is-shopper-logged-in').val();
-            var boltSFCCSessionLogoutCookie = account.getCookie('bolt_sfcc_session_logout');
-            if (isBoltShopperLoggedIn === 'false' && boltSFCCSessionLogoutCookie !== 'true') {
-                account.detectAutoLogin();
-            }
-        }
-    }, 500);
 });
 
 // mount login status component
