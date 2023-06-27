@@ -57,12 +57,20 @@
         <externally-managed-flag>false</externally-managed-flag>
         <default-value>false</default-value>
       </attribute-definition>
+      <attribute-definition attribute-id="boltEnableSSO">
+        <display-name xml:lang="x-default">Enable Bolt SSO</display-name>
+        <type>boolean</type>
+        <mandatory-flag>false</mandatory-flag>
+        <externally-managed-flag>false</externally-managed-flag>
+        <default-value>false</default-value>
+      </attribute-definition>
     </custom-attribute-definitions>
 
     <group-definitions>
       <attribute-group group-id="Bolt Payment Setting - Embedded">
         <display-name xml:lang="x-default">Bolt Payment Setting  - Embedded</display-name>
         <attribute attribute-id="boltEnable"/>
+        <attribute attribute-id="boltEnableSSO"/>
         <attribute attribute-id="boltEnableAutoCapture"/>
         <attribute attribute-id="boltAPIKey"/>
         <attribute attribute-id="boltMerchantDivisionID"/>
