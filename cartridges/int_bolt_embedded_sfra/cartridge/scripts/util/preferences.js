@@ -36,7 +36,7 @@ exports.getSitePreferences = function () {
         boltCdnUrl: boltCdnUrl,
         boltMultiPublishableKey: boltMultiPublishableKey,
         boltEnableSSO: boltEnableSSO,
-        boltAccountURL: boltAccountURL(),
+        boltAccountURL: boltAccountURL()
     };
 };
 
