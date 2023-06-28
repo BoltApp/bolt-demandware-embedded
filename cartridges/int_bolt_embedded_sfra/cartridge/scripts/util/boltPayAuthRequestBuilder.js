@@ -120,7 +120,13 @@ function buildCartField(order, paymentInstrument) {
         in_store_cart_shipments: [],
         items: buildCarItemField(order),
         discounts: buildDiscountsField(order),
-        shipments: buildShipmentsField(order)
+        shipments: buildShipmentsField(order),
+        // metadata field is not used unless merchant is using old OCAPI
+        // flow with "sfcc_embedded_skip_ocapi_fetch_order" gate
+        // TODO (Alex P): Update this comment once gate removed
+        metadata: {
+            SFCCSessionID: getDwsidCookie()
+        }
     };
     return cart;
 }
@@ -387,4 +393,20 @@ function getProductTotalPriceInCents(productLineItem) {
         totalPrice += optionProductLineItemAmount;
     }
     return Math.round(totalPrice * 100);
+}
+
+/**
+ * getDwsidCookie returns DW Session ID from cookie
+ * @return {string} DW Session ID
+ */
+function getDwsidCookie() {
+    var cookies = request.getHttpCookies();
+
+    for (var i = 0; i < cookies.cookieCount; i++) { // eslint-disable-line no-plusplus
+        if (cookies[i].name === 'dwsid') {
+            return cookies[i].value;
+        }
+    }
+
+    return '';
 }
