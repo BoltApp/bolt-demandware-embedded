@@ -29,7 +29,8 @@ exports.restAPIClient = function (
     endPoint,
     request,
     requestContentType,
-    authenticationHeader
+    authenticationHeader,
+    fullUrlOverride
 ) {
     var isProductionEnv = System.getInstanceType() === System.PRODUCTION_SYSTEM;
     var service = LocalServiceRegistry.createService('bolt.http', {
@@ -85,7 +86,7 @@ exports.restAPIClient = function (
     request = request || '';
     var serviceArgs = {
         method: method,
-        endPointUrl: endPointUrl,
+        endPointUrl: fullUrlOverride || endPointUrl,
         request: request,
         boltAPIKey: boltAPIKey
     };
