@@ -121,6 +121,9 @@ function buildCartField(order, paymentInstrument) {
         items: buildCarItemField(order),
         discounts: buildDiscountsField(order),
         shipments: buildShipmentsField(order),
+        // metadata field is not used unless merchant is using old OCAPI
+        // flow with "sfcc_embedded_skip_ocapi_fetch_order" gate
+        // TODO (Alex P): Update this comment once gate removed
         metadata: {
             SFCCSessionID: getDwsidCookie()
         }
