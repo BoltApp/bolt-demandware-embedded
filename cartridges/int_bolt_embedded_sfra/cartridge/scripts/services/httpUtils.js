@@ -22,6 +22,7 @@ var log = logUtils.getLogger('HttpUtils');
  * @param {Object} request - request object
  * @param {string} requestContentType - content type, ex: "application/x-www-form-urlencoded"
  * @param {string} authenticationHeader - bearer header for authentication
+ * @param {string} fullUrlOverride - service endpoint
  * @returns {ServiceResponse} service response
  */
 exports.restAPIClient = function (
