@@ -107,16 +107,6 @@ function authorize(orderNumber, paymentInstrument, paymentProcessor) {
         paymentInstrument.paymentTransaction.setPaymentProcessor(paymentProcessor);
     });
     var order = OrderMgr.getOrder(orderNumber);
-    // save card to bolt account
-    // if save card is success, use the new credit card id for authorization
-    if (boltAccountUtils.loginAsBoltUser() && !empty(paymentInstrument.getCreditCardToken())) {
-        var saveCardResult = boltAccountUtils.saveCardToBolt(order, paymentInstrument);
-        if (saveCardResult.success) {
-            Transaction.wrap(function () {
-                paymentInstrument.custom.boltPaymentMethodId = saveCardResult.newPaymentMethodID;
-            });
-        }
-    }
 
     // build auth request
     var authRequestObj = boltPayAuthRequestBuilder.build(order, paymentInstrument);
