@@ -22,6 +22,7 @@ var log = logUtils.getLogger('HttpUtils');
  * @param {Object} request - request object
  * @param {string} requestContentType - content type, ex: "application/x-www-form-urlencoded"
  * @param {string} authenticationHeader - bearer header for authentication
+ * @param {string} fullUrlOverride - service endpoint
  * @returns {ServiceResponse} service response
  */
 exports.restAPIClient = function (
@@ -29,7 +30,8 @@ exports.restAPIClient = function (
     endPoint,
     request,
     requestContentType,
-    authenticationHeader
+    authenticationHeader,
+    fullUrlOverride
 ) {
     var isProductionEnv = System.getInstanceType() === System.PRODUCTION_SYSTEM;
     var service = LocalServiceRegistry.createService('bolt.http', {
@@ -85,7 +87,7 @@ exports.restAPIClient = function (
     request = request || '';
     var serviceArgs = {
         method: method,
-        endPointUrl: endPointUrl,
+        endPointUrl: fullUrlOverride || endPointUrl,
         request: request,
         boltAPIKey: boltAPIKey
     };

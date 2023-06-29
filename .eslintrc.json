@@ -16,6 +16,9 @@
       "global-require": "off",
       "no-shadow": ["error", { "allow": ["err", "callback"]}],
       "no-use-before-define": "off",
-      "no-param-reassign": "off"
+      "no-param-reassign": "off",
+      "eqeqeq": "off",
+      "max-len": "off",
+      "no-plusplus": "off"
   }
 }
