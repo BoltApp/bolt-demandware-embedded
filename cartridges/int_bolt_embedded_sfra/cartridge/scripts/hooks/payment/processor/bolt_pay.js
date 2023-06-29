@@ -122,7 +122,7 @@ function authorize(orderNumber, paymentInstrument, paymentProcessor) {
         bearerToken = 'Bearer '.concat(boltOAuthToken);
     }
 
-    // send auth call
+    // Send auth call, note: saves both new address and new payment method.
     var response = boltHttpUtils.restAPIClient(
         constants.HTTP_METHOD_POST,
         constants.AUTH_CARD_URL,
@@ -146,11 +146,6 @@ function authorize(orderNumber, paymentInstrument, paymentProcessor) {
         order.custom.boltTransactionReference = response.result.transaction && response.result.transaction.reference ? response.result.transaction.reference : '';
         paymentInstrument.getPaymentTransaction().setTransactionID(orderNumber);
     });
-
-    // save shipping address to bolt account
-    if (boltAccountUtils.loginAsBoltUser()) {
-        boltAccountUtils.saveAddressToBolt(order);
-    }
 
     return { error: false };
 }
