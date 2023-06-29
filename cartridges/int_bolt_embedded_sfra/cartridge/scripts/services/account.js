@@ -248,5 +248,6 @@ exports.setFallbackLogoutCookie = function (res) {
 exports.removeFallbackLogoutCookie = function (res) {
     var fallbackLogoutCookie = new Cookie('bolt_sfcc_session_logout', '');
     fallbackLogoutCookie.setMaxAge(0); // 0 means delete the cookie
+    fallbackLogoutCookie.setPath('/');
     res.base.addHttpCookie(fallbackLogoutCookie);
 };
