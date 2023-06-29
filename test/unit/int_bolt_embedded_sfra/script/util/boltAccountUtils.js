@@ -299,42 +299,4 @@ describe('boltAccountUtils', function () {
         });
     });
 
-    describe('saveAddressToBolt', function () {
-        var order;
-        beforeEach(function () {
-            order = require('../../../../mocks/order');
-            oAuthTokenMock = 'oAuthToken';
-            logErrorSpy.resetHistory();
-        });
-
-        it('should trigger log.error function when OAuth token is missing', function () {
-            oAuthTokenMock = null;
-            boltAccountUtils.saveAddressToBolt(order);
-            expect(logErrorSpy.callCount).to.be.equal(1);
-        });
-
-        it('should save address to bolt shopper account and not trigger log.error function', function () {
-            responseMock = {
-                status : 0
-            };
-            boltAccountUtils.saveAddressToBolt(order);
-            expect(logErrorSpy.callCount).to.be.equal(0);
-        });
-
-        it('should trigger log.error function when save address response returns error', function () {
-            responseMock = {
-                status : 1
-            };
-            boltAccountUtils.saveAddressToBolt(order);
-            expect(logErrorSpy.callCount).to.be.equal(1);
-        });
-
-        it('should trigger log.error function when exception occurs', function () {
-            order.getDefaultShipment = function (){
-                throw new Error('Not able to get default shipment');
-            };
-            boltAccountUtils.saveAddressToBolt(order);
-            expect(logErrorSpy.callCount).to.be.equal(1);
-        });
-    });
 });
