@@ -10,6 +10,10 @@ $(document).ready(function () {
     $('.submit-customer').attr('disabled', 'true');
     const isBoltEmbeddedExists = setInterval(async function () {
         const containerToMount = $('#email-guest').parent().get(0);
+        if (typeof containerToMount === 'undefined') {
+            clearInterval(isBoltEmbeddedExists);
+            return;
+        }
         if (typeof Bolt === 'undefined' || containerToMount.offsetParent === null) {
             return;
         }

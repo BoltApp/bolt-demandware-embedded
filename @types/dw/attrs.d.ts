@@ -6,6 +6,11 @@ declare class BasketCustomAttributes {
    * Bolt Dynamic Add-Ons in JSON format
    */
   boltDynamicAddOns: string;
+
+  /**
+   * Bolt Tokens for SFCC Embedded Accounts in JSON format
+   */
+  boltEmbeddedAccountsTokens: string;
 }
 
 /**

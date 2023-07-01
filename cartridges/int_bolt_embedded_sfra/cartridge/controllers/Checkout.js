@@ -4,6 +4,7 @@ var server = require('server');
 var BasketMgr = require('dw/order/BasketMgr');
 var PaymentMgr = require('dw/order/PaymentMgr');
 var URLUtils = require('dw/web/URLUtils');
+var Transaction = require('dw/system/Transaction');
 var page = module.superModule;
 server.extend(page);
 
@@ -23,6 +24,20 @@ server.append('Begin', function (req, res, next) {
     var boltPayLogo;
     var shippingAddressDataMissing = true;
     var basket = BasketMgr.getCurrentBasket();
+
+    if (basket.custom && basket.custom.boltEmbeddedAccountsTokens) {
+        var oauthToken = basket.custom.boltEmbeddedAccountsTokens;
+        oauthToken = JSON.parse(oauthToken);
+        session.privacy.boltOAuthToken = oauthToken.access_token;
+        session.privacy.boltRefreshToken = oauthToken.refresh_token;
+        session.privacy.boltRefreshTokenScope = oauthToken.refresh_token_scope;
+        // store OAuth token expire time in milliseconds, 1000 -> ONE_SECOND
+        session.privacy.boltOAuthTokenExpire = oauthToken.expires_in * 1000 + new Date().getTime();
+        Transaction.wrap(function () {
+            basket.custom.boltEmbeddedAccountsTokens = null;
+        });
+    }
+
     this.on('route:BeforeComplete', function (req, res) { // eslint-disable-line no-shadow
         var order = res.viewData.order;
         if (order.billing
@@ -54,6 +69,7 @@ server.append('Begin', function (req, res, next) {
         } else {
             boltPayLogo = URLUtils.staticURL('/images/credit.png');
         }
+
     } catch (e) {
         log.error(e.message);
         res.json({
