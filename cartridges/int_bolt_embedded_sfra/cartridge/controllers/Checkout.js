@@ -69,7 +69,6 @@ server.append('Begin', function (req, res, next) {
         } else {
             boltPayLogo = URLUtils.staticURL('/images/credit.png');
         }
-
     } catch (e) {
         log.error(e.message);
         res.json({
