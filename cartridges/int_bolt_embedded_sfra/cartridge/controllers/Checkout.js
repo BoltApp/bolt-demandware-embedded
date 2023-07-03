@@ -42,15 +42,15 @@ server.append('Begin', function (req, res, next) {
             var bearerToken = 'Bearer '.concat(oauthToken.access_token);
             var response = httpUtils.restAPIClient(constants.HTTP_METHOD_GET, constants.ACCOUNT_DETAILS_URL, null, '', bearerToken);
             if (response.status === HttpResult.OK) {
-              var shopperDetails = response.result;
-              var addAccountDetailsResult = account.addAccountDetailsToBasket(shopperDetails);
-              if (addAccountDetailsResult.redirectShipping) {
-                  res.redirect(URLUtils.https('Checkout-Begin').append('stage', 'shipping').toString());
-              } else if (addAccountDetailsResult.redirectBilling) {
-                  res.redirect(URLUtils.https('Checkout-Begin').append('stage', 'payment').toString());
-              } else {
-                  res.redirect(URLUtils.https('Checkout-Begin').append('stage', 'placeOrder').toString());
-              }
+                var shopperDetails = response.result;
+                var addAccountDetailsResult = account.addAccountDetailsToBasket(shopperDetails);
+                if (addAccountDetailsResult.redirectShipping) {
+                    res.redirect(URLUtils.https('Checkout-Begin').append('stage', 'shipping').toString());
+                } else if (addAccountDetailsResult.redirectBilling) {
+                    res.redirect(URLUtils.https('Checkout-Begin').append('stage', 'payment').toString());
+                } else {
+                    res.redirect(URLUtils.https('Checkout-Begin').append('stage', 'placeOrder').toString());
+                }
             }
         }
     }
