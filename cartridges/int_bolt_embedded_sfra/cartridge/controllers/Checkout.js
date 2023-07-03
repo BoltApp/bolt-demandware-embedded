@@ -5,6 +5,7 @@ var BasketMgr = require('dw/order/BasketMgr');
 var PaymentMgr = require('dw/order/PaymentMgr');
 var URLUtils = require('dw/web/URLUtils');
 var Transaction = require('dw/system/Transaction');
+var HttpResult = require('dw/svc/Result');
 var page = module.superModule;
 server.extend(page);
 
@@ -15,6 +16,8 @@ var logUtils = require('~/cartridge/scripts/util/boltLogUtils');
 var log = logUtils.getLogger('Checkout');
 var AddressModel = require('*/cartridge/models/address');
 var constants = require('~/cartridge/scripts/util/constants');
+var httpUtils = require('~/cartridge/scripts/services/httpUtils');
+var account = require('~/cartridge/scripts/services/account');
 
 server.append('Begin', function (req, res, next) {
     var configuration;
@@ -36,6 +39,19 @@ server.append('Begin', function (req, res, next) {
         Transaction.wrap(function () {
             basket.custom.boltEmbeddedAccountsTokens = null;
         });
+        var bearerToken = 'Bearer '.concat(oauthToken.access_token);
+        var response = httpUtils.restAPIClient(constants.HTTP_METHOD_GET, constants.ACCOUNT_DETAILS_URL, null, '', bearerToken);
+        if (response.status === HttpResult.OK) {
+            var shopperDetails = response.result;
+            var addAccountDetailsResult = account.addAccountDetailsToBasket(shopperDetails);
+            if (addAccountDetailsResult.redirectShipping) {
+                res.redirect(URLUtils.https('Checkout-Begin').append('stage', 'shipping').toString());
+            } else if (addAccountDetailsResult.redirectBilling) {
+                res.redirect(URLUtils.https('Checkout-Begin').append('stage', 'payment').toString());
+            } else {
+                res.redirect(URLUtils.https('Checkout-Begin').append('stage', 'placeOrder').toString());
+            }
+        }
     }
 
     this.on('route:BeforeComplete', function (req, res) { // eslint-disable-line no-shadow
