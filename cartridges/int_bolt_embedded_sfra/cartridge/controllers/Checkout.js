@@ -28,14 +28,16 @@ server.append('Begin', function (req, res, next) {
     if (basket.custom && basket.custom.boltEmbeddedAccountsTokens) {
         var oauthToken = basket.custom.boltEmbeddedAccountsTokens;
         oauthToken = JSON.parse(oauthToken);
-        session.privacy.boltOAuthToken = oauthToken.access_token;
-        session.privacy.boltRefreshToken = oauthToken.refresh_token;
-        session.privacy.boltRefreshTokenScope = oauthToken.refresh_token_scope;
-        // store OAuth token expire time in milliseconds, 1000 -> ONE_SECOND
-        session.privacy.boltOAuthTokenExpire = oauthToken.expires_in * 1000 + new Date().getTime();
         Transaction.wrap(function () {
             basket.custom.boltEmbeddedAccountsTokens = null;
         });
+        if ((oauthToken.bolt_token_expires_in - new Date().getTime())
+            <= constants.OAUTH_TOKEN_REFRESH_TIME) {
+            session.privacy.boltOAuthToken = oauthToken.access_token;
+            session.privacy.boltRefreshToken = oauthToken.refresh_token;
+            session.privacy.boltRefreshTokenScope = oauthToken.refresh_token_scope;
+            session.privacy.boltOAuthTokenExpire = oauthToken.bolt_token_expires_in;
+        }
     }
 
     this.on('route:BeforeComplete', function (req, res) { // eslint-disable-line no-shadow

@@ -72,6 +72,8 @@ exports.oauthLoginOrCreatePlatformAccount = function (code, scope, orderId, orde
     }
 
     var currentBasket = BasketMgr.getCurrentOrNewBasket();
+    // store OAuth token expire time in milliseconds, 1000 -> ONE_SECOND
+    oauthTokenResponse.bolt_token_expires_in = oauthTokenResponse.expires_in * 1000 + new Date().getTime();
     Transaction.wrap(function () {
         currentBasket.custom.boltEmbeddedAccountsTokens = JSON.stringify(oauthTokenResponse);
     });
