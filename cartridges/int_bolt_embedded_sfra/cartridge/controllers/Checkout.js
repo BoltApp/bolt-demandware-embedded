@@ -29,27 +29,28 @@ server.append('Begin', function (req, res, next) {
     var basket = BasketMgr.getCurrentBasket();
 
     if (basket.custom && basket.custom.boltEmbeddedAccountsTokens) {
-        var oauthToken = basket.custom.boltEmbeddedAccountsTokens;
-        oauthToken = JSON.parse(oauthToken);
-        session.privacy.boltOAuthToken = oauthToken.access_token;
-        session.privacy.boltRefreshToken = oauthToken.refresh_token;
-        session.privacy.boltRefreshTokenScope = oauthToken.refresh_token_scope;
-        // store OAuth token expire time in milliseconds, 1000 -> ONE_SECOND
-        session.privacy.boltOAuthTokenExpire = oauthToken.expires_in * 1000 + new Date().getTime();
+        var oauthToken = JSON.parse(basket.custom.boltEmbeddedAccountsTokens);
         Transaction.wrap(function () {
             basket.custom.boltEmbeddedAccountsTokens = null;
         });
-        var bearerToken = 'Bearer '.concat(oauthToken.access_token);
-        var response = httpUtils.restAPIClient(constants.HTTP_METHOD_GET, constants.ACCOUNT_DETAILS_URL, null, '', bearerToken);
-        if (response.status === HttpResult.OK) {
-            var shopperDetails = response.result;
-            var addAccountDetailsResult = account.addAccountDetailsToBasket(shopperDetails);
-            if (addAccountDetailsResult.redirectShipping) {
-                res.redirect(URLUtils.https('Checkout-Begin').append('stage', 'shipping').toString());
-            } else if (addAccountDetailsResult.redirectBilling) {
-                res.redirect(URLUtils.https('Checkout-Begin').append('stage', 'payment').toString());
-            } else {
-                res.redirect(URLUtils.https('Checkout-Begin').append('stage', 'placeOrder').toString());
+        if ((oauthToken.bolt_token_expires_in - new Date().getTime())
+            <= constants.OAUTH_TOKEN_REFRESH_TIME) {
+            session.privacy.boltOAuthToken = oauthToken.access_token;
+            session.privacy.boltRefreshToken = oauthToken.refresh_token;
+            session.privacy.boltRefreshTokenScope = oauthToken.refresh_token_scope;
+            session.privacy.boltOAuthTokenExpire = oauthToken.bolt_token_expires_in;
+            var bearerToken = 'Bearer '.concat(oauthToken.access_token);
+            var response = httpUtils.restAPIClient(constants.HTTP_METHOD_GET, constants.ACCOUNT_DETAILS_URL, null, '', bearerToken);
+            if (response.status === HttpResult.OK) {
+              var shopperDetails = response.result;
+              var addAccountDetailsResult = account.addAccountDetailsToBasket(shopperDetails);
+              if (addAccountDetailsResult.redirectShipping) {
+                  res.redirect(URLUtils.https('Checkout-Begin').append('stage', 'shipping').toString());
+              } else if (addAccountDetailsResult.redirectBilling) {
+                  res.redirect(URLUtils.https('Checkout-Begin').append('stage', 'payment').toString());
+              } else {
+                  res.redirect(URLUtils.https('Checkout-Begin').append('stage', 'placeOrder').toString());
+              }
             }
         }
     }
