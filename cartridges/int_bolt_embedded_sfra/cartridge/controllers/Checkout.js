@@ -6,6 +6,7 @@ var PaymentMgr = require('dw/order/PaymentMgr');
 var URLUtils = require('dw/web/URLUtils');
 var Transaction = require('dw/system/Transaction');
 var HttpResult = require('dw/svc/Result');
+
 var page = module.superModule;
 server.extend(page);
 

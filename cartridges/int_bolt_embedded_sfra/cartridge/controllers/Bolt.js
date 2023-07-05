@@ -31,7 +31,7 @@ server.get('FetchOAuthToken', server.middleware.https, function (req, res, next)
         // store OAuth token expire time in milliseconds, 1000 -> ONE_SECOND
         session.privacy.boltOAuthTokenExpire = response.result.expires_in * 1000
             + new Date().getTime();
-        var currentBasket = BasketMgr.getCurrentBasket();
+        var currentBasket = BasketMgr.getCurrentOrNewBasket();
         Transaction.wrap(function () {
             currentBasket.custom.boltEmbeddedAccountsTokens = JSON.stringify(response.result);
         });
