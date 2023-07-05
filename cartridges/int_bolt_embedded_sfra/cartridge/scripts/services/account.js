@@ -259,7 +259,7 @@ exports.removeFallbackLogoutCookie = function (res) {
 /**
  * Login the shopper
  * TODO: Create a new external authenticated account if no existing account
- * @param {Object} res - sfcc request
+ * @param {string} idToken - A JWT token issued when the request includes the scope open_id
  */
 exports.loginOrCreatePlatformAccount = function (idToken) {
     var oauthConfiguration = OAuthUtils.getOAuthConfiguration();
