@@ -6,6 +6,7 @@ var OrderMgr = require('dw/order/OrderMgr');
 var Transaction = require('dw/system/Transaction');
 var Site = require('dw/system/Site');
 var HttpResult = require('dw/svc/Result');
+var BasketMgr = require('dw/order/BasketMgr');
 
 /* Script Modules */
 var JWTUtils = require('~/cartridge/scripts/util/jwtUtils');
@@ -69,6 +70,13 @@ exports.oauthLoginOrCreatePlatformAccount = function (code, scope, orderId, orde
     } else {
         return oauthErrorResponse('Platform account customer profile credentials disabled: ' + platformAccountID);
     }
+
+    var currentBasket = BasketMgr.getCurrentOrNewBasket();
+    // store OAuth token expire time in milliseconds, 1000 -> ONE_SECOND
+    oauthTokenResponse.bolt_token_expires_in = oauthTokenResponse.expires_in * 1000 + new Date().getTime();
+    Transaction.wrap(function () {
+        currentBasket.custom.boltEmbeddedAccountsTokens = JSON.stringify(oauthTokenResponse);
+    });
 
     return {
         status: 'success',
