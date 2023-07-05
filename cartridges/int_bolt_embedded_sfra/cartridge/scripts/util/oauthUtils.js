@@ -239,3 +239,6 @@ function oauthErrorResponse(message, ignoreError) {
 exports.process = function (req, res, data) {
     return data;
 };
+
+exports.getOAuthConfiguration = getOAuthConfiguration;
+exports.createPlatformAccount = createPlatformAccount;
