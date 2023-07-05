@@ -13,9 +13,9 @@ var JWTUtils = require('~/cartridge/scripts/util/jwtUtils');
 var BoltHttpUtils = require('~/cartridge/scripts/services/httpUtils');
 var BoltPreferences = require('~/cartridge/scripts/util/preferences');
 var LogUtils = require('~/cartridge/scripts/util/boltLogUtils');
+var Constants = require('~/cartridge/scripts/util/constants');
 var log = LogUtils.getLogger('Login');
 
-var OpenIdEndpoint = '/.well-known/openid-configuration';
 var BoltProviderID = 'Bolt';
 
 /**
@@ -33,6 +33,7 @@ exports.oauthLoginOrCreatePlatformAccount = function (code, scope, orderId, orde
     var clientSecret = oauthConfiguration.clientSecret;
     var providerID = oauthConfiguration.providerID;
     var boltAPIbaseURL = oauthConfiguration.boltAPIbaseURL;
+    var OpenIdEndpoint = Constants.OPENID_URL;
     var openIDConfigResponse = BoltHttpUtils.restAPIClient('GET', '', '', 'none', '', boltAPIbaseURL + OpenIdEndpoint);
     if (!openIDConfigResponse || openIDConfigResponse.status == HttpResult.ERROR || !openIDConfigResponse.result) {
         return oauthErrorResponse('Failed fetching open id configuration from endpoint: ' + OpenIdEndpoint);
