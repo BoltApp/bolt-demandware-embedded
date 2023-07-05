@@ -89,10 +89,15 @@ describe('account', function () {
             'dw/order/ShippingMgr': require('../../../../mocks/dw/order/ShippingMgr'),
             'dw/system/Transaction': require('../../../../mocks/dw/system/Transaction'),
             'dw/web/Cookie': require('../../../../mocks/dw/web/Cookie'),
+            'dw/svc/Result': require('../../../../mocks/dw/svc/Result'),
+            'dw/customer/CustomerMgr': require('../../../../mocks/dw/customer/CustomerMgr'),
             '~/cartridge/scripts/util/boltLogUtils': require('../../../../mocks/bolt/boltLogUtils'),
             '*/cartridge/scripts/util/collections': collections,
             '~/cartridge/scripts/util/constants': require('../../../../../cartridges/int_bolt_embedded_sfra/cartridge/scripts/util/constants'),
-            '~/cartridge/scripts/util/boltAccountUtils': require('../../../../mocks/bolt/boltAccountUtils.js')
+            '~/cartridge/scripts/util/boltAccountUtils': require('../../../../mocks/bolt/boltAccountUtils.js'),
+            '~/cartridge/scripts/util/oauthUtils': require('../../../../mocks/bolt/boltAccountUtils.js'),
+            '~/cartridge/scripts/util/jwtUtils': require('../../../../mocks/bolt/boltAccountUtils.js'),
+            '~/cartridge/scripts/services/httpUtils': require('../../../../mocks/bolt/boltAccountUtils.js')
         });
         shopperDetails = {
             addresses: [
