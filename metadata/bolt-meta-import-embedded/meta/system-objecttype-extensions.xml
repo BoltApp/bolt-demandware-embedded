@@ -126,6 +126,13 @@
         <externally-managed-flag>false</externally-managed-flag>
         <min-length>0</min-length>
       </attribute-definition>
+      <attribute-definition attribute-id="boltEmbeddedAccountsTokens">
+        <display-name xml:lang="x-default">Bolt Embedded Accounts Tokens</display-name>
+        <type>string</type>
+        <mandatory-flag>false</mandatory-flag>
+        <externally-managed-flag>false</externally-managed-flag>
+        <min-length>0</min-length>
+      </attribute-definition>
     </custom-attribute-definitions>
   </type-extension>
 
