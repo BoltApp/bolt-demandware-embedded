@@ -5,6 +5,8 @@ var BasketMgr = require('dw/order/BasketMgr');
 var PaymentMgr = require('dw/order/PaymentMgr');
 var URLUtils = require('dw/web/URLUtils');
 var Transaction = require('dw/system/Transaction');
+var HttpResult = require('dw/svc/Result');
+
 var page = module.superModule;
 server.extend(page);
 
@@ -15,6 +17,8 @@ var logUtils = require('~/cartridge/scripts/util/boltLogUtils');
 var log = logUtils.getLogger('Checkout');
 var AddressModel = require('*/cartridge/models/address');
 var constants = require('~/cartridge/scripts/util/constants');
+var httpUtils = require('~/cartridge/scripts/services/httpUtils');
+var account = require('~/cartridge/scripts/services/account');
 
 server.append('Begin', function (req, res, next) {
     var configuration;
@@ -26,17 +30,28 @@ server.append('Begin', function (req, res, next) {
     var basket = BasketMgr.getCurrentBasket();
 
     if (basket.custom && basket.custom.boltEmbeddedAccountsTokens) {
-        var oauthToken = basket.custom.boltEmbeddedAccountsTokens;
-        oauthToken = JSON.parse(oauthToken);
+        var oauthToken = JSON.parse(basket.custom.boltEmbeddedAccountsTokens);
         Transaction.wrap(function () {
             basket.custom.boltEmbeddedAccountsTokens = null;
         });
-        if ((oauthToken.bolt_token_expires_in - new Date().getTime())
-            <= constants.OAUTH_TOKEN_REFRESH_TIME) {
+        if ((oauthToken.bolt_token_expires_in - new Date().getTime()) > constants.OAUTH_TOKEN_REFRESH_TIME) {
             session.privacy.boltOAuthToken = oauthToken.access_token;
             session.privacy.boltRefreshToken = oauthToken.refresh_token;
             session.privacy.boltRefreshTokenScope = oauthToken.refresh_token_scope;
             session.privacy.boltOAuthTokenExpire = oauthToken.bolt_token_expires_in;
+            var bearerToken = 'Bearer '.concat(oauthToken.access_token);
+            var response = httpUtils.restAPIClient(constants.HTTP_METHOD_GET, constants.ACCOUNT_DETAILS_URL, null, '', bearerToken);
+            if (response.status === HttpResult.OK) {
+                var shopperDetails = response.result;
+                var addAccountDetailsResult = account.addAccountDetailsToBasket(shopperDetails);
+                if (addAccountDetailsResult.redirectShipping) {
+                    res.redirect(URLUtils.https('Checkout-Begin').append('stage', 'shipping').toString());
+                } else if (addAccountDetailsResult.redirectBilling) {
+                    res.redirect(URLUtils.https('Checkout-Begin').append('stage', 'payment').toString());
+                } else {
+                    res.redirect(URLUtils.https('Checkout-Begin').append('stage', 'placeOrder').toString());
+                }
+            }
         }
     }
 
