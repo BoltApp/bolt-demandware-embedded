@@ -91,7 +91,7 @@ exports.oauthLoginOrCreatePlatformAccount = function (code, scope, orderId, orde
  * Return OAuth configuration
  * @returns {Object} result
  */
-function getOAuthConfiguration() {
+exports.getOAuthConfiguration = function () {
     var boltMultiPublishableKey = Site.getCurrent().getCustomPreferenceValue('boltMultiPublishableKey') || '';
     var publishableKeySplit = boltMultiPublishableKey.split('.');
     var clientID = publishableKeySplit[publishableKeySplit.length - 1];
@@ -151,7 +151,7 @@ function exchangeOauthToken(code, scope, clientID, clientSecret, openIDConfig) {
  * @param {string} orderToken - SFCC order token
  * @returns {Object} result
  */
-function createPlatformAccount(externalProfile, orderId, orderToken) {
+exports.createPlatformAccount = function (externalProfile, orderId, orderToken) {
     var platformAccountID = externalProfile.sub;
     var authenticatedCustomerProfile = CustomerMgr.getExternallyAuthenticatedCustomerProfile(BoltProviderID, platformAccountID);
     var isRegistration = false; // isRegistration is true if the shopper does not have platform account associated with the email.

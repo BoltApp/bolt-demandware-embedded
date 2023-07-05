@@ -35,6 +35,7 @@ server.get('FetchOAuthToken', server.middleware.https, function (req, res, next)
         Transaction.wrap(function () {
             currentBasket.custom.boltEmbeddedAccountsTokens = JSON.stringify(response.result);
         });
+        account.loginOrCreatePlatformAccount(response.result.id_token);
         account.removeFallbackLogoutCookie(res);
         log.info('fetching oauth token succeeded');
     } else {
