@@ -6,6 +6,7 @@ var PaymentMgr = require('dw/order/PaymentMgr');
 var URLUtils = require('dw/web/URLUtils');
 var Transaction = require('dw/system/Transaction');
 var HttpResult = require('dw/svc/Result');
+
 var page = module.superModule;
 server.extend(page);
 
@@ -33,8 +34,7 @@ server.append('Begin', function (req, res, next) {
         Transaction.wrap(function () {
             basket.custom.boltEmbeddedAccountsTokens = null;
         });
-        if ((oauthToken.bolt_token_expires_in - new Date().getTime())
-            <= constants.OAUTH_TOKEN_REFRESH_TIME) {
+        if ((oauthToken.bolt_token_expires_in - new Date().getTime()) > constants.OAUTH_TOKEN_REFRESH_TIME) {
             session.privacy.boltOAuthToken = oauthToken.access_token;
             session.privacy.boltRefreshToken = oauthToken.refresh_token;
             session.privacy.boltRefreshTokenScope = oauthToken.refresh_token_scope;
