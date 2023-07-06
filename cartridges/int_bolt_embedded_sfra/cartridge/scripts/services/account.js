@@ -4,7 +4,6 @@ var BasketMgr = require('dw/order/BasketMgr');
 var ShippingMgr = require('dw/order/ShippingMgr');
 var Transaction = require('dw/system/Transaction');
 var Cookie = require('dw/web/Cookie');
-var HttpResult = require('dw/svc/Result');
 var CustomerMgr = require('dw/customer/CustomerMgr');
 
 var LogUtils = require('~/cartridge/scripts/util/boltLogUtils');
@@ -14,7 +13,6 @@ var log = LogUtils.getLogger('Account');
 var boltAccountUtils = require('~/cartridge/scripts/util/boltAccountUtils');
 var OAuthUtils = require('~/cartridge/scripts/util/oauthUtils');
 var JWTUtils = require('~/cartridge/scripts/util/jwtUtils');
-var BoltHttpUtils = require('~/cartridge/scripts/services/httpUtils');
 
 /**
  * This returns the JSON encoded result for the return value of token exchange endpoint
@@ -258,35 +256,29 @@ exports.removeFallbackLogoutCookie = function (res) {
 };
 
 /**
- * Login the shopper
- * TODO: Create a new external authenticated account if no existing account
+ * Create a new external authenticated account if no existing account and login the shopper to SFCC platform
  * @param {string} idToken - A JWT token issued when the request includes the scope open_id
  */
 exports.loginOrCreatePlatformAccount = function (idToken) {
     var oauthConfiguration = OAuthUtils.getOAuthConfiguration();
     var clientID = oauthConfiguration.clientID;
     var boltAPIbaseURL = oauthConfiguration.boltAPIbaseURL;
-    var OpenIdEndpoint = '/.well-known/openid-configuration';
     var providerID = oauthConfiguration.providerID;
 
-    var openIDConfigResponse = BoltHttpUtils.restAPIClient('GET', '', '', 'none', '', boltAPIbaseURL + OpenIdEndpoint);
-    if (!openIDConfigResponse || openIDConfigResponse.status == HttpResult.ERROR || !openIDConfigResponse.result) {
-        return;
-    }
-    var openIDConfig = openIDConfigResponse.result;
-
-    var externalProfile = JWTUtils.parseAndValidateJWT(idToken, clientID, openIDConfig.jwks_uri);
+    // validate OAuth ID token and get unique platform account ID
+    var externalProfile = JWTUtils.parseAndValidateJWT(idToken, clientID, boltAPIbaseURL + constants.JWK_URL);
     if (!externalProfile) {
         return;
     }
 
+    // create platform account for new shopper
     var createAccountResponse = OAuthUtils.createPlatformAccount(externalProfile, {}, {});
     if (createAccountResponse.error) {
         return;
     }
     var customerProfile = createAccountResponse.profile;
 
-    // step 5: login
+    // login SFCC account
     var platformAccountID = externalProfile.sub;
     var credentials = customerProfile.getCredentials();
     if (credentials.isEnabled()) {
