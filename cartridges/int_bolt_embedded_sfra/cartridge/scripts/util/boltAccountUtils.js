@@ -179,57 +179,6 @@ exports.saveCardToBolt = function (order, paymentInstrument) {
 };
 
 /**
- * Save new address to Bolt or update existing Bolt address
- * @param {dw.order.Order} order - SFCC order object
- * @returns {void} - no return data
- */
-exports.saveAddressToBolt = function (order) {
-    try {
-        var shippingAddress = order.getDefaultShipment().getShippingAddress();
-        var errorMsg;
-        // add bolt address id to endpoint if shopper is updating existing address
-        var addressUrl = !empty(shippingAddress.custom.boltAddressId) ? (constants.SHOPPER_ADDRESS_URL + '/' + shippingAddress.custom.boltAddressId) : constants.SHOPPER_ADDRESS_URL;
-        var isGift = order.getDefaultShipment().isGift();
-
-        var request = {
-            street_address1: shippingAddress.address1 || '',
-            street_address2: shippingAddress.address2 || '',
-            locality: shippingAddress.city || '',
-            region: shippingAddress.stateCode || '',
-            postal_code: shippingAddress.postalCode || '',
-            country_code: shippingAddress.countryCode.value || '',
-            first_name: shippingAddress.firstName || '',
-            last_name: shippingAddress.lastName || '',
-            phone: shippingAddress.phone || '',
-            default: !isGift
-        };
-
-        var boltOAuthToken = oAuth.getOAuthToken();
-        if (empty(boltOAuthToken)) {
-            errorMsg = 'Bolt OAuth Token is missing';
-            log.error(errorMsg);
-            return;
-        }
-        var bearerToken = 'Bearer '.concat(boltOAuthToken);
-
-        // send save address request to Bolt
-        var response = boltHttpUtils.restAPIClient(
-            constants.HTTP_METHOD_POST,
-            addressUrl,
-            JSON.stringify(request),
-            constants.CONTENT_TYPE_JSON,
-            bearerToken
-        );
-        errorMsg = Resource.msg('error.save.address', 'bolt', null);
-        if (response.status && response.status === HttpResult.ERROR) {
-            log.error(errorMsg + (!empty(response.errors) && !empty(response.errors[0].message) ? response.errors[0].message : ''));
-        }
-        log.info('address successfully saved to bolt');
-    } catch (e) {
-        log.error(e.message);
-    }
-};
-/**
  * Get bolt payment data which is stored in SFCC basket
  * @param {dw.order.Basket} basket - the SFCC basket
  * @param {string} selectedBoltPaymentID - selected Bolt Payment ID
