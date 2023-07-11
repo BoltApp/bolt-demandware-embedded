@@ -6,8 +6,14 @@
     <input type="hidden" class="bolt-locale" value="${pdict.locale}" />
     <input type="hidden" class="bolt-is-shopper-logged-in" value="${pdict.isBoltShopperLoggedIn}" />
     <input type="hidden" class="data-bolt-platform-side-logout-url" value="${URLUtils.https('Bolt-AccountLogOut')}" />
-    <script id="bolt-embed" type="text/javascript" src="${pdict.config.boltCdnUrl}/embed.js"
+
+    <script id="bolt-embed" type="text/javascript" src="https://embedded.serena.dev.bolt.me/embed.js"
         data-publishable-key="${pdict.config.boltMultiPublishableKey}" defer> </script>
+
+    <iscomment>
+        <script id="bolt-embed" type="text/javascript" src="${pdict.config.boltCdnUrl}/embed.js"
+            data-publishable-key="${pdict.config.boltMultiPublishableKey}" defer> </script>
+    </iscomment>
     <isscript>
         var assets = require('*/cartridge/scripts/assets.js');
         assets.addJs('/js/tokenization.js');

@@ -62,6 +62,8 @@ exports.getBoltAPIKey = function () {
 function boltApiURL() {
     var boltEnv = Site.getCurrent().getCustomPreferenceValue('boltEnvironment').valueOf();
     switch (boltEnv) {
+        case 'local':
+            return 'https://api.serena-external.dev.bolt.me';
         case 'sandbox':
             return 'https://api-sandbox.bolt.com';
         case 'staging':
@@ -79,6 +81,8 @@ function boltApiURL() {
 function boltConnectURL() {
     var boltEnv = Site.getCurrent().getCustomPreferenceValue('boltEnvironment').valueOf();
     switch (boltEnv) {
+        case 'local':
+            return 'https://connect.serena.dev.bolt.me';
         case 'sandbox':
             return 'https://connect-sandbox.bolt.com';
         case 'staging':
@@ -96,6 +100,8 @@ function boltConnectURL() {
 function boltAccountURL() {
     var boltEnv = Site.getCurrent().getCustomPreferenceValue('boltEnvironment').valueOf();
     switch (boltEnv) {
+        case 'local':
+            return 'https://account.serena.dev.bolt.me';
         case 'sandbox':
             return 'https://account-sandbox.bolt.com';
         case 'staging':
