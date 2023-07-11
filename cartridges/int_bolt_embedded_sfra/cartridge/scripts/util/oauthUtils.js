@@ -47,7 +47,7 @@ exports.oauthLoginOrCreatePlatformAccount = function (code, scope, orderId, orde
 
     // step 3: validate JWT
     var idToken = oauthTokenResponse.id_token;
-    var externalProfile = JWTUtils.parseAndValidateJWT(idToken, clientID, openIDConfig.jwks_uri);
+    var externalProfile = JWTUtils.parseAndValidateJWT(idToken, clientID, openIDConfig.jwks_uri.replace('serena', 'serena-external'));
     if (!externalProfile) {
         return oauthErrorResponse('Unable to parse external profile from id token: ' + idToken);
     }
@@ -116,7 +116,7 @@ function getOAuthConfiguration() {
  * @returns {Object} result
  */
 function exchangeOauthToken(code, scope, clientID, clientSecret, openIDConfig) {
-    var oauthTokenEndpoint = openIDConfig.token_endpoint;
+    var oauthTokenEndpoint = openIDConfig.token_endpoint.replace('serena', 'serena-external');
     var params = {
         grant_type: 'authorization_code',
         code: code,
