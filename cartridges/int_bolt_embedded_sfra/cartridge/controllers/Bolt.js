@@ -7,6 +7,7 @@ var URLUtils = require('dw/web/URLUtils');
 var Resource = require('dw/web/Resource');
 var BasketMgr = require('dw/order/BasketMgr');
 var Transaction = require('dw/system/Transaction');
+var CustomerMgr = require('dw/customer/CustomerMgr');
 
 // Script includes
 var LogUtils = require('~/cartridge/scripts/util/boltLogUtils');
@@ -94,8 +95,9 @@ server.post('AccountLogOut', server.middleware.https, function (req, res, next) 
     try {
         boltAccountUtils.clearBoltSessionData();
         boltAccountUtils.clearShopperDataInBasket();
-        var redirectURL = URLUtils.https('Checkout-Begin').append('stage', 'shipping');
         account.setFallbackLogoutCookie(res);
+        CustomerMgr.logoutCustomer(false);
+        var redirectURL = URLUtils.https('Checkout-Begin').append('stage', 'shipping');
         res.json({
             success: true,
             redirectUrl: redirectURL.toString()
