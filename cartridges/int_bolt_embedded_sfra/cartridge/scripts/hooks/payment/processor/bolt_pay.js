@@ -15,6 +15,7 @@ var oAuth = require('~/cartridge/scripts/services/oAuth');
 var constants = require('~/cartridge/scripts/util/constants');
 var boltAccountUtils = require('~/cartridge/scripts/util/boltAccountUtils');
 var boltPaymentUtils = require('~/cartridge/scripts/util/boltPaymentUtils');
+var oauthUtils = require('~/cartridge/scripts/util/oauthUtils');
 var logUtils = require('~/cartridge/scripts/util/boltLogUtils');
 var log = logUtils.getLogger('Auth');
 
@@ -160,6 +161,27 @@ function authorize(orderNumber, paymentInstrument, paymentProcessor) {
     // save shipping address to bolt account
     if (boltAccountUtils.loginAsBoltUser()) {
         boltAccountUtils.saveAddressToBolt(order);
+    }
+
+    // create platform account for SSO
+    var createBoltAccount = paymentInstrument.custom.boltCreateAccount;
+    var isSSOEnabled = Site.getCurrent().getCustomPreferenceValue('boltEnableSSO');
+    var isBoltAccountCreated = response.result ? response.result.did_create_bolt_account : false;
+    var platformAccID = response.result ? response.result.platform_account_id : '';
+    var emailverified = response.result && response.result.email_verified;
+    if (isSSOEnabled && createBoltAccount && isBoltAccountCreated) {
+        var externalProfile = {
+            sub: response.result ? response.result.platform_account_id : '',
+            email_verified: response.result && response.result.email_verified,
+            email: order.getCustomerEmail(),
+            first_name: order.getBillingAddress().getFirstName(),
+            last_name: order.getBillingAddress().getLastName()
+        };
+
+        var res = oauthUtils.createPlatformAccount(externalProfile, {value: orderNumber}, {value: order.orderToken});
+        if (res.error) {
+            log.info('Error occured when creating platform account.');
+        }
     }
 
     return { error: false };
