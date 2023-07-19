@@ -166,12 +166,11 @@ function authorize(orderNumber, paymentInstrument, paymentProcessor) {
     // create platform account for SSO
     var createBoltAccount = paymentInstrument.custom.boltCreateAccount;
     var isSSOEnabled = Site.getCurrent().getCustomPreferenceValue('boltEnableSSO');
-    var isBoltAccountCreated = response.result ? response.result.did_create_bolt_account : false;
-    var platformAccID = response.result ? response.result.platform_account_id : '';
-    var emailverified = response.result && response.result.email_verified;
-    if (isSSOEnabled && createBoltAccount && isBoltAccountCreated) {
+    var isBoltAccountCreated = response.result && response.result.did_create_bolt_account? response.result.did_create_bolt_account : false;
+    var platformAccountID = response.result && response.result.platform_account_id ? response.result.platform_account_id : '';
+    if (isSSOEnabled && createBoltAccount && isBoltAccountCreated && platformAccountID) {
         var externalProfile = {
-            sub: response.result ? response.result.platform_account_id : '',
+            sub: platformAccountID,
             email_verified: response.result && response.result.email_verified,
             email: order.getCustomerEmail(),
             first_name: order.getBillingAddress().getFirstName(),
