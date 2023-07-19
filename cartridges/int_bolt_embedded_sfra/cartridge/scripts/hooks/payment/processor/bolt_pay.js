@@ -166,7 +166,7 @@ function authorize(orderNumber, paymentInstrument, paymentProcessor) {
     // create platform account for SSO
     var createBoltAccount = paymentInstrument.custom.boltCreateAccount;
     var isSSOEnabled = Site.getCurrent().getCustomPreferenceValue('boltEnableSSO');
-    var isBoltAccountCreated = response.result && response.result.did_create_bolt_account? response.result.did_create_bolt_account : false;
+    var isBoltAccountCreated = response.result && response.result.did_create_bolt_account ? response.result.did_create_bolt_account : false;
     var platformAccountID = response.result && response.result.platform_account_id ? response.result.platform_account_id : '';
     if (isSSOEnabled && createBoltAccount && isBoltAccountCreated && platformAccountID) {
         var externalProfile = {
@@ -176,8 +176,7 @@ function authorize(orderNumber, paymentInstrument, paymentProcessor) {
             first_name: order.getBillingAddress().getFirstName(),
             last_name: order.getBillingAddress().getLastName()
         };
-
-        var res = oauthUtils.createPlatformAccount(externalProfile, {value: orderNumber}, {value: order.orderToken});
+        var res = oauthUtils.createPlatformAccount(externalProfile, { value: orderNumber }, { value: order.orderToken });
         if (res.error) {
             log.info('Error occured when creating platform account.');
         }
