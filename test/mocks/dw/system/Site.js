@@ -17,6 +17,8 @@ function getCurrent() {
                     return boltMerchantDivisionID;
                 case 'boltEnvironment':
                     return boltEnvironment;
+                case 'boltEnableSSO':
+                    return true;
                 default:
                     return 'some_custom_preference_value';
             }
