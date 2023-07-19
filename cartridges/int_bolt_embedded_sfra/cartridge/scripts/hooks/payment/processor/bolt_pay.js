@@ -300,23 +300,21 @@ function sessionLogoutCookieSet() {
 }
 
 /**
- * If SSO is enabled and Bolt account creation succeed, 
- * create a new external authenticated account or external profile for existing account
- * @param {Object} response 
+ * If SSO is enabled and Bolt account creation succeed, create a new external authenticated account or external profile for existing account
+ * @param {Object} response - Auth response
  * @param {dw.order.Order} order - SFCC order object
- * @returns 
  */
 function createSSOPlatformAccount(response, order) {
     var isBoltAccountCreated = response.result && response.result.did_create_bolt_account ? response.result.did_create_bolt_account : false;
     var platformAccountID = response.result && response.result.platform_account_id ? response.result.platform_account_id : '';
-    
+
     if (!isBoltAccountCreated) {
-        log.warn("Bolt account is not created, skip platform account creation.");
+        log.warn('Bolt account is not created, skip platform account creation.');
         return;
     }
 
     if (empty(platformAccountID)) {
-        log.warn("Missing platform account ID from Bolt, skip platform account creation.");
+        log.warn('Missing platform account ID from Bolt, skip platform account creation.');
         return;
     }
 
@@ -333,8 +331,6 @@ function createSSOPlatformAccount(response, order) {
     } else {
         log.info('Successfully created a new SFCC account or new external profile.');
     }
-
-    return;
 }
 
 module.exports = {
