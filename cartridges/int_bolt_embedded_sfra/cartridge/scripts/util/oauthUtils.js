@@ -12,9 +12,7 @@ var BasketMgr = require('dw/order/BasketMgr');
 var JWTUtils = require('~/cartridge/scripts/util/jwtUtils');
 var BoltHttpUtils = require('~/cartridge/scripts/services/httpUtils');
 var BoltPreferences = require('~/cartridge/scripts/util/preferences');
-var LogUtils = require('~/cartridge/scripts/util/boltLogUtils');
 var Constants = require('~/cartridge/scripts/util/constants');
-var log = LogUtils.getLogger('Login');
 
 var BoltProviderID = 'Bolt';
 
