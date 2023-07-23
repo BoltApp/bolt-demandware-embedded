@@ -15,9 +15,12 @@ var collections = proxyquire(
     }
 );
 
-global.empty = function(obj){
+global.empty = function (obj) {
     return !obj;
 }
+global.session = {
+    privacy: {}
+};
 
 describe('account', function () {
     var account;
@@ -95,9 +98,9 @@ describe('account', function () {
             '*/cartridge/scripts/util/collections': collections,
             '~/cartridge/scripts/util/constants': require('../../../../../cartridges/int_bolt_embedded_sfra/cartridge/scripts/util/constants'),
             '~/cartridge/scripts/util/boltAccountUtils': require('../../../../mocks/bolt/boltAccountUtils.js'),
-            '~/cartridge/scripts/util/oauthUtils': require('../../../../mocks/bolt/boltAccountUtils.js'),
-            '~/cartridge/scripts/util/jwtUtils': require('../../../../mocks/bolt/boltAccountUtils.js'),
-            '~/cartridge/scripts/services/httpUtils': require('../../../../mocks/bolt/boltAccountUtils.js')
+            '~/cartridge/scripts/util/oauthUtils': require('../../../../mocks/bolt/oauthUtils.js'),
+            '~/cartridge/scripts/util/jwtUtils': require('../../../../mocks/bolt/jwtUtils.js'),
+            '~/cartridge/scripts/services/httpUtils': require('../../../../mocks/bolt/httpUtils.js')
         });
         shopperDetails = {
             addresses: [
@@ -246,5 +249,11 @@ describe('account', function () {
         // test that the custom attributes are added to the basket
         expect(currentBasket.custom.boltPaymentMethods).to.not.be.null;
 
+    });
+
+    it('create a new external authenticated account if no existing account and login the shopper to SFCC platform', function () {
+        session.privacy.loginfrombolt = false;
+        account.loginOrCreatePlatformAccount('idtoken');
+        expect(session.privacy.loginfrombolt).to.be.equal(true);
     });
 });
