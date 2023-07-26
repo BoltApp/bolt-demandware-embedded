@@ -8,6 +8,9 @@
 var LocalServiceRegistry = require('dw/svc/LocalServiceRegistry');
 var HttpResult = require('dw/svc/Result');
 var System = require('dw/system/System');
+var Site = require('dw/system/Site');
+var Mac = require('dw/crypto/Mac');
+var Encoding = require('dw/crypto/Encoding');
 
 /* Script Includes */
 var constants = require('~/cartridge/scripts/util/constants');
@@ -156,3 +159,45 @@ function serviceParseResponse(_service, httpClient) {
 
     return res;
 }
+
+/**
+ * Check authentication status
+ * @returns {boolean} authentication status
+ */
+exports.getAuthenticationStatus = function () {
+    var strAuth = request.getHttpHeaders().get('x-bolt-hmac-sha256');
+    if (!strAuth) {
+        log.error('Missing authorization key on request header');
+        return false;
+    }
+
+    var boltSigningSecret = Site.getCurrent().getCustomPreferenceValue('boltSigningSecret') || '';
+    if (!boltSigningSecret) {
+        log.error("Missing BM custom preference value for 'Signing Secret'");
+        return false;
+    }
+
+    var httpParameterMap = request.getHttpParameterMap();
+    var requestBody = httpParameterMap.get('requestBodyAsString') ? httpParameterMap.requestBodyAsString : null;
+    var mac = new Mac(Mac.HMAC_SHA_256);
+    var sha = mac.digest(requestBody, boltSigningSecret);
+    var hmac = Encoding.toBase64(sha);
+    return hmac === strAuth;
+};
+
+/**
+ * This set the error msg and error code to res and return next().
+ * @param {Object} msg - the error message
+ * @param {Object} statusCode - the status code
+ * @param {Object} res - the response object
+ * @param {any} next - the next() function
+ * @returns {any} result - will call next()
+ */
+exports.errorResponse = function (msg, statusCode, res, next) {
+    log.error(msg);
+    res.json({
+        error: msg
+    });
+    res.setStatusCode(statusCode);
+    return next();
+};
