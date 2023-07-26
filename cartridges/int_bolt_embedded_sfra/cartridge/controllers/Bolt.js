@@ -114,4 +114,28 @@ server.post('AccountLogOut', server.middleware.https, function (req, res, next) 
     next();
 });
 
+server.post('GetAccount', function (req, res, next) {
+    if (!httpUtils.getAuthenticationStatus()) {
+        return httpUtils.errorResponse('Request is not authenticated.', 401, res, next);
+    }
+    var httpParameterMap = request.getHttpParameterMap();
+    var requestBodyString = httpParameterMap.get('requestBodyAsString') ? httpParameterMap.requestBodyAsString : null;
+    var requestBody = JSON.parse(requestBodyString);
+    var email = requestBody.email;
+    if (!email) {
+        return httpUtils.errorResponse('Missing email in the request body.', 400, res, next);
+    }
+
+    var customer = CustomerMgr.getCustomerByLogin(email);
+    if (!customer) {
+        return httpUtils.errorResponse('Customer not found with given email.', 404, res, next);
+    }
+
+    res.json({
+        id: customer.ID
+    });
+
+    return next();
+});
+
 module.exports = server.exports();

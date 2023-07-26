@@ -64,6 +64,13 @@
         <externally-managed-flag>false</externally-managed-flag>
         <default-value>false</default-value>
       </attribute-definition>
+      <attribute-definition attribute-id="boltSigningSecret">
+        <display-name xml:lang="x-default">Signing Secret</display-name>
+        <type>password</type>
+        <mandatory-flag>false</mandatory-flag>
+        <externally-managed-flag>false</externally-managed-flag>
+        <min-length>0</min-length>
+      </attribute-definition>
     </custom-attribute-definitions>
 
     <group-definitions>
@@ -73,6 +80,7 @@
         <attribute attribute-id="boltEnableSSO"/>
         <attribute attribute-id="boltEnableAutoCapture"/>
         <attribute attribute-id="boltAPIKey"/>
+        <attribute attribute-id="boltSigningSecret"/>
         <attribute attribute-id="boltMerchantDivisionID"/>
         <attribute attribute-id="boltMultiPublishableKey"/>
         <attribute attribute-id="boltEnvironment"/>
