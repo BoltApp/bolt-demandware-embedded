@@ -12,9 +12,7 @@ var BasketMgr = require('dw/order/BasketMgr');
 var JWTUtils = require('~/cartridge/scripts/util/jwtUtils');
 var BoltHttpUtils = require('~/cartridge/scripts/services/httpUtils');
 var BoltPreferences = require('~/cartridge/scripts/util/preferences');
-var LogUtils = require('~/cartridge/scripts/util/boltLogUtils');
 var Constants = require('~/cartridge/scripts/util/constants');
-var log = LogUtils.getLogger('Login');
 
 var BoltProviderID = 'Bolt';
 
@@ -167,9 +165,6 @@ function createPlatformAccount(externalProfile, orderId, orderToken) {
                 authenticatedCustomerProfile.setFirstName(externalProfile.first_name);
                 authenticatedCustomerProfile.setLastName(externalProfile.last_name);
 
-                // save custom fields, configured in Bolt admin dash
-                saveCustomFields(externalProfile, authenticatedCustomerProfile);
-
                 // Optional: set order to the new created account if shopper creates account during checkout
                 if (orderId.value && orderToken.value) {
                     var order = OrderMgr.getOrder(orderId.value, orderToken.value);
@@ -197,30 +192,6 @@ function createPlatformAccount(externalProfile, orderId, orderToken) {
         profile: authenticatedCustomerProfile,
         isRegistration: isRegistration
     };
-}
-
-/**
- * Read Bolt externalProfile custom fields value and save to customer profile
- * @param {Object} externalProfile - user info sent in the JWT token
- * @param {Profile} customerProfile - SFCC customer profile
- */
-function saveCustomFields(externalProfile, customerProfile) {
-    if ('custom_fields' in externalProfile) {
-        var customFields = externalProfile.custom_fields;
-        try {
-            Object.keys(customFields).forEach(function (idx) {
-                var customField = customFields[idx];
-                if (!empty(customField)) {
-                    var fieldValue = JSON.parse(customField.response);
-                    if (customField.external_id in customerProfile.custom) {
-                        customerProfile.custom[customField.external_id] = fieldValue.response;
-                    }
-                }
-            });
-        } catch (e) {
-            log.error('unable to set custom field', e);
-        }
-    }
 }
 
 /**
