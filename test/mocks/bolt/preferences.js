@@ -12,6 +12,14 @@ function getBoltAPIKey() {
     return 'bolt api key';
 }
 
+function getSitePreferences() {
+    return {
+        boltApiUrl: 'https://api-sandbox.bolt.com',
+        boltApiKey: '123456',
+        boltMultiPublishableKey: 'abcdefg'
+    };
+}
+
 module.exports = {
     getSitePreferences: getSitePreferences,
     getBoltAPIKey: getBoltAPIKey
