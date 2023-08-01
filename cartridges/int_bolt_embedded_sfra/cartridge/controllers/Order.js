@@ -1,4 +1,5 @@
 'use strict';
+
 var server = require('server');
 var Order = module.superModule;
 server.extend(Order);
@@ -10,7 +11,6 @@ var OrderMgr = require('dw/order/OrderMgr');
 var Locale = require('dw/util/Locale');
 
 var csrfProtection = require('*/cartridge/scripts/middleware/csrf');
-var userLoggedIn = require('*/cartridge/scripts/middleware/userLoggedIn');
 var consentTracking = require('*/cartridge/scripts/middleware/consentTracking');
 var reportingUrlsHelper = require('*/cartridge/scripts/reportingUrls');
 var OrderModel = require('*/cartridge/models/order');
@@ -50,8 +50,7 @@ server.replace(
         // so the order customer id is different from the guest customer ID in the original request.
         var boltEnableSSO = Site.getCurrent().getCustomPreferenceValue('boltEnableSSO');
         var skipCustomerCheck = boltEnableSSO && order && order.custom.isNewCustomerCreated;
-        if (!order || (!skipCustomerCheck && order.customer.ID !== req.currentCustomer.raw.ID))
-        {
+        if (!order || (!skipCustomerCheck && order.customer.ID !== req.currentCustomer.raw.ID)) {
             res.render('/error', {
                 message: Resource.msg('error.confirmation.error', 'confirmation', null)
             });
