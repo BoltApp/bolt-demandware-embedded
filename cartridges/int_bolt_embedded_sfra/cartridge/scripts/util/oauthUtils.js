@@ -170,6 +170,7 @@ function createPlatformAccount(externalProfile, orderId, orderToken) {
                     var order = OrderMgr.getOrder(orderId.value, orderToken.value);
                     if (order && order.getCustomerEmail() === externalProfile.email) {
                         order.setCustomer(newCustomer);
+                        order.custom.isNewCustomerCreated = true;
                     }
                 }
             });
