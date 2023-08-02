@@ -8,7 +8,6 @@ var Resource = require('dw/web/Resource');
 var BasketMgr = require('dw/order/BasketMgr');
 var Transaction = require('dw/system/Transaction');
 var CustomerMgr = require('dw/customer/CustomerMgr');
-var Site = require('dw/system/Site');
 
 // Script includes
 var LogUtils = require('~/cartridge/scripts/util/boltLogUtils');
@@ -23,7 +22,6 @@ var log = LogUtils.getLogger('Bolt');
 server.get('FetchOAuthToken', server.middleware.https, function (req, res, next) {
     var response = oAuth.fetchNewToken(req.querystring.code, req.querystring.scope);
     var returnObject = {};
-    var isSSOEnabled = Site.getCurrent().getCustomPreferenceValue('boltEnableSSO');
 
     if (response.status === HttpResult.OK) {
         returnObject.accessToken = response.result.access_token;
@@ -34,15 +32,11 @@ server.get('FetchOAuthToken', server.middleware.https, function (req, res, next)
         // store OAuth token expire time in milliseconds, 1000 -> ONE_SECOND
         session.privacy.boltOAuthTokenExpire = response.result.expires_in * 1000
             + new Date().getTime();
-
-        if (isSSOEnabled) {
-            var currentBasket = BasketMgr.getCurrentOrNewBasket();
-            Transaction.wrap(function () {
-                currentBasket.custom.boltEmbeddedAccountsTokens = JSON.stringify(response.result);
-            });
-            account.loginOrCreatePlatformAccount(response.result.id_token);
-        }
-
+        var currentBasket = BasketMgr.getCurrentOrNewBasket();
+        Transaction.wrap(function () {
+            currentBasket.custom.boltEmbeddedAccountsTokens = JSON.stringify(response.result);
+        });
+        account.loginOrCreatePlatformAccount(response.result.id_token);
         account.removeFallbackLogoutCookie(res);
         log.info('fetching oauth token succeeded');
     } else {
