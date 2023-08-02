@@ -256,7 +256,6 @@ exports.removeFallbackLogoutCookie = function (res) {
 };
 
 /**
- * Used for SSO login from checkout step
  * Create a new external authenticated account if no existing account and login the shopper to SFCC platform
  * @param {string} idToken - A JWT token issued when the request includes the scope open_id
  */
