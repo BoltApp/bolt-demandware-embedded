@@ -29,7 +29,6 @@ server.get('OAuthRedirectBolt', function (req, res, next) {
     */
     var boltParam = request.getHttpParameterMap();
     var orderToken = boltParam.order_uuid;
-    var boltOrderId = boltParam.order_id;
     if (!boltParam.code.value || !boltParam.scope.value || !boltParam.state.value) {
         log.error('Missing required parameter in request form: ' + LogUtils.maskCustomerData(req));
         return renderError(res, next);
@@ -42,12 +41,6 @@ server.get('OAuthRedirectBolt', function (req, res, next) {
         }
         log.error(output.message);
         renderError(res, next);
-    }
-
-    // if shopper login during checkout, set bolt order id to session cache.
-    // update session id to Bolt later in Account-Show since session id changed after login
-    if (boltOrderId.value) {
-        req.session.privacyCache.set('boltOrderId', boltOrderId.value);
     }
 
     // optional: this is to support any customized post-login actions and redirect url override
