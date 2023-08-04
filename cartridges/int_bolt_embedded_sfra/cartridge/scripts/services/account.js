@@ -174,7 +174,8 @@ function addPaymentMethodInfoToBasket(basket, boltPaymentMethods) {
     }
     // store all payment methods in the basket so that it can be later chosen by the customer
     Transaction.wrap(function () {
-        basket.getCustom().boltPaymentMethods = JSON.stringify(boltPaymentMethods);
+        // The maximum byte length of basket.custom property is 4000, so we only get the first 5 payment methods to avoid string value truncated
+        basket.getCustom().boltPaymentMethods = JSON.stringify(boltPaymentMethods.length > 5 ? boltPaymentMethods.slice(0, 5) : boltPaymentMethods);
     });
 
     var creditCardNumber = boltPaymentMethod.last4 ? constants.CC_MASKED_DIGITS + boltPaymentMethod.last4 : '';
