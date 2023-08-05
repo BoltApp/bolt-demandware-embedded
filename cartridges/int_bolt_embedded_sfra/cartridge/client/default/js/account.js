@@ -171,6 +171,14 @@ exports.setupListeners = async function () {
     });
 
     // eslint-disable-next-line no-undef
+    Bolt.getInstance().on('authorize_modal_closed', response => {
+        var disabledAttr = $('.submit-customer').attr('disabled');
+        if (typeof disabledAttr !== 'undefined' && disabledAttr !== false) {
+            $('.submit-customer').removeAttr('disabled');
+        }
+    });
+
+    // eslint-disable-next-line no-undef
     Bolt.getInstance().on('auto_account_check_complete', response => {
         const $accountCheckbox = $('#acct-checkbox');
         if (response.result instanceof Error) {
