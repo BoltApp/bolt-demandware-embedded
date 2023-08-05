@@ -49,7 +49,7 @@ server.replace(
         // If shopper check the Bolt checkbox to create an account during checkout, we set the order to the new created account but not login,
         // so the order customer id is different from the guest customer ID in the original request.
         var boltEnableSSO = Site.getCurrent().getCustomPreferenceValue('boltEnableSSO');
-        var skipCustomerCheck = boltEnableSSO && order && order.custom.hasOwnProperty('isNewCustomerCreated') && order.custom.isNewCustomerCreated;
+        var skipCustomerCheck = boltEnableSSO && order && Object.prototype.hasOwnProperty.call(order.custom, 'isNewCustomerCreated') && order.custom.isNewCustomerCreated;
         if (!order || (!skipCustomerCheck && order.customer.ID !== req.currentCustomer.raw.ID)) {
             res.render('/error', {
                 message: Resource.msg('error.confirmation.error', 'confirmation', null)
