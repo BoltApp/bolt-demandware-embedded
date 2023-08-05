@@ -170,7 +170,7 @@ exports.setupListeners = async function () {
         }
     });
 
-    // eslint-disable-next-line no-undef
+    // eslint-disable-next-line no-undef no-unused-vars
     Bolt.getInstance().on('authorize_modal_closed', response => {
         var disabledAttr = $('.submit-customer').attr('disabled');
         if (typeof disabledAttr !== 'undefined' && disabledAttr !== false) {
