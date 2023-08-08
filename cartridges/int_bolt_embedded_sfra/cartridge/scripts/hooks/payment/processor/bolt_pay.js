@@ -5,7 +5,7 @@ var Resource = require('dw/web/Resource');
 var Transaction = require('dw/system/Transaction');
 var OrderMgr = require('dw/order/OrderMgr');
 var HttpResult = require('dw/svc/Result');
-var Site = require("dw/system/Site");
+var Site = require('dw/system/Site');
 
 // Script includes
 var collections = require('*/cartridge/scripts/util/collections');
