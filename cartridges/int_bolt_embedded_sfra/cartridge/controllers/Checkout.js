@@ -47,7 +47,7 @@ server.append('Begin', function (req, res, next) {
     var boltOAuthToken = oAuth.getOAuthToken();
     if (!empty(boltOAuthToken) && session.privacy.boltRedirectCheckout) {
         session.privacy.boltRedirectCheckout = false;
-        var bearerToken = "Bearer ".concat(boltOAuthToken);
+        var bearerToken = 'Bearer '.concat(boltOAuthToken);
         var response = httpUtils.restAPIClient(constants.HTTP_METHOD_GET, constants.ACCOUNT_DETAILS_URL, null, '', bearerToken);
         if (response.status === HttpResult.OK) {
             var shopperDetails = response.result;
