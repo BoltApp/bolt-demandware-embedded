@@ -19,6 +19,7 @@ var AddressModel = require('*/cartridge/models/address');
 var constants = require('~/cartridge/scripts/util/constants');
 var httpUtils = require('~/cartridge/scripts/services/httpUtils');
 var account = require('~/cartridge/scripts/services/account');
+var oAuth = require('~/cartridge/scripts/services/oAuth');
 
 server.append('Begin', function (req, res, next) {
     var configuration;
@@ -39,18 +40,24 @@ server.append('Begin', function (req, res, next) {
             session.privacy.boltRefreshToken = oauthToken.refresh_token;
             session.privacy.boltRefreshTokenScope = oauthToken.refresh_token_scope;
             session.privacy.boltOAuthTokenExpire = oauthToken.bolt_token_expires_in;
-            var bearerToken = 'Bearer '.concat(oauthToken.access_token);
-            var response = httpUtils.restAPIClient(constants.HTTP_METHOD_GET, constants.ACCOUNT_DETAILS_URL, null, '', bearerToken);
-            if (response.status === HttpResult.OK) {
-                var shopperDetails = response.result;
-                var addAccountDetailsResult = account.addAccountDetailsToBasket(shopperDetails);
-                if (addAccountDetailsResult.redirectShipping) {
-                    res.redirect(URLUtils.https('Checkout-Begin').append('stage', 'shipping').toString());
-                } else if (addAccountDetailsResult.redirectBilling) {
-                    res.redirect(URLUtils.https('Checkout-Begin').append('stage', 'payment').toString());
-                } else {
-                    res.redirect(URLUtils.https('Checkout-Begin').append('stage', 'placeOrder').toString());
-                }
+            session.privacy.boltRedirectCheckout = true;
+        }
+    }
+
+    var boltOAuthToken = oAuth.getOAuthToken();
+    if (!empty(boltOAuthToken) && session.privacy.boltRedirectCheckout) {
+        session.privacy.boltRedirectCheckout = false;
+        var bearerToken = "Bearer ".concat(boltOAuthToken);
+        var response = httpUtils.restAPIClient(constants.HTTP_METHOD_GET, constants.ACCOUNT_DETAILS_URL, null, '', bearerToken);
+        if (response.status === HttpResult.OK) {
+            var shopperDetails = response.result;
+            var addAccountDetailsResult = account.addAccountDetailsToBasket(shopperDetails);
+            if (addAccountDetailsResult.redirectShipping) {
+                res.redirect(URLUtils.https('Checkout-Begin').append('stage', 'shipping').toString());
+            } else if (addAccountDetailsResult.redirectBilling) {
+                res.redirect(URLUtils.https('Checkout-Begin').append('stage', 'payment').toString());
+            } else {
+                res.redirect(URLUtils.https('Checkout-Begin').append('stage', 'placeOrder').toString());
             }
         }
     }
