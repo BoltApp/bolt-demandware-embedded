@@ -4,9 +4,8 @@
 var Resource = require('dw/web/Resource');
 var Transaction = require('dw/system/Transaction');
 var OrderMgr = require('dw/order/OrderMgr');
-var StringUtils = require('dw/util/StringUtils');
-var Site = require('dw/system/Site');
 var HttpResult = require('dw/svc/Result');
+var Site = require('dw/system/Site');
 
 // Script includes
 var collections = require('*/cartridge/scripts/util/collections');
@@ -15,6 +14,7 @@ var oAuth = require('~/cartridge/scripts/services/oAuth');
 var constants = require('~/cartridge/scripts/util/constants');
 var boltAccountUtils = require('~/cartridge/scripts/util/boltAccountUtils');
 var boltPaymentUtils = require('~/cartridge/scripts/util/boltPaymentUtils');
+var boltPayAuthRequestBuilder = require('~/cartridge/scripts/util/boltPayAuthRequestBuilder');
 var oauthUtils = require('~/cartridge/scripts/util/oauthUtils');
 var logUtils = require('~/cartridge/scripts/util/boltLogUtils');
 var log = logUtils.getLogger('Auth');
@@ -109,21 +109,12 @@ function authorize(orderNumber, paymentInstrument, paymentProcessor) {
         paymentInstrument.paymentTransaction.setPaymentProcessor(paymentProcessor);
     });
     var order = OrderMgr.getOrder(orderNumber);
-    // save card to bolt account
-    // if save card is success, use the new credit card id for authorization
-    if (boltAccountUtils.loginAsBoltUser() && !empty(paymentInstrument.getCreditCardToken())) {
-        var saveCardResult = boltAccountUtils.saveCardToBolt(order, paymentInstrument);
-        if (saveCardResult.success) {
-            Transaction.wrap(function () {
-                paymentInstrument.custom.boltPaymentMethodId = saveCardResult.newPaymentMethodID;
-            });
-        }
-    }
 
     // build auth request
-    var authRequestObj = getAuthRequest(order, paymentInstrument);
+    var authRequestObj = boltPayAuthRequestBuilder.build(order, paymentInstrument);
     if (authRequestObj.error) {
         log.error(authRequestObj.errorMsg);
+        return { error: true, errorCode: '000000', errorMessage: authRequestObj.errorMsg };
     }
 
     // only attach oauth token if it is available and the user has not logged out
@@ -133,7 +124,7 @@ function authorize(orderNumber, paymentInstrument, paymentProcessor) {
         bearerToken = 'Bearer '.concat(boltOAuthToken);
     }
 
-    // send auth call
+    // Send auth call, note: saves both new address and new payment method.
     var response = boltHttpUtils.restAPIClient(
         constants.HTTP_METHOD_POST,
         constants.AUTH_CARD_URL,
@@ -158,9 +149,10 @@ function authorize(orderNumber, paymentInstrument, paymentProcessor) {
         paymentInstrument.getPaymentTransaction().setTransactionID(orderNumber);
     });
 
-    // save shipping address to bolt account
-    if (boltAccountUtils.loginAsBoltUser()) {
-        boltAccountUtils.saveAddressToBolt(order);
+    // create platform account for SSO if it is enabled
+    var isSSOEnabled = Site.getCurrent().getCustomPreferenceValue('boltEnableSSO');
+    if (isSSOEnabled && paymentInstrument.custom.boltCreateAccount) {
+        createSSOPlatformAccount(response, order);
     }
 
     // create platform account for SSO if it is enabled
@@ -170,117 +162,6 @@ function authorize(orderNumber, paymentInstrument, paymentProcessor) {
     }
 
     return { error: false };
-}
-
-/**
- * Create Authorization Request Body
- * @param {dw.order.Order} order - SFCC order object
- * @param {dw.order.PaymentInstrument} paymentInstrument - payment instrument to authorize
- * @return {Object} returns an response object
- */
-function getAuthRequest(order, paymentInstrument) {
-    if (empty(paymentInstrument)) {
-        return { error: true, errorMsg: 'Missing payment instrument.' };
-    }
-
-    if (empty(order.billingAddress)) {
-        return { error: true, errorMsg: 'SFCC basket has not billing address.' };
-    }
-
-    var billingAddress = order.getBillingAddress();
-    var userIdentifier = {
-        email: order.getCustomerEmail(),
-        phone: billingAddress.getPhone()
-    };
-    var userIdentity = {
-        first_name: billingAddress.getFirstName(),
-        last_name: billingAddress.getLastName()
-    };
-
-    var boltBillingAddress = {
-        street_address1: billingAddress.getAddress1() || '',
-        street_address2: billingAddress.getAddress2() || '',
-        locality: billingAddress.getCity() || '',
-        region: billingAddress.getStateCode() || '',
-        postal_code: billingAddress.getPostalCode() || '',
-        country_code: billingAddress.getCountryCode() ? billingAddress.getCountryCode().getValue().toUpperCase() : '',
-        country: billingAddress.getCountryCode() ? billingAddress.getCountryCode().getDisplayValue() : '',
-        name: billingAddress.getFullName(),
-        first_name: billingAddress.getFirstName(),
-        last_name: billingAddress.getLastName(),
-        phone_number: billingAddress.getPhone(),
-        email: order.getCustomerEmail(),
-        phone: billingAddress.getPhone() || ''
-    };
-
-    var request = {
-        cart: {
-            order_reference: order.getOrderNo(),
-            billing_address: boltBillingAddress,
-            currency: order.currencyCode,
-            metadata: {
-                SFCCSessionID: getDwsidCookie()
-            }
-        },
-        division_id:
-            Site.getCurrent().getCustomPreferenceValue('boltMerchantDivisionID') || '',
-        source: constants.DIRECT_PAYMENTS,
-        user_identifier: userIdentifier,
-        user_identity: userIdentity,
-        create_bolt_account: paymentInstrument.custom.boltCreateAccount
-    };
-
-    // populate auto capture field if needed
-    var autoCapture = Site.getCurrent().getCustomPreferenceValue('boltEnableAutoCapture') === true;
-    if (autoCapture) {
-        request.auto_capture = true;
-    }
-
-    // use Bolt payment ID for Bolt
-    if (boltAccountUtils.loginAsBoltUser() && paymentInstrument.custom.boltPaymentMethodId) {
-        request.credit_card_id = paymentInstrument.custom.boltPaymentMethodId;
-    } else {
-        request.credit_card = {
-            token: paymentInstrument.getCreditCardToken(),
-            last4: paymentInstrument.getCreditCardNumberLastDigits(),
-            bin: paymentInstrument.custom.boltCardBin,
-            billing_address: boltBillingAddress,
-            number: '',
-            expiration:
-        StringUtils.formatNumber(
-            paymentInstrument.getCreditCardExpirationYear(),
-            '0000'
-        )
-        + '-'
-        + StringUtils.formatNumber(
-            paymentInstrument.getCreditCardExpirationMonth(),
-            '00'
-        ),
-            postal_code: billingAddress.getPostalCode(),
-            token_type: constants.BOLT_TOKEN_TYPE
-        };
-    }
-
-    return {
-        authRequest: request,
-        error: false
-    };
-}
-
-/**
- * getDwsidCookie returns DW Session ID from cookie
- * @return {string} DW Session ID
- */
-function getDwsidCookie() {
-    var cookies = request.getHttpCookies();
-
-    for (var i = 0; i < cookies.cookieCount; i++) { // eslint-disable-line no-plusplus
-        if (cookies[i].name === 'dwsid') {
-            return cookies[i].value;
-        }
-    }
-
-    return '';
 }
 
 /**
@@ -297,6 +178,40 @@ function sessionLogoutCookieSet() {
     }
 
     return false;
+}
+
+/**
+ * If SSO is enabled and Bolt account creation succeed, create a new external authenticated account or external profile for existing account
+ * @param {Object} response - Auth response
+ * @param {dw.order.Order} order - SFCC order object
+ */
+function createSSOPlatformAccount(response, order) {
+    var isBoltAccountCreated = response.result && response.result.did_create_bolt_account ? response.result.did_create_bolt_account : false;
+    var platformAccountID = response.result && response.result.platform_account_id ? response.result.platform_account_id : '';
+
+    if (!isBoltAccountCreated) {
+        log.warn('Bolt account is not created, skip platform account creation.');
+        return;
+    }
+
+    if (empty(platformAccountID)) {
+        log.warn('Missing platform account ID from Bolt, skip platform account creation.');
+        return;
+    }
+
+    var externalProfile = {
+        sub: platformAccountID,
+        email_verified: response.result && response.result.email_verified,
+        email: order.getCustomerEmail(),
+        first_name: order.getBillingAddress().getFirstName(),
+        last_name: order.getBillingAddress().getLastName()
+    };
+    var res = oauthUtils.createPlatformAccount(externalProfile, { value: order.orderNo }, { value: order.orderToken });
+    if (res.error) {
+        log.error('Error occured when creating platform account.');
+    } else {
+        log.info('Successfully created a new SFCC account or new external profile.');
+    }
 }
 
 /**

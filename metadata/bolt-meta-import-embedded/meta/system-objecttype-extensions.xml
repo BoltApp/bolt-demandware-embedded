@@ -123,12 +123,19 @@
     <custom-attribute-definitions>
       <attribute-definition attribute-id="boltPaymentMethods">
         <display-name xml:lang="x-default">Bolt Payment Methods</display-name>
-        <type>string</type>
+        <type>text</type>
         <mandatory-flag>false</mandatory-flag>
         <externally-managed-flag>false</externally-managed-flag>
       </attribute-definition>
       <attribute-definition attribute-id="boltShippingAddress">
         <display-name xml:lang="x-default">Bolt Shopper Stored Shipping Addresses</display-name>
+        <type>text</type>
+        <mandatory-flag>false</mandatory-flag>
+        <externally-managed-flag>false</externally-managed-flag>
+        <min-length>0</min-length>
+      </attribute-definition>
+      <attribute-definition attribute-id="boltEmbeddedAccountsTokens">
+        <display-name xml:lang="x-default">Bolt Embedded Accounts Tokens</display-name>
         <type>string</type>
         <mandatory-flag>false</mandatory-flag>
         <externally-managed-flag>false</externally-managed-flag>
@@ -173,11 +180,11 @@
         <externally-managed-flag>false</externally-managed-flag>
       </attribute-definition>
     </custom-attribute-definitions>
-      <group-definitions>
-        <attribute-group group-id="Bolt Attributes">
-          <display-name xml:lang="x-default">Bolt Attributes</display-name>
-          <attribute attribute-id="boltTransactionReference"/>
-        </attribute-group>
-      </group-definitions>
+    <group-definitions>
+      <attribute-group group-id="Bolt Attributes">
+        <display-name xml:lang="x-default">Bolt Attributes</display-name>
+        <attribute attribute-id="boltTransactionReference"/>
+      </attribute-group>
+    </group-definitions>
   </type-extension>
 </metadata>

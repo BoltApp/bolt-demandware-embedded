@@ -58,6 +58,7 @@ describe('bolt pay payment processor', function () {
         '~/cartridge/scripts/util/boltAccountUtils': boltAccountUtilsMock,
         '~/cartridge/scripts/util/boltLogUtils':require('../../../../../../mocks/bolt/boltLogUtils'),
         '~/cartridge/scripts/util/boltPaymentUtils':require('../../../../../../mocks/bolt/boltPaymentUtils'),
+        '~/cartridge/scripts/util/boltPayAuthRequestBuilder':require('../../../../../../mocks/bolt/boltPayAuthRequestBuilder'),
         '~/cartridge/scripts/util/oauthUtils': {
             createPlatformAccount() {
                 return platformAccountMock;
