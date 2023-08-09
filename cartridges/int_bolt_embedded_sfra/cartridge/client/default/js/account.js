@@ -173,7 +173,7 @@ exports.setupListeners = async function () {
     // eslint-disable-next-line no-undef
     Bolt.getInstance().on('authorize_modal_closed', () => {
         var disabledAttr = $('.submit-customer').attr('disabled');
-        if (typeof disabledAttr !== 'undefined' && disabledAttr !== false) {
+        if (!disabledAttr) {
             $('.submit-customer').removeAttr('disabled');
         }
     });
