@@ -155,12 +155,6 @@ function authorize(orderNumber, paymentInstrument, paymentProcessor) {
         createSSOPlatformAccount(response, order);
     }
 
-    // create platform account for SSO if it is enabled
-    var isSSOEnabled = Site.getCurrent().getCustomPreferenceValue('boltEnableSSO');
-    if (isSSOEnabled && paymentInstrument.custom.boltCreateAccount) {
-        createSSOPlatformAccount(response, order);
-    }
-
     return { error: false };
 }
 
@@ -178,40 +172,6 @@ function sessionLogoutCookieSet() {
     }
 
     return false;
-}
-
-/**
- * If SSO is enabled and Bolt account creation succeed, create a new external authenticated account or external profile for existing account
- * @param {Object} response - Auth response
- * @param {dw.order.Order} order - SFCC order object
- */
-function createSSOPlatformAccount(response, order) {
-    var isBoltAccountCreated = response.result && response.result.did_create_bolt_account ? response.result.did_create_bolt_account : false;
-    var platformAccountID = response.result && response.result.platform_account_id ? response.result.platform_account_id : '';
-
-    if (!isBoltAccountCreated) {
-        log.warn('Bolt account is not created, skip platform account creation.');
-        return;
-    }
-
-    if (empty(platformAccountID)) {
-        log.warn('Missing platform account ID from Bolt, skip platform account creation.');
-        return;
-    }
-
-    var externalProfile = {
-        sub: platformAccountID,
-        email_verified: response.result && response.result.email_verified,
-        email: order.getCustomerEmail(),
-        first_name: order.getBillingAddress().getFirstName(),
-        last_name: order.getBillingAddress().getLastName()
-    };
-    var res = oauthUtils.createPlatformAccount(externalProfile, { value: order.orderNo }, { value: order.orderToken });
-    if (res.error) {
-        log.error('Error occured when creating platform account.');
-    } else {
-        log.info('Successfully created a new SFCC account or new external profile.');
-    }
 }
 
 /**
