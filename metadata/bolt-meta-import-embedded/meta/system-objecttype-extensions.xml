@@ -57,14 +57,30 @@
         <externally-managed-flag>false</externally-managed-flag>
         <default-value>false</default-value>
       </attribute-definition>
+      <attribute-definition attribute-id="boltEnableSSO">
+        <display-name xml:lang="x-default">Enable Bolt SSO</display-name>
+        <type>boolean</type>
+        <mandatory-flag>false</mandatory-flag>
+        <externally-managed-flag>false</externally-managed-flag>
+        <default-value>false</default-value>
+      </attribute-definition>
+      <attribute-definition attribute-id="boltSigningSecret">
+        <display-name xml:lang="x-default">Signing Secret</display-name>
+        <type>password</type>
+        <mandatory-flag>false</mandatory-flag>
+        <externally-managed-flag>false</externally-managed-flag>
+        <min-length>0</min-length>
+      </attribute-definition>
     </custom-attribute-definitions>
 
     <group-definitions>
       <attribute-group group-id="Bolt Payment Setting - Embedded">
         <display-name xml:lang="x-default">Bolt Payment Setting  - Embedded</display-name>
         <attribute attribute-id="boltEnable"/>
+        <attribute attribute-id="boltEnableSSO"/>
         <attribute attribute-id="boltEnableAutoCapture"/>
         <attribute attribute-id="boltAPIKey"/>
+        <attribute attribute-id="boltSigningSecret"/>
         <attribute attribute-id="boltMerchantDivisionID"/>
         <attribute attribute-id="boltMultiPublishableKey"/>
         <attribute attribute-id="boltEnvironment"/>
@@ -118,6 +134,13 @@
         <externally-managed-flag>false</externally-managed-flag>
         <min-length>0</min-length>
       </attribute-definition>
+      <attribute-definition attribute-id="boltEmbeddedAccountsTokens">
+        <display-name xml:lang="x-default">Bolt Embedded Accounts Tokens</display-name>
+        <type>string</type>
+        <mandatory-flag>false</mandatory-flag>
+        <externally-managed-flag>false</externally-managed-flag>
+        <min-length>0</min-length>
+      </attribute-definition>
     </custom-attribute-definitions>
   </type-extension>
 
@@ -141,6 +164,13 @@
         <mandatory-flag>false</mandatory-flag>
         <externally-managed-flag>false</externally-managed-flag>
         <min-length>0</min-length>
+      </attribute-definition>
+      <attribute-definition attribute-id="isNewCustomerCreated">
+        <display-name xml:lang="x-default">New Customer Created</display-name>
+        <description xml:lang="x-default">new customer account created during checkout and order reassigned</description>
+        <type>boolean</type>
+        <mandatory-flag>false</mandatory-flag>
+        <externally-managed-flag>false</externally-managed-flag>
       </attribute-definition>
     </custom-attribute-definitions>
     <group-definitions>

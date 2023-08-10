@@ -31,6 +31,7 @@ describe('bolt pay payment processor', function () {
     var boltPayFilePath = '../../../../../../../cartridges/int_bolt_embedded_sfra/cartridge/scripts/hooks/payment/processor/bolt_pay';
     var responseMock = {};
     var oAuthTokenMock;
+    var platformAccountMock;
     var boltAccountUtilsMock = require('../../../../../../mocks/bolt/boltAccountUtils.js');
     boltAccountUtilsMock.loginAsBoltUser = loginAsBoltUserStub;
     var requiredModulesMock = {
@@ -57,7 +58,12 @@ describe('bolt pay payment processor', function () {
         '~/cartridge/scripts/util/boltAccountUtils': boltAccountUtilsMock,
         '~/cartridge/scripts/util/boltLogUtils':require('../../../../../../mocks/bolt/boltLogUtils'),
         '~/cartridge/scripts/util/boltPaymentUtils':require('../../../../../../mocks/bolt/boltPaymentUtils'),
-        '~/cartridge/scripts/util/boltPayAuthRequestBuilder':require('../../../../../../mocks/bolt/boltPayAuthRequestBuilder')
+        '~/cartridge/scripts/util/boltPayAuthRequestBuilder':require('../../../../../../mocks/bolt/boltPayAuthRequestBuilder'),
+        '~/cartridge/scripts/util/oauthUtils': {
+            createPlatformAccount() {
+                return platformAccountMock;
+            }
+        }
     };
 
     beforeEach(function () {
@@ -145,5 +151,50 @@ describe('bolt pay payment processor', function () {
             expect(res.error).to.be.false;
         });
 
+        it('create platform account successfully ', function () {
+            responseMock = {
+                status : 0,
+                errors: [],
+                result: {
+                    did_create_bolt_account: true,
+                    platform_account_id: "123-456-789"
+                }
+            };
+            var customerProfile = {
+                customerNo: "10000",
+                email: "test@bolt.com",
+                firstName: "firstName",
+                lastName: "lastName"
+            };        
+            platformAccountMock = {
+                profile: customerProfile,
+                isRegistration: true
+            };
+            paymentInstrument.custom.boltCreateAccount = true;
+            var orderNo = '123456789';
+            var res = boltPay.Authorize(orderNo, paymentInstrument, 'BOLT_PAY');
+            expect(res.error).to.be.false;
+        });
+
+        it('should not return error if create platform account failed', function () {
+            responseMock = {
+                status : 0,
+                errors: [],
+                result: {
+                    did_create_bolt_account: true,
+                    platform_account_id: "123-456-789"
+                }
+            };
+            platformAccountMock = {
+                error: {
+                    status: 'failure',
+                    message: 'error message'
+                }
+            }
+            paymentInstrument.custom.boltCreateAccount = true;
+            var orderNo = '123456789';
+            var res = boltPay.Authorize(orderNo, paymentInstrument, 'BOLT_PAY');
+            expect(res.error).to.be.false;
+        });
     });
 });

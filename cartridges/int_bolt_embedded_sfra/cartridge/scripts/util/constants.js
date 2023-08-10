@@ -10,6 +10,8 @@ exports.OAUTH_TOKEN_URL = '/v1/oauth/token';
 exports.ACCOUNT_DETAILS_URL = '/v1/account';
 exports.SHOPPER_ADDRESS_URL = '/v1/account/addresses';
 exports.ADD_PAYMENT_URL = '/v1/account/payment_methods';
+exports.JWK_URL = '/v1/oauth/jwks.json';
+exports.OPENID_URL = '/.well-known/openid-configuration';
 
 /**
  * Payment Method
