@@ -85,14 +85,16 @@ server.replace(
                 returningCustomer: false,
                 passwordForm: passwordForm,
                 reportingURLs: reportingURLs,
-                orderUUID: order.getUUID()
+                orderUUID: order.getUUID(),
+                boltNewCreatedCustomer: !!skipCustomerCheck
             });
         } else {
             res.render('checkout/confirmation/confirmation', {
                 order: orderModel,
                 returningCustomer: true,
                 reportingURLs: reportingURLs,
-                orderUUID: order.getUUID()
+                orderUUID: order.getUUID(),
+                boltNewCreatedCustomer: !!skipCustomerCheck
             });
         }
         req.session.raw.custom.orderID = req.querystring.ID; // eslint-disable-line no-param-reassign
