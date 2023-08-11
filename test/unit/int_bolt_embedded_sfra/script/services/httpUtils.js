@@ -17,7 +17,7 @@ describe('httpUtils happy path', function () {
         'dw/svc/LocalServiceRegistry': require('../../../../mocks/dw/svc/LocalServiceRegistry'),
         'dw/svc/Result': require('../../../../mocks/dw/svc/Result'),
         'dw/system/System': require('../../../../mocks/dw/system/System'),
-        'dw/system/Site' : require('../../../../mocks/dw/system/Site'),
+        'dw/system/Site': require('../../../../mocks/dw/system/Site'),
         'dw/crypto/Mac': require('../../../../mocks/dw/crypto/Mac'),
         'dw/crypto/Encoding': require('../../../../mocks/dw/crypto/Encoding'),
         '~/cartridge/scripts/util/constants': require('../../../../../cartridges/int_bolt_embedded_sfra/cartridge/scripts/util/constants'),
