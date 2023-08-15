@@ -20,13 +20,18 @@ function saveCardToBolt() {
     }
 }
 
-function isEmptyAddress(){
-    return false;
+function saveAddressToBolt() {
+    
+}
+
+function isEmptyAddress(shippingAddress) {
+    return empty(shippingAddress);
 }
 
 module.exports = {
     checkEmptyValue: checkEmptyValue,
     getBoltPayment: getBoltPayment,
     saveCardToBolt: saveCardToBolt,
+    saveAddressToBolt: saveAddressToBolt,
     isEmptyAddress: isEmptyAddress
 };
