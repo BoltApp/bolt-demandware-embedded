@@ -1,7 +1,7 @@
 'use strict';
 
 var ppcButtonClass = 'bolt-product-checkout-button';
-// isProductPageCheckoutButtonVisible is used to track the visibility of the PPC button
+// ppcButtonVisible is used to track the visibility of the PPC button
 var ppcButtonVisible;
 // ppcCart contains BoltCart which is obtained by calling BoltCheckout.configureProductCheckout
 var ppcCart;

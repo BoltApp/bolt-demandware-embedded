@@ -73,23 +73,6 @@ function boltConnectURL() {
 }
 
 /**
- * Return Account URL
- * @returns {string} Account URL to access Bolt account related feature (SSO)
- */
-// function boltAccountURL() {
-//     var boltEnv = Site.getCurrent().getCustomPreferenceValue('boltEnvironment').valueOf();
-//     switch (boltEnv) {
-//         case 'sandbox':
-//             return 'https://account-sandbox.bolt.com';
-//         case 'staging':
-//             return 'https://account-staging.bolt.com';
-//         case 'production':
-//         default:
-//             return 'https://account.bolt.com';
-//     }
-// }
-
-/**
  * Returns the first digit configured in SFCC base version. "6.1.2" returns 6
  * @returns {number} the first number
  */
