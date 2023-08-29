@@ -11,6 +11,7 @@
     "test:unit": "nyc --reporter=text --check-coverage --lines 30 mocha --require test/unit/sinon-chai.js test/unit/**/*.js",
     "compile:js": "sgmf-scripts --compile js entryPackageName int_bolt_embedded_sfra",
     "compile:scss": "sgmf-scripts --compile css entryPackageName int_bolt_embedded_sfra",
+    "compilePPC": "sgmf-scripts --compile js entryPackageName int_bolt_sfra_ppc",
     "build": "npm run compile",
     "compile": "npm run compile:js && npm run compile:scss",
     "eslint": "npm run eslint:base -- .",
