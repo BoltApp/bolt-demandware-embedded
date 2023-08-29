@@ -11,6 +11,7 @@ echo Installing dependencies
 npm install
 echo Compiling + Transpiling cartridges
 npm run build
+npm run compilePPC
 
 echo Uploading cartridges
 npm run upload:all

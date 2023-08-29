@@ -1,0 +1,85 @@
+{
+  "_v": "21.10",
+  "clients": [
+    {
+      "client_id": "<<client_id>>",
+      "resources": [
+        {
+          "resource_id": "/products/{id}",
+          "read_attributes": "(**)",
+          "write_attributes": "(**)",
+          "methods": [
+            "get"
+          ]
+        },
+        {
+          "resource_id": "/products/{id}/variations",
+          "read_attributes": "(**)",
+          "write_attributes": "(**)",
+          "methods": [
+            "get"
+          ]
+        },
+        {
+          "resource_id": "/sites/{site_id}/orders/{order_no}/status",
+          "methods": [
+            "put"
+          ],
+          "read_attributes": "(**)",
+          "write_attributes": "(**)"
+        },
+        {
+          "resource_id": "/sites/{site_id}/orders/{order_no}/export_status",
+          "methods": [
+            "put"
+          ],
+          "read_attributes": "(**)",
+          "write_attributes": "(**)"
+        },
+        {
+          "resource_id": "/sites/{site_id}/orders/{order_no}/payment_status",
+          "methods": [
+            "put"
+          ],
+          "read_attributes": "(**)",
+          "write_attributes": "(**)"
+        },
+        {
+          "resource_id": "/sites/{site_id}/orders/{order_no}/confirmation_status",
+          "methods": [
+            "put"
+          ],
+          "read_attributes": "(**)",
+          "write_attributes": "(**)"
+        },
+        {
+					"resource_id": "/sites/{site_id}/site_preferences/preference_groups/{group_id}/{instance_type}",
+					"methods": [
+						"get"
+					],
+					"read_attributes": "(**)",
+					"write_attributes": "(**)"
+				},
+        {
+          "resource_id": "/customer_lists/**",
+          "methods": [
+            "get",
+            "post",
+            "put",
+            "patch"
+          ],
+          "read_attributes": "(**)",
+          "write_attributes": "(**)"
+        },
+        {
+					"resource_id": "/customer_lists/{site_id}/customers/*",
+					"methods": [
+						"get"
+					],
+					"read_attributes": "(**)",
+					"write_attributes": "(**)"
+				}
+      ]
+    }
+  ]
+}
