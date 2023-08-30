@@ -108,7 +108,7 @@ var hidePPCButton = function () {
 // whenever the product's attributes change.
 var configurePPCCartAndShowButton = function (boltCartObject) {
     if (!window.BoltCheckout) {
-        console.error('Unable to call BoltConnect.ConfigureProductCheckout since window.BoltCheckout is defined');
+        console.error('Unable to call BoltConnect.ConfigureProductCheckout since window.BoltCheckout is not defined');
         return;
     }
     ppcCart = boltCartObject;
