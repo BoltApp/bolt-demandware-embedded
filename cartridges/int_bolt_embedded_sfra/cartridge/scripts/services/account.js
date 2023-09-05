@@ -104,6 +104,7 @@ function addAccountDetailsToAddress(boltAddress, address) {
     var firstName = boltAddress.first_name || '';
     var lastName = boltAddress.last_name || '';
     var address1 = boltAddress.street_address1 || '';
+    var address2 = boltAddress.street_address2 || '';
     var city = boltAddress.locality || '';
     var stateCode = boltAddress.region_code || '';
     var countryCode = boltAddress.country_code || '';
@@ -113,6 +114,7 @@ function addAccountDetailsToAddress(boltAddress, address) {
         address.setFirstName(firstName);
         address.setLastName(lastName);
         address.setAddress1(address1);
+        address.setAddress2(address2);
         address.setCity(city);
         address.setStateCode(stateCode);
         address.setCountryCode(countryCode);
