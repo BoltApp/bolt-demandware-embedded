@@ -1,6 +1,6 @@
 #!/bin/bash
 ZERO=0
-UPLOADSUCCESS=$(npm run upload:all | grep "Error" | wc -l | xargs)
+UPLOADSUCCESS=$(npm run upload:all | npm run upload:sfra_ppc | grep "Error" | wc -l | xargs)
 
 if [ $UPLOADSUCCESS = $ZERO ]
 then
