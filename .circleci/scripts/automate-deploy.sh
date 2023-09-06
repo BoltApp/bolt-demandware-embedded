@@ -16,5 +16,8 @@ npm run compilePPC
 echo Uploading cartridges
 npm run upload:all
 
+echo Uploading PPC cartridge
+npm run upload:sfra_ppc
+
 echo Uploading Metadata
 npm run uploadMetadata
