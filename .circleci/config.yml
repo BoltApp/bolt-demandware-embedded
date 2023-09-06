@@ -37,6 +37,7 @@ commands:
           name: Compile Assets # check for css and js being generated successfully
           command: |
             npm run compile
+            npm run compilePPC
             bash .circleci/scripts/test-compile-error.sh
             test -d ./cartridges/int_bolt_embedded_sfra/cartridge/static/default/css && echo "Client CSS generated" || exit 1
             test -d ./cartridges/int_bolt_embedded_sfra/cartridge/static/default/js && echo "Client JS generated" || exit 1
