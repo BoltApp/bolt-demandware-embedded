@@ -1,6 +1,6 @@
 {
   "name": "bolt-demandware-embedded",
-  "version": "23.4.1",
+  "version": "23.5.1",
   "description": "Bolt Cartridge for Embedded Account/Checkout",
   "engines": {
     "node": "^10.22.0",
