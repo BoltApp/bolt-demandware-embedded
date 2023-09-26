@@ -33,6 +33,7 @@ describe('account', function () {
     function verifyBillingAddress(currentBasket) {
         var shopperBillingAddress = shopperDetails.payment_methods[0].billing_address;
         expect(currentBasket.getBillingAddress().address1).to.be.equal(shopperBillingAddress.street_address1);
+        expect(currentBasket.getBillingAddress().address2).to.be.equal(shopperBillingAddress.street_address2);
         expect(currentBasket.getBillingAddress().phone).to.be.equal(shopperBillingAddress.phone_number);
         expect(currentBasket.getBillingAddress().firstName).to.be.equal(shopperBillingAddress.first_name);
         expect(currentBasket.getBillingAddress().lastName).to.be.equal(shopperBillingAddress.last_name);
@@ -75,6 +76,7 @@ describe('account', function () {
 
             // verify the shipping address is set properly according to account details
             expect(shippingAddress.address1).to.be.equal(shopperShippingAddress.street_address1);
+            expect(shippingAddress.address2).to.be.equal(shopperShippingAddress.street_address2);
             expect(shippingAddress.phone).to.be.equal(shopperShippingAddress.phone_number);
             expect(shippingAddress.firstName).to.be.equal(shopperShippingAddress.first_name);
             expect(shippingAddress.lastName).to.be.equal(shopperShippingAddress.last_name);

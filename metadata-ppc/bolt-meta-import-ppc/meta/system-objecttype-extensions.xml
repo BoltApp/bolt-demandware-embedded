@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata xmlns="http://www.demandware.com/xml/impex/metadata/2006-10-31">
+  <type-extension type-id="SitePreferences">
+    <custom-attribute-definitions>
+      <attribute-definition attribute-id="boltEnablePPC">
+        <display-name xml:lang="x-default">Enable Product Page Checkout</display-name>
+        <type>boolean</type>
+        <mandatory-flag>false</mandatory-flag>
+        <externally-managed-flag>false</externally-managed-flag>
+        <default-value>false</default-value>
+      </attribute-definition>
+    </custom-attribute-definitions>
+    <attribute-definition attribute-id="sfccBaseVersion">
+      <display-name xml:lang="x-default">SFCC Base Version</display-name>
+      <description xml:lang="x-default">SFCC base version used in success callback.</description>
+      <type>string</type>
+      <mandatory-flag>false</mandatory-flag>
+      <externally-managed-flag>false</externally-managed-flag>
+      <min-length>0</min-length>
+      <regex>^([0-9]+\.)+[0-9]+$</regex>
+      <default-value>5.0.0</default-value>
+    </attribute-definition>
+  </type-extension>
+
+  <type-extension type-id="Product">
+    <custom-attribute-definitions>
+      <attribute-definition attribute-id="hideBoltButtonPDP">
+        <display-name xml:lang="x-default">Hide Bolt Button PDP</display-name>
+        <type>boolean</type>
+        <site-specific-flag>false</site-specific-flag>
+        <mandatory-flag>false</mandatory-flag>
+        <visible-flag>false</visible-flag>
+        <externally-managed-flag>false</externally-managed-flag>
+        <order-required-flag>false</order-required-flag>
+        <externally-defined-flag>false</externally-defined-flag>
+      </attribute-definition>
+    </custom-attribute-definitions>
+    <group-definitions>
+      <attribute-group group-id="bolt">
+        <display-name xml:lang="x-default">bolt</display-name>
+        <attribute attribute-id="hideBoltButtonPDP"/>
+      </attribute-group>
+    </group-definitions>
+  </type-extension>
+</metadata>

@@ -1,0 +1,14 @@
+{
+    "env": {
+        "jquery": true,
+        "es6": true
+    },
+    "parserOptions": {
+        "ecmaVersion": 8
+    },
+    "rules": {
+        "global-require": "off",
+        "no-var": "off",
+        "prefer-const": "off"
+    }
+}
