@@ -103,7 +103,10 @@ server.post('AccountLogOut', server.middleware.https, function (req, res, next) 
         boltAccountUtils.clearBoltSessionData();
         boltAccountUtils.clearShopperDataInBasket();
         account.setFallbackLogoutCookie(res);
-        CustomerMgr.logoutCustomer(false);
+        var isSSOEnabled = Site.getCurrent().getCustomPreferenceValue('boltEnableSSO');
+        if (isSSOEnabled) {
+            CustomerMgr.logoutCustomer(false);
+        }
         var redirectURL = URLUtils.https('Checkout-Begin').append('stage', 'shipping');
         res.json({
             success: true,
