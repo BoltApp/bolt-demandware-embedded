@@ -256,7 +256,7 @@ exports.saveBoltAddress = function(customer, boltAddresses) {
     var addressBook = customer.getProfile().getAddressBook();
 
     try {
-        for (let idx in boltAddresses) {
+        for (var idx in boltAddresses) {
             var addressName = generateAddressName(boltAddresses[idx]);
             Transaction.wrap(function () {
                 var newAddress = addressBook.createAddress(addressName);

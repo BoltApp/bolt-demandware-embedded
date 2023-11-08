@@ -161,7 +161,7 @@ server.post('CreateCompleteAccount', function (req, res, next) {
         var boltProfile = requestBody.profile;
         var boltAddresses = requestBody.addresses;
         var boltPayments = requestBody.payment_methods;
-        
+
         if (!boltProfile) {
             return httpUtils.errorResponse('Missing profile in the request body.', 400, res, next);
         }
@@ -182,14 +182,14 @@ server.post('CreateCompleteAccount', function (req, res, next) {
         if (boltAddresses) {
             var ok = boltAccountUtils.saveBoltAddress(newCustomer, boltAddresses);
             if (!ok) {
-                log.error('Failed to save Bolt addresses to SFCC account.')
+                log.error('Failed to save Bolt addresses to SFCC account.');
             }
         }
-        
+
         if (boltPayments) {
-            boltAccountUtils.saveBoltPayments(newCustomer, boltPayments);
+            var ok = boltAccountUtils.saveBoltPayments(newCustomer, boltPayments);
             if (!ok) {
-                log.error('Failed to save Bolt payments to SFCC account.')
+                log.error('Failed to save Bolt payments to SFCC account.');
             }
         }
 
@@ -198,7 +198,7 @@ server.post('CreateCompleteAccount', function (req, res, next) {
         });
 
         return next();
-    } catch(e) {
+    } catch (e) {
         log.error(e.message);
         return httpUtils.errorResponse('Failed to create complete SFCC customer account.', 500, res, next);
     }
