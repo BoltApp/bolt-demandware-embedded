@@ -249,8 +249,9 @@ exports.isEmptyAddress = function (address) {
 
 /**
  * Save Bolt addresses to SFCC customer account
- * @param {dw.customer.Customer} customer 
- * @param {Object} boltAddresses 
+ * @param {dw.customer.Customer} customer - SFCC customer
+ * @param {Object} boltAddresses - Bolt shoppers addresses
+ * @return {boolean} true if Bolt addresses saved successfully
  */
 exports.saveBoltAddress = function(customer, boltAddresses) {
     var addressBook = customer.getProfile().getAddressBook();
@@ -267,7 +268,7 @@ exports.saveBoltAddress = function(customer, boltAddresses) {
         log.error(e.message);
         return false;
     }
-    
+
     return true;
 }
 
@@ -291,12 +292,18 @@ function updateAddressFields(newAddress, boltAddress) {
     if (boltAddress.country_code) {
         newAddress.setCountryCode(boltAddress.country_code);
     }
-}
+};
 
-exports.saveBoltPayments = function(customer,boltPayments) {
+/**
+ * 
+ * @param {dw.customer.Customer} customer SFCC customer
+ * @param {Object} boltPayments Bolt payments
+ * @return {boolean} true if Bolt addresses saved successfully
+ */
+exports.saveBoltPayments = function (customer, boltPayments) {
     var wallet = customer.getProfile().getWallet();
     try {
-        for (let idx in boltPayments) {
+        for (var idx in boltPayments) {
             var boltPayment = boltPayments[idx];
             if (boltPayment['.tag'] == constants.PAYMENT_METHOD_CREDIT_CARD) {
                 Transaction.wrap(function () {
@@ -306,14 +313,14 @@ exports.saveBoltPayments = function(customer,boltPayments) {
                     if (boltPayment.expiration) {
                         // in YYYY-MM format
                         var expiration = boltPayment.expiration.split('-');
-                        paymentInstrument.setCreditCardExpirationYear(parseInt(expiration[0]));
-                        paymentInstrument.setCreditCardExpirationMonth(parseInt(expiration[1]));
+                        paymentInstrument.setCreditCardExpirationYear(parseInt(expiration[0], 10));
+                        paymentInstrument.setCreditCardExpirationMonth(parseInt(expiration[1], 10));
                     }
                     var billingAddress = boltPayment.billing_address;
                     var fullName = (billingAddress.first_name || '') + ' ' + (billingAddress.last_name || '');
                     paymentInstrument.setCreditCardHolder(fullName);
                     paymentInstrument.setCreditCardToken(boltPayment.token || '');
-                })
+                });
             }
         }
     } catch (e) {
@@ -322,4 +329,4 @@ exports.saveBoltPayments = function(customer,boltPayments) {
     }
 
     return true;
-}
+};

@@ -187,8 +187,8 @@ server.post('CreateCompleteAccount', function (req, res, next) {
         }
 
         if (boltPayments) {
-            var ok = boltAccountUtils.saveBoltPayments(newCustomer, boltPayments);
-            if (!ok) {
+            var rs = boltAccountUtils.saveBoltPayments(newCustomer, boltPayments);
+            if (!rs) {
                 log.error('Failed to save Bolt payments to SFCC account.');
             }
         }
