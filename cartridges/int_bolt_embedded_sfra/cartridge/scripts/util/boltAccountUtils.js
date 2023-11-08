@@ -7,6 +7,7 @@ var collections = require('*/cartridge/scripts/util/collections');
 var ShippingMgr = require('dw/order/ShippingMgr');
 var HttpResult = require('dw/svc/Result');
 var Resource = require('dw/web/Resource');
+var PaymentInstrument = require('dw/order/PaymentInstrument');
 
 /* Script Modules */
 var basketCalculationHelpers = require('*/cartridge/scripts/helpers/basketCalculationHelpers');
@@ -245,3 +246,80 @@ exports.isEmptyAddress = function (address) {
         return field === null;
     });
 };
+
+/**
+ * Save Bolt addresses to SFCC customer account
+ * @param {dw.customer.Customer} customer 
+ * @param {Object} boltAddresses 
+ */
+exports.saveBoltAddress = function(customer, boltAddresses) {
+    var addressBook = customer.getProfile().getAddressBook();
+
+    try {
+        for (let idx in boltAddresses) {
+            var addressName = generateAddressName(boltAddresses[idx]);
+            Transaction.wrap(function () {
+                var newAddress = addressBook.createAddress(addressName);
+                updateAddressFields(newAddress, boltAddresses[idx]);
+            });
+        }
+    } catch (e) {
+        log.error(e.message);
+        return false;
+    }
+    
+    return true;
+}
+
+function generateAddressName(boltAddress) {
+    return [(boltAddress.street_address1 || ''), (boltAddress.locality || ''), (boltAddress.postal_code || '')].join(' - ');
+}
+
+function updateAddressFields(newAddress, boltAddress) {
+    newAddress.setAddress1(boltAddress.street_address1 || '');
+    newAddress.setAddress2(boltAddress.street_address2 || '');
+    newAddress.setCity(boltAddress.locality || '');
+    newAddress.setFirstName(boltAddress.first_name || '');
+    newAddress.setLastName(boltAddress.last_name || '');
+    newAddress.setPhone(boltAddress.phone || '');
+    newAddress.setPostalCode(boltAddress.postal_code || '');
+    newAddress.setCompanyName(boltAddress.company || '');
+
+    if (boltAddress.region) {
+        newAddress.setStateCode(boltAddress.region);
+    }
+    if (boltAddress.country_code) {
+        newAddress.setCountryCode(boltAddress.country_code);
+    }
+}
+
+exports.saveBoltPayments = function(customer,boltPayments) {
+    var wallet = customer.getProfile().getWallet();
+    try {
+        for (let idx in boltPayments) {
+            var boltPayment = boltPayments[idx];
+            if (boltPayment['.tag'] == constants.PAYMENT_METHOD_CREDIT_CARD) {
+                Transaction.wrap(function () {
+                    var paymentInstrument = wallet.createPaymentInstrument(PaymentInstrument.METHOD_CREDIT_CARD);
+                    paymentInstrument.setCreditCardNumber(constants.CC_MASKED_DIGITS + boltPayment.last4);
+                    paymentInstrument.setCreditCardType(boltPayment.network || '');
+                    if (boltPayment.expiration) {
+                        // in YYYY-MM format
+                        var expiration = boltPayment.expiration.split('-');
+                        paymentInstrument.setCreditCardExpirationYear(parseInt(expiration[0]));
+                        paymentInstrument.setCreditCardExpirationMonth(parseInt(expiration[1]));
+                    }
+                    var billingAddress = boltPayment.billing_address;
+                    var fullName = (billingAddress.first_name || '') + ' ' + (billingAddress.last_name || '');
+                    paymentInstrument.setCreditCardHolder(fullName);
+                    paymentInstrument.setCreditCardToken(boltPayment.token || '');
+                })
+            }
+        }
+    } catch (e) {
+        log.error(e.message);
+        return false;
+    }
+
+    return true;
+}
