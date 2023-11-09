@@ -180,4 +180,28 @@
       </attribute-group>
     </group-definitions>
   </type-extension>
+
+  <type-extension type-id="CustomerPaymentInstrument">
+    <custom-attribute-definitions>
+      <attribute-definition attribute-id="boltPaymentMethodId">
+          <display-name xml:lang="x-default">Bolt Payment Method ID</display-name>
+          <type>string</type>
+          <mandatory-flag>false</mandatory-flag>
+          <externally-managed-flag>false</externally-managed-flag>
+          <min-length>0</min-length>
+      </attribute-definition>
+    </custom-attribute-definitions>
+  </type-extension>
+
+  <type-extension type-id="CustomerAddress">
+    <custom-attribute-definitions>
+      <attribute-definition attribute-id="boltAddressId">
+              <display-name xml:lang="x-default">Bolt Address ID</display-name>
+              <type>string</type>
+              <mandatory-flag>false</mandatory-flag>
+              <externally-managed-flag>false</externally-managed-flag>
+              <min-length>0</min-length>
+          </attribute-definition>
+    </custom-attribute-definitions>
+  </type-extension>
 </metadata>
