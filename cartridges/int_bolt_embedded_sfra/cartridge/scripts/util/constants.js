@@ -46,3 +46,8 @@ exports.CONTENT_TYPE_URL_ENCODED = 'application/x-www-form-urlencoded';
  * 4000 -> 4 seconds
  */
 exports.OAUTH_TOKEN_REFRESH_TIME = 4000;
+
+/**
+ * Embedded SSO
+ */
+exports.BOLT_PROVIDER = 'Bolt';
