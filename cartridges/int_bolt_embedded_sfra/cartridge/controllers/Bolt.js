@@ -9,6 +9,7 @@ var BasketMgr = require('dw/order/BasketMgr');
 var Transaction = require('dw/system/Transaction');
 var CustomerMgr = require('dw/customer/CustomerMgr');
 var Site = require('dw/system/Site');
+var UUIDUtils = require('dw/util/UUIDUtils');
 
 // Script includes
 var LogUtils = require('~/cartridge/scripts/util/boltLogUtils');
@@ -146,6 +147,61 @@ server.post('GetAccount', function (req, res, next) {
     });
 
     return next();
+});
+
+server.post('CreateCompleteAccount', function (req, res, next) {
+    try {
+        if (!httpUtils.getAuthenticationStatus()) {
+            return httpUtils.errorResponse('Request is not authenticated.', 401, res, next);
+        }
+
+        var httpParameterMap = request.getHttpParameterMap();
+        var requestBodyString = httpParameterMap.get('requestBodyAsString') ? httpParameterMap.requestBodyAsString : null;
+        var requestBody = JSON.parse(requestBodyString);
+        var boltProfile = requestBody.profile;
+        var boltAddresses = requestBody.addresses;
+        var boltPayments = requestBody.payment_methods;
+
+        if (!boltProfile) {
+            return httpUtils.errorResponse('Missing profile in the request body.', 400, res, next);
+        }
+        if (!boltProfile.email) {
+            return httpUtils.errorResponse('Missing email in the request body profile.', 400, res, next);
+        }
+
+        var platformAccountID = UUIDUtils.createUUID();
+        var newCustomer;
+        Transaction.wrap(function () {
+            newCustomer = CustomerMgr.createExternallyAuthenticatedCustomer('Bolt', platformAccountID);
+            var customerProfile = newCustomer.getProfile();
+            customerProfile.setEmail(boltProfile.email);
+            customerProfile.setFirstName(boltProfile.first_name);
+            customerProfile.setLastName(boltProfile.last_name);
+        });
+
+        if (boltAddresses) {
+            var ok = boltAccountUtils.saveBoltAddress(newCustomer, boltAddresses);
+            if (!ok) {
+                log.error('Failed to save Bolt addresses to SFCC account.');
+            }
+        }
+
+        if (boltPayments) {
+            var rs = boltAccountUtils.saveBoltPayments(newCustomer, boltPayments);
+            if (!rs) {
+                log.error('Failed to save Bolt payments to SFCC account.');
+            }
+        }
+
+        res.json({
+            customer_data_id: platformAccountID
+        });
+
+        return next();
+    } catch (e) {
+        log.error(e.message);
+        return httpUtils.errorResponse('Failed to create complete SFCC customer account.', 500, res, next);
+    }
 });
 
 module.exports = server.exports();
