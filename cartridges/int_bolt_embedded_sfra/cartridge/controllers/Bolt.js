@@ -158,9 +158,10 @@ server.post('CreateCompleteAccount', function (req, res, next) {
         var httpParameterMap = request.getHttpParameterMap();
         var requestBodyString = httpParameterMap.get('requestBodyAsString') ? httpParameterMap.requestBodyAsString : null;
         var requestBody = JSON.parse(requestBodyString);
-        var boltProfile = requestBody.profile;
-        var boltAddresses = requestBody.addresses;
-        var boltPayments = requestBody.payment_methods;
+        var accountDetails = requestBody.account_details;
+        var boltProfile = accountDetails.profile;
+        var boltAddresses = accountDetails.addresses;
+        var boltPayments = accountDetails.payment_methods;
 
         if (!boltProfile) {
             return httpUtils.errorResponse('Missing profile in the request body.', 400, res, next);
