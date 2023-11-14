@@ -248,29 +248,39 @@ exports.isEmptyAddress = function (address) {
 };
 
 /**
- * Save Bolt addresses to SFCC customer account
+ * Sync the latest addresses from Bolt account to SFCC customer account
  * @param {dw.customer.Customer} customer - SFCC customer
  * @param {Object} boltAddresses - Bolt shoppers addresses
  * @return {boolean} true if Bolt addresses saved successfully
  */
-exports.saveBoltAddress = function(customer, boltAddresses) {
-    var addressBook = customer.getProfile().getAddressBook();
-
+exports.updateBoltAddresses = function (customer, boltAddresses) {
     try {
-        for (var idx in boltAddresses) {
-            var addressName = generateAddressName(boltAddresses[idx]);
-            Transaction.wrap(function () {
+        var addressBook = customer.getAddressBook();
+        Transaction.wrap(function () {
+            // clear existing Bolt addresses
+            var addresses = addressBook.getAddresses();
+            if (!empty(addresses)) {
+                for (var id in addresses) {
+                    if (!empty(addresses[id].custom.boltAddressId)) {
+                        addressBook.removeAddress(addresses[id]);
+                    }
+                }
+            }
+
+            // add current Bolt account addresses to SFCC account
+            for (var idx in boltAddresses) {
+                var addressName = generateAddressName(boltAddresses[idx]);
                 var newAddress = addressBook.createAddress(addressName);
                 updateAddressFields(newAddress, boltAddresses[idx]);
-            });
-        }
+            }
+        });
     } catch (e) {
         log.error(e.message);
         return false;
     }
 
     return true;
-}
+};
 
 function generateAddressName(boltAddress) {
     return [(boltAddress.street_address1 || ''), (boltAddress.locality || ''), (boltAddress.postal_code || '')].join(' - ');
@@ -285,6 +295,7 @@ function updateAddressFields(newAddress, boltAddress) {
     newAddress.setPhone(boltAddress.phone || '');
     newAddress.setPostalCode(boltAddress.postal_code || '');
     newAddress.setCompanyName(boltAddress.company || '');
+    newAddress.custom.boltAddressId = boltAddress.id || constants.BOLT_PROVIDER;
 
     if (boltAddress.region) {
         newAddress.setStateCode(boltAddress.region);
@@ -292,22 +303,32 @@ function updateAddressFields(newAddress, boltAddress) {
     if (boltAddress.country_code) {
         newAddress.setCountryCode(boltAddress.country_code);
     }
-};
+}
 
 /**
- * 
+ * Sync the latest payments from Bolt account to SFCC customer account
  * @param {dw.customer.Customer} customer SFCC customer
  * @param {Object} boltPayments Bolt payments
  * @return {boolean} true if Bolt addresses saved successfully
  */
-exports.saveBoltPayments = function (customer, boltPayments) {
-    var wallet = customer.getProfile().getWallet();
+exports.updateBoltPayments = function (customer, boltPayments) {
     try {
-        for (var idx in boltPayments) {
-            var boltPayment = boltPayments[idx];
-            if (boltPayment['.tag'] == constants.PAYMENT_METHOD_CREDIT_CARD) {
-                Transaction.wrap(function () {
+        // clear existing Bolt payments
+        var wallet = customer.getProfile().getWallet();
+        var paymentInstruments = wallet.getPaymentInstruments();
+        Transaction.wrap(function () {
+            for (var id in paymentInstruments) {
+                if (!empty(paymentInstruments[id].custom.boltPaymentMethodId)) {
+                    wallet.removePaymentInstrument(paymentInstruments[id]);
+                }
+            }
+
+            // add current Bolt account payments to SFCC account
+            for (var idx in boltPayments) {
+                var boltPayment = boltPayments[idx];
+                if (boltPayment['.tag'] == constants.PAYMENT_METHOD_CREDIT_CARD) {
                     var paymentInstrument = wallet.createPaymentInstrument(PaymentInstrument.METHOD_CREDIT_CARD);
+                    paymentInstrument.custom.boltPaymentMethodId = boltPayment.id || constants.BOLT_PROVIDER;
                     paymentInstrument.setCreditCardNumber(constants.CC_MASKED_DIGITS + boltPayment.last4);
                     paymentInstrument.setCreditCardType(boltPayment.network || '');
                     if (boltPayment.expiration) {
@@ -320,9 +341,9 @@ exports.saveBoltPayments = function (customer, boltPayments) {
                     var fullName = (billingAddress.first_name || '') + ' ' + (billingAddress.last_name || '');
                     paymentInstrument.setCreditCardHolder(fullName);
                     paymentInstrument.setCreditCardToken(boltPayment.token || '');
-                });
+                }
             }
-        }
+        });
     } catch (e) {
         log.error(e.message);
         return false;

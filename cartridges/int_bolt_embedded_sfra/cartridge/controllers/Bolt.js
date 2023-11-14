@@ -158,9 +158,10 @@ server.post('CreateCompleteAccount', function (req, res, next) {
         var httpParameterMap = request.getHttpParameterMap();
         var requestBodyString = httpParameterMap.get('requestBodyAsString') ? httpParameterMap.requestBodyAsString : null;
         var requestBody = JSON.parse(requestBodyString);
-        var boltProfile = requestBody.profile;
-        var boltAddresses = requestBody.addresses;
-        var boltPayments = requestBody.payment_methods;
+        var accountDetails = requestBody.account_details;
+        var boltProfile = accountDetails.profile;
+        var boltAddresses = accountDetails.addresses;
+        var boltPayments = accountDetails.payment_methods;
 
         if (!boltProfile) {
             return httpUtils.errorResponse('Missing profile in the request body.', 400, res, next);
@@ -169,25 +170,40 @@ server.post('CreateCompleteAccount', function (req, res, next) {
             return httpUtils.errorResponse('Missing email in the request body profile.', 400, res, next);
         }
 
-        var platformAccountID = UUIDUtils.createUUID();
-        var newCustomer;
-        Transaction.wrap(function () {
-            newCustomer = CustomerMgr.createExternallyAuthenticatedCustomer('Bolt', platformAccountID);
-            var customerProfile = newCustomer.getProfile();
-            customerProfile.setEmail(boltProfile.email);
-            customerProfile.setFirstName(boltProfile.first_name);
-            customerProfile.setLastName(boltProfile.last_name);
-        });
+        var platformAccountID = boltProfile.platform_account_id;
+        if (!platformAccountID) {
+            platformAccountID = UUIDUtils.createUUID();
+        }
+
+        var authenticatedCustomerProfile = CustomerMgr.getExternallyAuthenticatedCustomerProfile(constants.BOLT_PROVIDER, platformAccountID);
+        var customer;
+        if (authenticatedCustomerProfile) {
+            customer = authenticatedCustomerProfile.getCustomer();
+        } else {
+            var existingCustomer = CustomerMgr.getCustomerByLogin(boltProfile.email);
+            Transaction.wrap(function () {
+                if (existingCustomer) {
+                    existingCustomer.createExternalProfile(constants.BOLT_PROVIDER, platformAccountID);
+                    customer = existingCustomer;
+                } else {
+                    customer = CustomerMgr.createExternallyAuthenticatedCustomer(constants.BOLT_PROVIDER, platformAccountID);
+                    var customerProfile = customer.getProfile();
+                    customerProfile.setEmail(boltProfile.email);
+                    customerProfile.setFirstName(boltProfile.first_name);
+                    customerProfile.setLastName(boltProfile.last_name);
+                }
+            });
+        }
 
         if (boltAddresses) {
-            var ok = boltAccountUtils.saveBoltAddress(newCustomer, boltAddresses);
+            var ok = boltAccountUtils.updateBoltAddresses(customer, boltAddresses);
             if (!ok) {
                 log.error('Failed to save Bolt addresses to SFCC account.');
             }
         }
 
         if (boltPayments) {
-            var rs = boltAccountUtils.saveBoltPayments(newCustomer, boltPayments);
+            var rs = boltAccountUtils.updateBoltPayments(customer, boltPayments);
             if (!rs) {
                 log.error('Failed to save Bolt payments to SFCC account.');
             }
