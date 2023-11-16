@@ -170,7 +170,7 @@ server.post('CreateCompleteAccount', function (req, res, next) {
             return httpUtils.errorResponse('Missing email in the request body profile.', 400, res, next);
         }
 
-        var platformAccountID = boltProfile.platform_account_id;
+        var platformAccountID = requestBody.customer_data_id;
         if (!platformAccountID) {
             platformAccountID = UUIDUtils.createUUID();
         }
