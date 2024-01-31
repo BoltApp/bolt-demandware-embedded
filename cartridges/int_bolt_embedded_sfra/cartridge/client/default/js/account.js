@@ -58,7 +58,9 @@ function getAccountDetails(oAuthToken) {
         method: 'GET',
         data: reqBody,
         success: function (data) {
-            window.location.href = data.redirectUrl;
+            if (data.redirectUrl) {
+                window.location.href = data.redirectUrl;
+            }
         },
         error: function (jqXHR, error) {
             console.log(error);
