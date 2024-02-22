@@ -24,6 +24,7 @@ server.get('FetchOAuthToken', server.middleware.https, function (req, res, next)
     var response = oAuth.fetchNewToken(req.querystring.code, req.querystring.scope);
     var returnObject = {};
     var isSSOEnabled = Site.getCurrent().getCustomPreferenceValue('boltEnableSSO');
+    var isIgniteEnabled = Site.getCurrent().getCustomPreferenceValue('boltIgniteEnabled');
 
     if (response.status === HttpResult.OK) {
         returnObject.accessToken = response.result.access_token;
@@ -41,6 +42,9 @@ server.get('FetchOAuthToken', server.middleware.https, function (req, res, next)
             Transaction.wrap(function () {
                 currentBasket.custom.boltEmbeddedAccountsTokens = JSON.stringify(response.result);
             });
+            account.loginOrCreatePlatformAccount(response.result.id_token);
+        }
+        if (isIgniteEnabled) {
             account.loginOrCreatePlatformAccount(response.result.id_token);
         }
 
@@ -104,7 +108,8 @@ server.post('AccountLogOut', server.middleware.https, function (req, res, next) 
         boltAccountUtils.clearShopperDataInBasket();
         account.setFallbackLogoutCookie(res);
         var isSSOEnabled = Site.getCurrent().getCustomPreferenceValue('boltEnableSSO');
-        if (isSSOEnabled) {
+        var isIgniteEnabled = Site.getCurrent().getCustomPreferenceValue('boltIgniteEnabled');
+        if (isSSOEnabled || isIgniteEnabled) {
             CustomerMgr.logoutCustomer(false);
         }
         var redirectURL = URLUtils.https('Checkout-Begin').append('stage', 'shipping');

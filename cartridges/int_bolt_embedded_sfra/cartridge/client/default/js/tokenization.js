@@ -1,6 +1,6 @@
 'use strict';
 
-var util = require('./util.js');
+var account = require('./account.js');
 
 var paymentComponent;
 var boltEmbedded;
@@ -86,16 +86,11 @@ var tokenize = function (event, options) {
     );
 };
 
-$('body').ready(function () {
-    var isBoltEmbeddedExists = setInterval(function () {
-        if (typeof Bolt !== 'undefined') {
-            clearInterval(isBoltEmbeddedExists);
-            const locale = $('.bolt-locale').val();
-            boltEmbedded = Bolt($('.bolt-publishable-key').val(), { language: util.getISOCodeByLocale(locale) }); // eslint-disable-line no-undef
-            initEmbeddedPaymentFields();
-            renderBoltCreateAccountCheckField();
-        }
-    }, 500);
+$('body').ready(async function () {
+    await account.waitForBoltReady();
+
+    initEmbeddedPaymentFields();
+    renderBoltCreateAccountCheckField();
 });
 
 $('[data-method-id="BOLT_PAY"]').click(function () {

@@ -10,5 +10,8 @@
         "global-require": "off",
         "no-var": "off",
         "prefer-const": "off"
+    },
+    "globals": {
+        "Bolt": "readonly"
     }
 }

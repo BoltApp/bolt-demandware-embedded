@@ -5,11 +5,11 @@ var constants = require('./constant.js');
 
 /**
  * Auto log the user into their bolt account
- * @param {Object} authorizationComponent - authorization component
+ * @param {Object} loginModalComponent - authorization component
  * @returns {Promise} The returned promise to fetch account details
  */
-async function autoLogin(authorizationComponent) {
-    const authorizeResp = await authorizationComponent.authorize({});
+async function sessionLogin(loginModalComponent) {
+    const authorizeResp = await loginModalComponent.attemptLogin({});
     if (!authorizeResp) return;
     const OAuthResp = await authenticateUserWithCode(
         authorizeResp.authorizationCode,
@@ -69,6 +69,34 @@ function getAccountDetails(oAuthToken) {
 }
 
 /**
+ * Get Account Details for login.
+ * This function passes the authCode and scope to authenticate the user and retrieve the account details.
+ * @param {string} authCode - auth Code
+ * @param {string} scope - scope
+ * @returns {Object} - an ajax call to fetch account details
+ */
+function getAccountDetailsLogin(authCode, scope) {
+    const accountDetailUrl = $('.authenticate-bolt-user-login').val();
+    const reqBody = {
+        code: authCode,
+        scope: scope
+    };
+    return $.ajax({
+        url: accountDetailUrl,
+        method: 'GET',
+        data: reqBody,
+        success: function (data) {
+            if (data.redirectUrl) {
+                window.location.href = data.redirectUrl;
+            }
+        },
+        error: function (_jqXHR, error) {
+            console.error(error);
+        }
+    });
+}
+
+/**
  * making an ajax call to sfcc backend to clear bolt account data
  */
 exports.logout = function () {
@@ -91,23 +119,18 @@ exports.logout = function () {
 };
 
 /**
- * detect bolt auto login
- * @param {Object} authorizationComponent - authorization component
+ * detect bolt session login
+ * @param {Object} loginModalComponent - authorization component
  */
-exports.detectAutoLogin = function (authorizationComponent) {
-    autoLogin(authorizationComponent);
+exports.detectSessionLogin = function (loginModalComponent) {
+    sessionLogin(loginModalComponent);
 };
 
 /**
  * mount bolt login status component
  */
 exports.mountLoginStatusComponent = function () {
-    const boltPublishableKey = $('.bolt-publishable-key').val();
-    const locale = $('.bolt-locale').val();
-    const boltEmbedded = Bolt(boltPublishableKey, { // eslint-disable-line no-undef
-        language: util.getISOCodeByLocale(locale)
-    });
-    const loginStatusComponent = boltEmbedded.create('login_status', {
+    const loginStatusComponent = Bolt.create('login_status', {
         listeners: {
             logout: () => {
                 this.logout();
@@ -158,9 +181,16 @@ exports.getCookie = function (cookieName) {
     return '';
 };
 
+exports.setupListenersLogin = async function () {
+    Bolt.on('login_complete', ({ result }) => {
+        if (!(result instanceof Error)) {
+            getAccountDetailsLogin(result.authorizationCode, result.scope);
+        }
+    });
+};
+
 exports.setupListeners = async function () {
-    // eslint-disable-next-line no-undef
-    Bolt.getInstance().on('auto_authorize_complete', response => {
+    Bolt.on('login_complete', response => {
         if (!(response.result instanceof Error)) {
             (async function (authorizeResp) {
                 const OAuthResp = await authenticateUserWithCode(
@@ -172,16 +202,14 @@ exports.setupListeners = async function () {
         }
     });
 
-    // eslint-disable-next-line no-undef
-    Bolt.getInstance().on('authorize_modal_closed', () => {
+    Bolt.on('authorize_modal_closed', () => {
         var disabledAttr = $('.submit-customer').prop('disabled');
         if (disabledAttr) {
             $('.submit-customer').removeAttr('disabled');
         }
     });
 
-    // eslint-disable-next-line no-undef
-    Bolt.getInstance().on('auto_account_check_complete', response => {
+    Bolt.on('auto_account_check_complete', response => {
         const $accountCheckbox = $('#acct-checkbox');
         if (response.result instanceof Error) {
             if (response.result.message === 'Invalid email') {
@@ -201,4 +229,27 @@ exports.setupListeners = async function () {
         }
         window.BoltAnalytics.checkoutStepComplete(constants.EventAccountRecognitionCheckPerformed, { hasBoltAccount: response.result, detectionMethod: 'email' });
     });
+};
+
+var boltReadyPromise = new Promise(resolve => {
+    const timer = setInterval(function () {
+        if (window.Bolt == null) {
+            return;
+        }
+
+        if (!Bolt.isInitialized) {
+            const boltPublishableKey = $('.bolt-publishable-key').val();
+            const locale = $('.bolt-locale').val();
+            Bolt.initialize(boltPublishableKey, {
+                language: util.getISOCodeByLocale(locale)
+            });
+        }
+
+        clearInterval(timer);
+        resolve();
+    }, 500);
+});
+
+exports.waitForBoltReady = function () {
+    return boltReadyPromise;
 };

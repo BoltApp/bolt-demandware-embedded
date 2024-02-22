@@ -1,5 +1,7 @@
 'use strict';
 
+var BoltPreferences = require('~/cartridge/scripts/util/preferences');
+
 var server = require('server');
 var Login = module.superModule;
 server.extend(Login);
@@ -15,7 +17,10 @@ var LogUtils = require('~/cartridge/scripts/util/boltLogUtils');
 var log = LogUtils.getLogger('Login');
 
 server.get('OAuthRedirectBolt', function (req, res, next) {
-    if (!Site.getCurrent().getCustomPreferenceValue('boltEnableSSO')) {
+    var boltIgniteEnabled = Site.getCurrent().getCustomPreferenceValue('boltIgniteEnabled');
+    var boltEnableSSO = Site.getCurrent().getCustomPreferenceValue('boltEnableSSO');
+
+    if (!boltIgniteEnabled && !boltEnableSSO) {
         log.error('Bolt SSO feature is not enabled');
         return renderError(res, next);
     }
@@ -29,7 +34,7 @@ server.get('OAuthRedirectBolt', function (req, res, next) {
     */
     var boltParam = request.getHttpParameterMap();
     var orderToken = boltParam.order_uuid;
-    if (!boltParam.code.value || !boltParam.scope.value || !boltParam.state.value) {
+    if (!boltParam.code.value || !boltParam.scope.value) {
         log.error('Missing required parameter in request form: ' + LogUtils.maskCustomerData(req));
         return renderError(res, next);
     }
@@ -45,14 +50,18 @@ server.get('OAuthRedirectBolt', function (req, res, next) {
 
     // optional: this is to support any customized post-login actions and redirect url override
     var data = {
-        redirectUrl: URLUtils.url('Account-Show'),
+        redirectUrl: URLUtils.url('Account-Show').toString(),
         isRegistration: output.isRegistration,
         additionalData: output.additionalData,
         email: output.email
     };
     data = OAuthUtils.process(req, res, data);
 
-    res.redirect(data.redirectUrl);
+    if (boltIgniteEnabled) {
+        res.json(data);
+    } else if (boltEnableSSO) {
+        res.redirect(data.redirectUrl);
+    }
     return next();
 });
 
@@ -68,5 +77,22 @@ function renderError(res, next) {
     });
     return next();
 }
+
+/**
+ * Login-Show : This endpoint is called to load the login page
+ * @name Base/Login-Show
+ * @function
+ * @memberof Login
+ */
+server.append(
+    'Show',
+    function (req, res, next) {
+        var configuration = BoltPreferences.getSitePreferences();
+
+        res.render('/account/login', { config: configuration });
+
+        next();
+    }
+);
 
 module.exports = server.exports();
