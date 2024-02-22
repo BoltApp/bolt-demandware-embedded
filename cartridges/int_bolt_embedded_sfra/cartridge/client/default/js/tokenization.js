@@ -2,8 +2,6 @@
 
 var account = require('./account.js');
 
-var paymentComponent;
-var boltEmbedded;
 var accountCheck;
 // set this value to false for the account creation checkbox to be default off
 var boltCreateAccountCheckboxDefault = true;
@@ -20,21 +18,25 @@ var accountCheckOptions = {
 };
 
 var renderBoltEmbeddedPaymentFields = function () {
-    if (paymentComponent == null && boltEmbedded) {
-        paymentComponent = boltEmbedded.create('payment_component');
-        paymentComponent.mount(document.getElementById('div-to-inject-field-into'));
-    }
+    const paymentComponent = Bolt.create('payment_component');
+    paymentComponent.mount(document.getElementById('div-to-inject-field-into'));
+    return paymentComponent;
+};
+
+var getOrCreatePaymentComponent = function () {
+    return window.Bolt.getComponent('payment_component') || renderBoltEmbeddedPaymentFields();
 };
 
 var renderBoltCreateAccountCheckField = function () {
-    if (boltEmbedded && $('#acct-checkbox').length > 0) {
-        accountCheck = boltEmbedded.create('account_checkbox', accountCheckOptions);
+    if (window.Bolt && $('#acct-checkbox').length > 0) {
+        accountCheck = Bolt.create('account_checkbox', accountCheckOptions);
         accountCheck.mount('#acct-checkbox');
     }
 };
 
 var getToken = async function () {
-    return paymentComponent.tokenize();
+    await account.waitForBoltReady();
+    return getOrCreatePaymentComponent().tokenize();
 };
 
 var paymentSelected = function (paymentOptions) {
