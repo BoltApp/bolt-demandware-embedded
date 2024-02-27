@@ -3,31 +3,31 @@
 const account = require('./account');
 const boltStoredPayment = require('./boltStoredPayments');
 
-// register the event listener on the $('#email-guest') component
-// change the html element ID if you make change to $('#email-guest')
 $(document).ready(async function () {
+    $('.submit-customer').attr('disabled', 'true');
+
+    // mount on the div container otherwise the iframe won't render
+    const emailField = document.querySelector(window.BoltSelectors.checkoutEmailField).parentElement;
+
+    if (emailField == null) {
+        return;
+    }
+
     await account.waitForBoltReady();
 
-    $('.submit-customer').attr('disabled', 'true');
-    const containerToMount = $('#email-guest').parent().get(0);
-    if (typeof containerToMount === 'undefined') {
-        return;
-    }
-    if (containerToMount.offsetParent === null) {
-        return;
+    const loginModalComponent = Bolt.getComponent('login_modal') || Bolt.create('login_modal');
+
+    if (emailField != null) {
+        loginModalComponent.attach(emailField);
     }
 
-    const loginModalComponent = Bolt.create('login_modal', {
-        autoDetectEmail: true
-    });
-    containerToMount.classList.add('containerToMount');
-    await loginModalComponent.mount('.containerToMount'); // mount on the div container otherwise the iframe won't render
+    const isBoltShopperLoggedIn = $('.bolt-is-shopper-logged-in').val() === 'true';
+    const boltSFCCSessionLogoutCookie = account.getCookie('bolt_sfcc_session_logout');
 
-    const isBoltShopperLoggedIn = $('.bolt-is-shopper-logged-in').val();
-    var boltSFCCSessionLogoutCookie = account.getCookie('bolt_sfcc_session_logout');
-    if (isBoltShopperLoggedIn === 'false' && boltSFCCSessionLogoutCookie !== 'true') {
+    if (!isBoltShopperLoggedIn && boltSFCCSessionLogoutCookie !== 'true') {
         account.detectSessionLogin(loginModalComponent);
     }
+
     account.setupListeners();
 });
 

@@ -14,5 +14,22 @@
         assets.addJs('/js/tokenization.js');
         assets.addJs('/js/eventListenerRegistration.js');
     </isscript>
+
+    <script>
+        window.BoltSelectors = {
+            signInEmailField: "#login-form-email",
+            registerEmailField: "#registration-form-email",
+            forgetPasswordButton: "#password-reset",
+
+            checkoutEmailField: "#email-guest",
+            checkoutEmailSummary: ".customer-summary-email",
+
+            editShippingHeader: ".shipping-section h2",
+            shippingSummary: ".address-summary",
+
+            editPaymentHeader: ".payment-form h2",
+            paymentSummary: ".payment-details",
+        }
+    </script>
 </isif>
 <div class="auto-login-div"></div>

@@ -202,7 +202,8 @@ exports.setupListeners = async function () {
         }
     });
 
-    Bolt.on('authorize_modal_closed', () => {
+    Bolt.on('login_modal_closed', () => {
+        console.log('login modal closed');
         var disabledAttr = $('.submit-customer').prop('disabled');
         if (disabledAttr) {
             $('.submit-customer').removeAttr('disabled');
@@ -211,6 +212,7 @@ exports.setupListeners = async function () {
 
     Bolt.on('auto_account_check_complete', response => {
         const $accountCheckbox = $('#acct-checkbox');
+        console.log('aaaa account check complete', response);
         if (response.result instanceof Error) {
             if (response.result.message === 'Invalid email') {
                 $('.submit-customer').attr('disabled', 'true');

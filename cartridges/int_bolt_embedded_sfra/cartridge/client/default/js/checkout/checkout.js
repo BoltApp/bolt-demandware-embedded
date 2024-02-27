@@ -213,7 +213,7 @@ var constants = require('../constant');
                             }
                         });
                     }
-                    const isBoltShopperLoggedIn = $('.bolt-is-shopper-logged-in').val();
+                    const isBoltShopperLoggedIn = $('.bolt-is-shopper-logged-in').val() === 'true';
                     const eventPayload = { loginStatus: isBoltShopperLoggedIn ? 'logged-in' : 'guest' };
 
                     // sending both shipping event here as we don't know
