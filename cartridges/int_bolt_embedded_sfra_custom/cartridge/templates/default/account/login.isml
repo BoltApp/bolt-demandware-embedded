@@ -1,7 +1,9 @@
 <isdecorate template="common/layout/page">
 
     <iscomment> load boltEmbed.isml template for bolt embedded account </iscomment>
-    <isinclude template="checkout/boltEmbed" />
+    <isif condition="${pdict.config.boltIgniteEnabled}">
+        <isinclude template="checkout/boltEmbed" />
+    </isif>
 
     <isscript>
         var assets = require('*/cartridge/scripts/assets.js');
@@ -20,7 +22,6 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="login-form-nav">
-                            <div>TEST4</div>
                             <isinclude template="account/components/navTabs" />
                             <div class="tab-content">
                                 <div class="tab-pane ${pdict.navTabValue === 'login' ? 'active' : ''}" id="login" role="tabpanel" aria-labelledby="login-tab">

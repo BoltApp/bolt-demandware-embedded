@@ -8,9 +8,46 @@ var scrollAnimate = require('base/components/scrollAnimate');
 
 var billingHelpers = require('./billing');
 var addressHelpers = require('./address');
+var account = require('../account');
+var analytics = require('../analytics');
 var constants = require('../constant');
 
+const { boltIgniteEnabled, isShopperLoggedIn: isBoltShopperLoggedIn } = window.BoltConfig || {};
+
 (function ($) {
+    let unmounts = [];
+    /**
+     * Mount Bolt Login Buttons.
+     */
+    async function mountBoltLoginButtons() {
+        if (!boltIgniteEnabled) {
+            return;
+        }
+        await account.waitForBoltReady();
+
+        unmounts.forEach((unmount) => unmount && unmount());
+        unmounts = [];
+
+        const loginModalComponent = Bolt.getComponent('login_modal') || Bolt.create('login_modal');
+        const emailField = document.querySelector(window.BoltSelectors.checkoutEmailField);
+        const emailSummary = document.querySelector(window.BoltSelectors.checkoutEmailSummary);
+        const email = emailField != null && emailField.value !== '' ? emailField.value : emailSummary.textContent.trim();
+
+        const shippingHeader = document.querySelector(window.BoltSelectors.editShippingHeader);
+        const hasNoShippingAddress = document.querySelector(window.BoltSelectors.shippingSummary).textContent.trim() === '';
+        if (!isBoltShopperLoggedIn && shippingHeader != null && hasNoShippingAddress && email !== '') {
+            const unmountShipping = loginModalComponent.mountPasswordlessLoginButton(email, shippingHeader.parentElement, 'checkout');
+            unmounts.push(unmountShipping);
+        }
+
+        const addPayment = document.querySelector(window.BoltSelectors.addPayment);
+        const hasNoPaymentMethod = document.querySelector(window.BoltSelectors.paymentSummary).textContent.trim() === '';
+        if (!isBoltShopperLoggedIn && addPayment != null && hasNoPaymentMethod && email !== '') {
+            const unmountPayment = loginModalComponent.mountPasswordlessLoginButton(email, addPayment, 'checkout');
+            unmounts.push(unmountPayment);
+        }
+    }
+
     /**
      * This wrap function is to used to keep the logic in sync way
      * @param {function} fn - function
@@ -128,6 +165,9 @@ var constants = require('../constant');
                             defer.reject(err.responseJSON);
                         }
                     });
+
+                    mountBoltLoginButtons();
+
                     return defer;
                 } if (stage === 'shipping') {
                     //
@@ -213,16 +253,15 @@ var constants = require('../constant');
                             }
                         });
                     }
-                    const isBoltShopperLoggedIn = $('.bolt-is-shopper-logged-in').val() === 'true';
                     const eventPayload = { loginStatus: isBoltShopperLoggedIn ? 'logged-in' : 'guest' };
 
                     // sending both shipping event here as we don't know
                     // when the action is complete unless shopper clicks continue button
-                    window.BoltAnalytics.checkoutStepComplete(
+                    analytics.checkoutStepComplete(
                         constants.EventShippingDetailsFullyEntered,
                         eventPayload
                     );
-                    window.BoltAnalytics.checkoutStepComplete(
+                    analytics.checkoutStepComplete(
                         constants.EventShippingMethodStepComplete
                     );
                     return defer;
@@ -400,8 +439,8 @@ var constants = require('../constant');
                         });
                         // sending both shipping event here as we don't know when the action is complete unless
                         // shopper clicks continue button
-                        window.BoltAnalytics.checkoutStepComplete(constants.EventPaymentMethodSelected);
-                        window.BoltAnalytics.checkoutStepComplete(constants.EventPaymentDetailsFullyEntered);
+                        analytics.checkoutStepComplete(constants.EventPaymentMethodSelected);
+                        analytics.checkoutStepComplete(constants.EventPaymentDetailsFullyEntered);
                     });
                     // return defer;
                 } if (stage === 'placeOrder') {
@@ -443,18 +482,18 @@ var constants = require('../constant');
                                         value: data.orderToken
                                     });
 
-                                window.BoltAnalytics.checkoutStepComplete(constants.EventPaymentComplete);
+                                analytics.checkoutStepComplete(constants.EventPaymentComplete);
                                 redirect.submit();
                                 defer.resolve(data);
                             }
                         },
                         error: function () {
                             // enable the placeOrder button here
-                            window.BoltAnalytics.checkoutStepComplete(constants.EventPaymentRejected);
+                            analytics.checkoutStepComplete(constants.EventPaymentRejected);
                             $('body').trigger('checkout:enableButton', $('.next-step-button button'));
                         }
                     });
-                    window.BoltAnalytics.checkoutStepComplete(constants.EventClickPayButton);
+                    analytics.checkoutStepComplete(constants.EventClickPayButton);
 
                     return defer;
                 }
@@ -544,6 +583,8 @@ var constants = require('../constant');
                 // Set the form data
                 //
                 plugin.data('formData', formData);
+
+                mountBoltLoginButtons();
             },
 
             /**

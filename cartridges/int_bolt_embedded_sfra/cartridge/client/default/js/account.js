@@ -2,6 +2,7 @@
 
 var util = require('./util.js');
 var constants = require('./constant.js');
+var analytics = require('./analytics.js');
 
 /**
  * Auto log the user into their bolt account
@@ -227,7 +228,7 @@ exports.setupListeners = async function () {
                 $accountCheckbox.show();
             }
         }
-        window.BoltAnalytics.checkoutStepComplete(constants.EventAccountRecognitionCheckPerformed, { hasBoltAccount: response.result, detectionMethod: 'email' });
+        analytics.checkoutStepComplete(constants.EventAccountRecognitionCheckPerformed, { hasBoltAccount: response.result, detectionMethod: 'email' });
     });
 };
 
@@ -238,9 +239,8 @@ var boltReadyPromise = new Promise(resolve => {
         }
 
         if (!Bolt.isInitialized) {
-            const boltPublishableKey = $('.bolt-publishable-key').val();
-            const locale = $('.bolt-locale').val();
-            Bolt.initialize(boltPublishableKey, {
+            const { publishableKey, locale } = window.BoltConfig || {};
+            Bolt.initialize(publishableKey, {
                 language: util.getISOCodeByLocale(locale)
             });
         }
