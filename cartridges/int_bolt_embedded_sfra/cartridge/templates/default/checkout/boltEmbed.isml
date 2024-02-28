@@ -17,16 +17,18 @@
 
     <script>
         window.BoltSelectors = {
+            // Sign In page
             signInEmailField: "#login-form-email",
-            registerEmailField: "#registration-form-email",
             forgetPasswordButton: "#password-reset",
 
+            // Registration page
+            registerEmailField: "#registration-form-email",
+
+            // Checkout page
             checkoutEmailField: "#email-guest",
             checkoutEmailSummary: ".customer-summary-email",
-
             editShippingHeader: ".shipping-section h2",
             shippingSummary: ".address-summary",
-
             editPaymentHeader: ".payment-form h2",
             paymentSummary: ".payment-details",
         }

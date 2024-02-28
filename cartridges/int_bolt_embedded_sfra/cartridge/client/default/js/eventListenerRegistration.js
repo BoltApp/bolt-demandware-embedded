@@ -7,7 +7,7 @@ $(document).ready(async function () {
     $('.submit-customer').attr('disabled', 'true');
 
     // mount on the div container otherwise the iframe won't render
-    const emailField = document.querySelector(window.BoltSelectors.checkoutEmailField).parentElement;
+    const emailField = document.querySelector(window.BoltSelectors.checkoutEmailField);
 
     if (emailField == null) {
         return;
@@ -17,9 +17,7 @@ $(document).ready(async function () {
 
     const loginModalComponent = Bolt.getComponent('login_modal') || Bolt.create('login_modal');
 
-    if (emailField != null) {
-        loginModalComponent.attach(emailField);
-    }
+    loginModalComponent.attach(emailField.parentElement);
 
     const isBoltShopperLoggedIn = $('.bolt-is-shopper-logged-in').val() === 'true';
     const boltSFCCSessionLogoutCookie = account.getCookie('bolt_sfcc_session_logout');
