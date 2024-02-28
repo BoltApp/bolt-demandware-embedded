@@ -3,10 +3,16 @@
     <input type="hidden" class="authenticate-bolt-user" value="${URLUtils.https('Bolt-FetchOAuthToken')}" />
     <input type="hidden" class="authenticate-bolt-user-login" value="${URLUtils.https('Login-OAuthRedirectBolt')}" />
     <input type="hidden" class="get-bolt-account-details" value="${URLUtils.https('Bolt-GetAccountDetails')}" />
-    <input type="hidden" class="bolt-publishable-key" value="${pdict.config.boltMultiPublishableKey}" />
-    <input type="hidden" class="bolt-locale" value="${pdict.locale}" />
-    <input type="hidden" class="bolt-is-shopper-logged-in" value="${pdict.isBoltShopperLoggedIn}" />
     <input type="hidden" class="data-bolt-platform-side-logout-url" value="${URLUtils.https('Bolt-AccountLogOut')}" />
+    <script>
+        window.BoltConfig = {
+            publishableKey: "${pdict.config.boltMultiPublishableKey}",
+            locale: "${pdict.locale}",
+            isShopperLoggedIn: ${pdict.isBoltShopperLoggedIn},
+            boltIgniteEnabled: ${pdict.config.boltIgniteEnabled},
+        };
+    </script>
+    
     <script id="bolt-embed" src="${pdict.config.boltCdnUrl}/embed.js"
         data-publishable-key="${pdict.config.boltMultiPublishableKey}" defer> </script>
     <isscript>

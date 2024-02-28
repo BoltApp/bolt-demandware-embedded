@@ -12,19 +12,23 @@ var account = require('../account');
 var analytics = require('../analytics');
 var constants = require('../constant');
 
+const { boltIgniteEnabled, isShopperLoggedIn: isBoltShopperLoggedIn } = window.BoltConfig || {};
+
 (function ($) {
     let unmounts = [];
     /**
      * Mount Bolt Login Buttons.
      */
     async function mountBoltLoginButtons() {
+        if (!boltIgniteEnabled) {
+            return;
+        }
         await account.waitForBoltReady();
 
         unmounts.forEach((unmount) => unmount());
         unmounts = [];
 
         const loginModalComponent = Bolt.getComponent('login_modal') || Bolt.create('login_modal');
-        var isBoltShopperLoggedIn = document.querySelector('.bolt-is-shopper-logged-in').value === 'true';
         const emailField = document.querySelector(window.BoltSelectors.checkoutEmailField);
         const emailSummary = document.querySelector(window.BoltSelectors.checkoutEmailSummary);
         const email = emailField != null && emailField.value !== '' ? emailField.value : emailSummary.textContent.trim();
@@ -249,7 +253,6 @@ var constants = require('../constant');
                             }
                         });
                     }
-                    const isBoltShopperLoggedIn = $('.bolt-is-shopper-logged-in').val() === 'true';
                     const eventPayload = { loginStatus: isBoltShopperLoggedIn ? 'logged-in' : 'guest' };
 
                     // sending both shipping event here as we don't know

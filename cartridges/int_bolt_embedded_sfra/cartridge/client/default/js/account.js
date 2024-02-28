@@ -239,9 +239,8 @@ var boltReadyPromise = new Promise(resolve => {
         }
 
         if (!Bolt.isInitialized) {
-            const boltPublishableKey = $('.bolt-publishable-key').val();
-            const locale = $('.bolt-locale').val();
-            Bolt.initialize(boltPublishableKey, {
+            const { publishableKey, locale } = window.BoltConfig || {};
+            Bolt.initialize(publishableKey, {
                 language: util.getISOCodeByLocale(locale)
             });
         }

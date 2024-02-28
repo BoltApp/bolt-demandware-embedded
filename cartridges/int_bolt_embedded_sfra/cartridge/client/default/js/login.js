@@ -3,6 +3,10 @@
 const account = require('./account');
 
 (async () => {
+    if (window.BoltConfig == null || !window.BoltConfig.boltIgniteEnabled) {
+        return;
+    }
+
     await account.waitForBoltReady();
 
     const loginModalComponent = Bolt.getComponent('login_modal') || Bolt.create('login_modal');

@@ -3,6 +3,8 @@
 const account = require('./account');
 const boltStoredPayment = require('./boltStoredPayments');
 
+const { isShopperLoggedIn: isBoltShopperLoggedIn } = (window.BoltConfig || {});
+
 $(document).ready(async function () {
     $('.submit-customer').attr('disabled', 'true');
 
@@ -19,7 +21,6 @@ $(document).ready(async function () {
 
     loginModalComponent.attach(emailField.parentElement);
 
-    const isBoltShopperLoggedIn = $('.bolt-is-shopper-logged-in').val() === 'true';
     const boltSFCCSessionLogoutCookie = account.getCookie('bolt_sfcc_session_logout');
 
     if (!isBoltShopperLoggedIn && boltSFCCSessionLogoutCookie !== 'true') {
@@ -89,7 +90,6 @@ $(document).ready(async function () {
  * is same as the previous one.
  */
 $(window).on('load', function () {
-    const isBoltShopperLoggedIn = $('.bolt-is-shopper-logged-in').val();
     if (isBoltShopperLoggedIn === 'true') {
         setTimeout(function () {
             var isBoltStatusComponentDisplay = false;
