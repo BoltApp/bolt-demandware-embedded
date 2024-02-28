@@ -35,7 +35,7 @@
             checkoutEmailSummary: ".customer-summary-email",
             editShippingHeader: ".shipping-section h2",
             shippingSummary: ".address-summary",
-            editPaymentHeader: ".payment-form h2",
+            addPayment: ".payment-information",
             paymentSummary: ".payment-details",
         }
     </script>

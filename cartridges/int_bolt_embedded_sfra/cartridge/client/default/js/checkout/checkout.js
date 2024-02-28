@@ -25,7 +25,7 @@ const { boltIgniteEnabled, isShopperLoggedIn: isBoltShopperLoggedIn } = window.B
         }
         await account.waitForBoltReady();
 
-        unmounts.forEach((unmount) => unmount());
+        unmounts.forEach((unmount) => unmount && unmount());
         unmounts = [];
 
         const loginModalComponent = Bolt.getComponent('login_modal') || Bolt.create('login_modal');
@@ -40,10 +40,10 @@ const { boltIgniteEnabled, isShopperLoggedIn: isBoltShopperLoggedIn } = window.B
             unmounts.push(unmountShipping);
         }
 
-        const paymentHeader = document.querySelector(window.BoltSelectors.editPaymentHeader);
+        const addPayment = document.querySelector(window.BoltSelectors.addPayment);
         const hasNoPaymentMethod = document.querySelector(window.BoltSelectors.paymentSummary).textContent.trim() === '';
-        if (!isBoltShopperLoggedIn && paymentHeader != null && hasNoPaymentMethod && email !== '') {
-            const unmountPayment = loginModalComponent.mountPasswordlessLoginButton(email, paymentHeader.parentElement, 'checkout');
+        if (!isBoltShopperLoggedIn && addPayment != null && hasNoPaymentMethod && email !== '') {
+            const unmountPayment = loginModalComponent.mountPasswordlessLoginButton(email, addPayment, 'checkout');
             unmounts.push(unmountPayment);
         }
     }
