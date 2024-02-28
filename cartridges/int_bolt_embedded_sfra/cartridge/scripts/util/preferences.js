@@ -19,6 +19,7 @@ exports.getSitePreferences = function () {
     var boltCdnUrl = boltConnectURL();
     var boltEnable = Site.getCurrent().getCustomPreferenceValue('boltEnable');
     var boltEnableSSO = Site.getCurrent().getCustomPreferenceValue('boltEnableSSO');
+    var boltIgniteEnabled = Site.getCurrent().getCustomPreferenceValue('boltIgniteEnabled');
     var boltMerchantDivisionID = Site.getCurrent().getCustomPreferenceValue('boltMerchantDivisionID') || '';
 
     if (!boltEnable) {
@@ -36,6 +37,7 @@ exports.getSitePreferences = function () {
         boltCdnUrl: boltCdnUrl,
         boltMultiPublishableKey: boltMultiPublishableKey,
         boltEnableSSO: boltEnableSSO,
+        boltIgniteEnabled: boltIgniteEnabled,
         boltAccountURL: boltAccountURL()
     };
 };

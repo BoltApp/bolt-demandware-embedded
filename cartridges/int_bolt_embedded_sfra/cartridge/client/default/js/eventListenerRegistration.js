@@ -1,44 +1,32 @@
 'use strict';
 
 const account = require('./account');
-const util = require('./util');
 const boltStoredPayment = require('./boltStoredPayments');
 
-// register the event listener on the $('#email-guest') component
-// change the html element ID if you make change to $('#email-guest')
-$(document).ready(function () {
+$(document).ready(async function () {
     $('.submit-customer').attr('disabled', 'true');
-    const isBoltEmbeddedExists = setInterval(async function () {
-        const containerToMount = $('#email-guest').parent().get(0);
-        if (typeof containerToMount === 'undefined') {
-            clearInterval(isBoltEmbeddedExists);
-            return;
-        }
-        if (typeof Bolt === 'undefined' || containerToMount.offsetParent === null) {
-            return;
-        }
-        clearInterval(isBoltEmbeddedExists);
-        const boltPublishableKey = $('.bolt-publishable-key').val();
-        const locale = $('.bolt-locale').val();
 
-        const boltEmbedded = Bolt(boltPublishableKey, { // eslint-disable-line no-undef
-            language: util.getISOCodeByLocale(locale)
-        });
+    // mount on the div container otherwise the iframe won't render
+    const emailField = document.querySelector(window.BoltSelectors.checkoutEmailField);
 
-        const authorizationComponent = boltEmbedded.create('authorization_component', {
-            style: { position: 'right' },
-            autoAuthorize: true
-        });
-        containerToMount.classList.add('containerToMount');
-        await authorizationComponent.mount('.containerToMount'); // mount on the div container otherwise the iframe won't render
+    if (emailField == null) {
+        return;
+    }
 
-        const isBoltShopperLoggedIn = $('.bolt-is-shopper-logged-in').val();
-        var boltSFCCSessionLogoutCookie = account.getCookie('bolt_sfcc_session_logout');
-        if (isBoltShopperLoggedIn === 'false' && boltSFCCSessionLogoutCookie !== 'true') {
-            account.detectAutoLogin(authorizationComponent);
-        }
-        account.setupListeners();
-    }, 500);
+    await account.waitForBoltReady();
+
+    const loginModalComponent = Bolt.getComponent('login_modal') || Bolt.create('login_modal');
+
+    loginModalComponent.attach(emailField.parentElement);
+
+    const isBoltShopperLoggedIn = $('.bolt-is-shopper-logged-in').val() === 'true';
+    const boltSFCCSessionLogoutCookie = account.getCookie('bolt_sfcc_session_logout');
+
+    if (!isBoltShopperLoggedIn && boltSFCCSessionLogoutCookie !== 'true') {
+        account.detectSessionLogin(loginModalComponent);
+    }
+
+    account.setupListeners();
 });
 
 // register the event listener on the logout button
@@ -85,13 +73,10 @@ $(document).ready(function () {
 });
 
 // mount login status component
-$(document).ready(function () {
-    var isBoltEmbeddedExists = setInterval(function () {
-        if (typeof Bolt !== 'undefined') {
-            clearInterval(isBoltEmbeddedExists);
-            account.mountLoginStatusComponent();
-        }
-    }, 500);
+$(document).ready(async function () {
+    await account.waitForBoltReady();
+
+    account.mountLoginStatusComponent();
 });
 
 /**

@@ -1,17 +1,37 @@
 <isif condition="${!empty(pdict.config.boltEnable)}">
     <input type="hidden" class="check-bolt-account-exist" value="${pdict.config.boltApiUrl}/v1/account/exists?email" />
     <input type="hidden" class="authenticate-bolt-user" value="${URLUtils.https('Bolt-FetchOAuthToken')}" />
+    <input type="hidden" class="authenticate-bolt-user-login" value="${URLUtils.https('Login-OAuthRedirectBolt')}" />
     <input type="hidden" class="get-bolt-account-details" value="${URLUtils.https('Bolt-GetAccountDetails')}" />
     <input type="hidden" class="bolt-publishable-key" value="${pdict.config.boltMultiPublishableKey}" />
     <input type="hidden" class="bolt-locale" value="${pdict.locale}" />
     <input type="hidden" class="bolt-is-shopper-logged-in" value="${pdict.isBoltShopperLoggedIn}" />
     <input type="hidden" class="data-bolt-platform-side-logout-url" value="${URLUtils.https('Bolt-AccountLogOut')}" />
-    <script id="bolt-embed" type="text/javascript" src="${pdict.config.boltCdnUrl}/embed.js"
+    <script id="bolt-embed" src="${pdict.config.boltCdnUrl}/embed.js"
         data-publishable-key="${pdict.config.boltMultiPublishableKey}" defer> </script>
     <isscript>
         var assets = require('*/cartridge/scripts/assets.js');
         assets.addJs('/js/tokenization.js');
         assets.addJs('/js/eventListenerRegistration.js');
     </isscript>
+
+    <script>
+        window.BoltSelectors = {
+            // Sign In page
+            signInEmailField: "#login-form-email",
+            forgetPasswordButton: "#password-reset",
+
+            // Registration page
+            registerEmailField: "#registration-form-email",
+
+            // Checkout page
+            checkoutEmailField: "#email-guest",
+            checkoutEmailSummary: ".customer-summary-email",
+            editShippingHeader: ".shipping-section h2",
+            shippingSummary: ".address-summary",
+            editPaymentHeader: ".payment-form h2",
+            paymentSummary: ".payment-details",
+        }
+    </script>
 </isif>
 <div class="auto-login-div"></div>

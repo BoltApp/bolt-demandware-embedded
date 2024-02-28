@@ -64,6 +64,13 @@
         <externally-managed-flag>false</externally-managed-flag>
         <default-value>false</default-value>
       </attribute-definition>
+      <attribute-definition attribute-id="boltIgniteEnabled">
+        <display-name xml:lang="x-default">Enable Bolt Ignite</display-name>
+        <type>boolean</type>
+        <mandatory-flag>false</mandatory-flag>
+        <externally-managed-flag>false</externally-managed-flag>
+        <default-value>false</default-value>
+      </attribute-definition>
       <attribute-definition attribute-id="boltSigningSecret">
         <display-name xml:lang="x-default">Signing Secret</display-name>
         <type>password</type>
@@ -78,6 +85,7 @@
         <display-name xml:lang="x-default">Bolt Payment Setting  - Embedded</display-name>
         <attribute attribute-id="boltEnable"/>
         <attribute attribute-id="boltEnableSSO"/>
+        <attribute attribute-id="boltIgniteEnabled"/>
         <attribute attribute-id="boltEnableAutoCapture"/>
         <attribute attribute-id="boltAPIKey"/>
         <attribute attribute-id="boltSigningSecret"/>
