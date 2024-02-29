@@ -9,6 +9,7 @@
         var assets = require('*/cartridge/scripts/assets.js');
         assets.addCss('/css/login.css');
         assets.addJs('/js/login.js');
+        assets.addJs('/js/boltLogin.js');
     </isscript>
 
     <div class="hero slant-down login-banner">
