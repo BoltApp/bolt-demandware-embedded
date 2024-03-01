@@ -25,7 +25,7 @@ const { boltIgniteEnabled, isShopperLoggedIn: isBoltShopperLoggedIn } = window.B
         }
         await account.waitForBoltReady();
 
-        unmounts.forEach((unmount) => unmount && unmount());
+        // unmounts.forEach((unmount) => unmount && unmount());
         unmounts = [];
 
         const loginModalComponent = Bolt.getComponent('login_modal') || Bolt.create('login_modal');

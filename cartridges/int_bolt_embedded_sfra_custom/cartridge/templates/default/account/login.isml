@@ -2,14 +2,18 @@
 
     <iscomment> load boltEmbed.isml template for bolt embedded account </iscomment>
     <isif condition="${pdict.config.boltIgniteEnabled}">
-        <isinclude template="checkout/boltEmbed" />
+        <isinclude template="boltEmbed" />
+
+        <isscript>
+            var assets = require('*/cartridge/scripts/assets.js');
+            assets.addJs('/js/boltLogin.js');
+        </isscript>
     </isif>
 
     <isscript>
         var assets = require('*/cartridge/scripts/assets.js');
         assets.addCss('/css/login.css');
         assets.addJs('/js/login.js');
-        assets.addJs('/js/boltLogin.js');
     </isscript>
 
     <div class="hero slant-down login-banner">
