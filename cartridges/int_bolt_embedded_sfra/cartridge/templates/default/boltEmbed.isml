@@ -10,6 +10,7 @@
             locale: "${pdict.locale}",
             isShopperLoggedIn: ${pdict.isBoltShopperLoggedIn},
             boltIgniteEnabled: ${pdict.config.boltIgniteEnabled},
+            boltGuestCheckoutOnly: ${pdict.config.boltGuestCheckoutOnly},
         };
     </script>
     

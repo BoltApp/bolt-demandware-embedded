@@ -1,9 +1,11 @@
 <isinclude template="boltEmbed" />
-<isif condition="${!empty(pdict.config.boltEnable) && !pdict.customer.registeredUser}">
-    <isscript>
-        var assets = require('*/cartridge/scripts/assets.js');
-        assets.addJs('/js/tokenization.js');
-        assets.addJs('/js/eventListenerRegistration.js');
-    </isscript>
+<isif condition="${!empty(pdict.config.boltEnable)}">
+    <isif condition="${!pdict.config.boltGuestCheckoutOnly || !pdict.customer.registeredUser}">
+        <isscript>
+            var assets = require('*/cartridge/scripts/assets.js');
+            assets.addJs('/js/tokenization.js');
+            assets.addJs('/js/eventListenerRegistration.js');
+        </isscript>
+    </isif>
 </isif>
 <div class="auto-login-div"></div>
