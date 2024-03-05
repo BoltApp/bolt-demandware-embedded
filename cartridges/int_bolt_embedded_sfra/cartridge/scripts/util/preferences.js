@@ -20,6 +20,7 @@ exports.getSitePreferences = function () {
     var boltEnable = Site.getCurrent().getCustomPreferenceValue('boltEnable');
     var boltEnableSSO = Site.getCurrent().getCustomPreferenceValue('boltEnableSSO');
     var boltIgniteEnabled = Site.getCurrent().getCustomPreferenceValue('boltIgniteEnabled');
+    var boltGuestCheckoutOnly = Site.getCurrent().getCustomPreferenceValue('boltGuestCheckoutOnly');
     var boltMerchantDivisionID = Site.getCurrent().getCustomPreferenceValue('boltMerchantDivisionID') || '';
 
     if (!boltEnable) {
@@ -38,6 +39,7 @@ exports.getSitePreferences = function () {
         boltMultiPublishableKey: boltMultiPublishableKey,
         boltEnableSSO: boltEnableSSO,
         boltIgniteEnabled: boltIgniteEnabled,
+        boltGuestCheckoutOnly: boltGuestCheckoutOnly,
         boltAccountURL: boltAccountURL()
     };
 };

@@ -71,6 +71,13 @@
         <externally-managed-flag>false</externally-managed-flag>
         <default-value>false</default-value>
       </attribute-definition>
+      <attribute-definition attribute-id="boltGuestCheckoutOnly">
+        <display-name xml:lang="x-default">Bolt Guest Checkout Only</display-name>
+        <type>boolean</type>
+        <mandatory-flag>false</mandatory-flag>
+        <externally-managed-flag>false</externally-managed-flag>
+        <default-value>false</default-value>
+      </attribute-definition>
       <attribute-definition attribute-id="boltSigningSecret">
         <display-name xml:lang="x-default">Signing Secret</display-name>
         <type>password</type>
@@ -86,6 +93,7 @@
         <attribute attribute-id="boltEnable"/>
         <attribute attribute-id="boltEnableSSO"/>
         <attribute attribute-id="boltIgniteEnabled"/>
+        <attribute attribute-id="boltGuestCheckoutOnly"/>
         <attribute attribute-id="boltEnableAutoCapture"/>
         <attribute attribute-id="boltAPIKey"/>
         <attribute attribute-id="boltSigningSecret"/>

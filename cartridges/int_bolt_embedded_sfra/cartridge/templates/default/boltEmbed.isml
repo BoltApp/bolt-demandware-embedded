@@ -1,0 +1,41 @@
+<isif condition="${!empty(pdict.config.boltEnable)}">
+    <input type="hidden" class="check-bolt-account-exist" value="${pdict.config.boltApiUrl}/v1/account/exists?email" />
+    <input type="hidden" class="authenticate-bolt-user" value="${URLUtils.https('Bolt-FetchOAuthToken')}" />
+    <input type="hidden" class="authenticate-bolt-user-login" value="${URLUtils.https('Login-OAuthRedirectBolt')}" />
+    <input type="hidden" class="get-bolt-account-details" value="${URLUtils.https('Bolt-GetAccountDetails')}" />
+    <input type="hidden" class="data-bolt-platform-side-logout-url" value="${URLUtils.https('Bolt-AccountLogOut')}" />
+    <script>
+        window.BoltConfig = {
+            publishableKey: "${pdict.config.boltMultiPublishableKey}",
+            locale: "${pdict.locale}",
+            isShopperLoggedIn: ${pdict.isBoltShopperLoggedIn},
+            boltIgniteEnabled: ${pdict.config.boltIgniteEnabled},
+            boltGuestCheckoutOnly: ${pdict.config.boltGuestCheckoutOnly},
+        };
+    </script>
+    
+    <script id="bolt-embed" src="${pdict.config.boltCdnUrl}/embed.js"
+        data-publishable-key="${pdict.config.boltMultiPublishableKey}" defer> </script>
+
+    <script>
+        window.BoltSelectors = {
+            checkoutEmailField: "#email-guest",
+
+            // ----- SSO ----- //
+          
+            // Sign In page
+            signInEmailField: "#login-form-email",
+            forgetPasswordButton: "#password-reset",
+
+            // Registration page
+            registerEmailField: "#registration-form-email",
+
+            // Checkout page
+            checkoutEmailSummary: ".customer-summary-email",
+            editShippingHeader: ".shipping-section h2",
+            shippingSummary: ".address-summary",
+            addPayment: ".payment-information",
+            paymentSummary: ".payment-details"
+        }
+    </script>
+</isif>
