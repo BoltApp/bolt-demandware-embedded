@@ -1,8 +1,6 @@
 'use strict';
 
 var util = require('./util.js');
-var constants = require('./constant.js');
-var analytics = require('./analytics.js');
 
 /**
  * Auto log the user into their bolt account
@@ -228,7 +226,6 @@ exports.setupListeners = async function () {
                 $accountCheckbox.show();
             }
         }
-        analytics.checkoutStepComplete(constants.EventAccountRecognitionCheckPerformed, { hasBoltAccount: response.result, detectionMethod: 'email' });
     });
 };
 

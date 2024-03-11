@@ -1,8 +1,8 @@
 'use strict';
 
-const account = require('./account');
-const boltStoredPayment = require('./boltStoredPayments');
-const { initializeAnalytics } = require('./analytics');
+const account = require('../account');
+const boltStoredPayment = require('../boltStoredPayments');
+require('../analytics');
 
 const { isShopperLoggedIn: isBoltShopperLoggedIn } = (window.BoltConfig || {});
 
@@ -37,7 +37,7 @@ $('#bolt-platform-side-logout').click(function () {
 });
 
 // register the event listener to the radio buttons for selecting stored payments
-$(document).ready(function () {
+$(function () {
     const radioButtonLoaded = setInterval(function () {
         const useExistingCardBtn = $('#use-existing-card-radio-button');
         const addNewCardBtn = $('#add-a-new-card-radio-button');
@@ -81,10 +81,6 @@ $(async function () {
     account.mountLoginStatusComponent();
 });
 
-$(async function () {
-    initializeAnalytics();
-});
-
 /**
  * Due to a limitation of login status component
  * Some browser like safari/chrome incognito is not
@@ -95,7 +91,7 @@ $(async function () {
  * is same as the previous one.
  */
 $(window).on('load', function () {
-    if (isBoltShopperLoggedIn === 'true') {
+    if (isBoltShopperLoggedIn) {
         setTimeout(function () {
             var isBoltStatusComponentDisplay = false;
             var $boltLoginStatusDiv = $('#login-status');
