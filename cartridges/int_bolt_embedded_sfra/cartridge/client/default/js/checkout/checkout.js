@@ -302,7 +302,7 @@ const { boltIgniteEnabled, isShopperLoggedIn: isBoltShopperLoggedIn } = window.B
                         var paymentInfoForm = $(paymentInfoSelector).serialize();
 
                         const boltPaymentATag = $('[data-method-id="BOLT_PAY"] a');
-                        const boltPaymentFields = $('bolt-pay');
+                        const boltPaymentFields = $('.bolt-pay');
                         const shouldTokenize = boltPaymentATag && boltPaymentATag.hasClass('active') && !boltPaymentFields.hasClass('d-done');
                         if (shouldTokenize) {
                             await triggerEvent('checkout:tokenize');
