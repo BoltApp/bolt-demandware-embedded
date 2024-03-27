@@ -9,8 +9,7 @@ var scrollAnimate = require('base/components/scrollAnimate');
 var billingHelpers = require('./billing');
 var addressHelpers = require('./address');
 var account = require('../account');
-var analytics = require('../analytics');
-var constants = require('../constant');
+var analytics = require('../analytics/run');
 
 const { boltIgniteEnabled, isShopperLoggedIn: isBoltShopperLoggedIn } = window.BoltConfig || {};
 
@@ -253,17 +252,6 @@ const { boltIgniteEnabled, isShopperLoggedIn: isBoltShopperLoggedIn } = window.B
                             }
                         });
                     }
-                    const eventPayload = { loginStatus: isBoltShopperLoggedIn ? 'logged-in' : 'guest' };
-
-                    // sending both shipping event here as we don't know
-                    // when the action is complete unless shopper clicks continue button
-                    analytics.checkoutStepComplete(
-                        constants.EventShippingDetailsFullyEntered,
-                        eventPayload
-                    );
-                    analytics.checkoutStepComplete(
-                        constants.EventShippingMethodStepComplete
-                    );
                     return defer;
                 } if (stage === 'payment') {
                     return wrapQ(async () => { // eslint-disable-line consistent-return
@@ -437,10 +425,6 @@ const { boltIgniteEnabled, isShopperLoggedIn: isBoltShopperLoggedIn } = window.B
                                 }
                             });
                         });
-                        // sending both shipping event here as we don't know when the action is complete unless
-                        // shopper clicks continue button
-                        analytics.checkoutStepComplete(constants.EventPaymentMethodSelected);
-                        analytics.checkoutStepComplete(constants.EventPaymentDetailsFullyEntered);
                     });
                     // return defer;
                 } if (stage === 'placeOrder') {
@@ -482,18 +466,17 @@ const { boltIgniteEnabled, isShopperLoggedIn: isBoltShopperLoggedIn } = window.B
                                         value: data.orderToken
                                     });
 
-                                analytics.checkoutStepComplete(constants.EventPaymentComplete);
+                                analytics.paymentSucceeded();
                                 redirect.submit();
                                 defer.resolve(data);
                             }
                         },
                         error: function () {
                             // enable the placeOrder button here
-                            analytics.checkoutStepComplete(constants.EventPaymentRejected);
+                            analytics.paymentFailed();
                             $('body').trigger('checkout:enableButton', $('.next-step-button button'));
                         }
                     });
-                    analytics.checkoutStepComplete(constants.EventClickPayButton);
 
                     return defer;
                 }

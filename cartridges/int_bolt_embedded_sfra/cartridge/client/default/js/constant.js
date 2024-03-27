@@ -1,6 +1,5 @@
 'use strict';
 
-exports.EventAccountRecognitionCheckPerformed = 'Account recognition check performed';
 exports.EventDetailEntryBegan = 'Detail entry began';
 exports.EventShippingDetailsFullyEntered = 'Shipping details fully entered';
 exports.EventShippingMethodStepComplete = 'Shipping method step complete';

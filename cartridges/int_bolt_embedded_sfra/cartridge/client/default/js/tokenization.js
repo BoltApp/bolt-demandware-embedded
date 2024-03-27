@@ -28,9 +28,9 @@ var getOrCreatePaymentComponent = function () {
 };
 
 var renderBoltCreateAccountCheckField = function () {
-    if (window.Bolt && $('#acct-checkbox').length > 0) {
+    if (window.Bolt && $(window.BoltSelectors.boltAccountCheckbox).length > 0) {
         accountCheck = Bolt.create('account_checkbox', accountCheckOptions);
-        accountCheck.mount('#acct-checkbox');
+        accountCheck.mount(window.BoltSelectors.boltAccountCheckbox);
     }
 };
 

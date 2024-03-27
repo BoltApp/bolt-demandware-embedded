@@ -35,7 +35,38 @@
             editShippingHeader: ".shipping-section h2",
             shippingSummary: ".address-summary",
             addPayment: ".payment-information",
-            paymentSummary: ".payment-details"
+            paymentSummary: ".payment-details",
+
+            // ----- ANALYTICS ----- //
+
+            checkoutStepTracker: ".data-checkout-stage",
+            boltAccountCheckbox: "#acct-checkbox",
+
+            shippingFirstName: ".shippingFirstName",
+            shippingLastName: ".shippingLastName",
+            shippingAddress1: ".shippingAddressOne",
+            shippingZipCode: ".shippingZipCode",
+            shippingPhopeNumber: ".shippingPhoneNumber",
+            shippingSubmitButton: ".submit-shipping",
+            shippingEditButton: ".shipping-summary .edit-button",
+
+            billingFirstName: ".billingFirstName",
+            billingLastName: ".billingLastName",
+            billingAddress1: ".billingAddressOne",
+            billingCity: ".billingCity",
+            billingZipCode: ".billingZipCode",
+            billingSubmitButton: ".submit-payment",
+            billingEditButton: ".billing-address-block .btn-show-details",
+
+            payButton: ".place-order",
+        }
+
+        window.boltCheckSelectorsExist = function() {
+            const selectorExists = {};
+            for (const [key, selector] of Object.entries(window.BoltSelectors)) {
+                selectorExists[key] = document.querySelector(selector) != null;
+            }
+            return selectorExists;
         }
     </script>
 </isif>
