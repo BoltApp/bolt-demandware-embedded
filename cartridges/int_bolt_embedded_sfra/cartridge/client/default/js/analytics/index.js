@@ -34,6 +34,7 @@ const initializeAnalytics = async () => {
                 window.BoltSelectors.shippingPhoneNumber
             ])
         ],
+        // Shipping option is custom to each merchant. Skip
         // [EventName.SHIPPING_OPTION_SELECTED]: [],
         [EventName.SHIPPING_SUBMITTED]: [action.clickOnce(window.BoltSelectors.shippingSubmitButton)],
         [EventName.SHIPPING_EDIT_BUTTON_CLICKED]: [action.clickOnce(window.BoltSelectors.shippingEditButton)],
@@ -50,6 +51,7 @@ const initializeAnalytics = async () => {
                 window.BoltSelectors.billingZipCode
             ])
         ],
+        // Billing option is custom to each merchant. Skip
         // [EventName.BILLING_PAYMENT_METHOD_SELECTED]: [],
         [EventName.BILLING_SUBMITTED]: [action.click(window.BoltSelectors.billingSubmitButton)],
         [EventName.BILLING_EDIT_BUTTON_CLICKED]: [
