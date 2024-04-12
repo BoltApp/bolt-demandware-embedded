@@ -1,8 +1,6 @@
 'use strict';
 
 var util = require('./util.js');
-var constants = require('./constant.js');
-var analytics = require('./analytics.js');
 
 /**
  * Auto log the user into their bolt account
@@ -211,7 +209,7 @@ exports.setupListeners = async function () {
     });
 
     Bolt.on('auto_account_check_complete', response => {
-        const $accountCheckbox = $('#acct-checkbox');
+        const $accountCheckbox = $(window.BoltSelectors.boltAccountCheckbox);
         if (response.result instanceof Error) {
             if (response.result.message === 'Invalid email') {
                 $('.submit-customer').attr('disabled', 'true');
@@ -228,7 +226,6 @@ exports.setupListeners = async function () {
                 $accountCheckbox.show();
             }
         }
-        analytics.checkoutStepComplete(constants.EventAccountRecognitionCheckPerformed, { hasBoltAccount: response.result, detectionMethod: 'email' });
     });
 };
 

@@ -2,10 +2,11 @@
 
 const account = require('./account');
 const boltStoredPayment = require('./boltStoredPayments');
+const { initializeAnalytics } = require('./analytics');
 
 const { isShopperLoggedIn: isBoltShopperLoggedIn } = (window.BoltConfig || {});
 
-$(document).ready(async function () {
+$(async function () {
     $('.submit-customer').attr('disabled', 'true');
 
     // mount on the div container otherwise the iframe won't render
@@ -74,10 +75,14 @@ $(document).ready(function () {
 });
 
 // mount login status component
-$(document).ready(async function () {
+$(async function () {
     await account.waitForBoltReady();
 
     account.mountLoginStatusComponent();
+});
+
+$(async function () {
+    initializeAnalytics();
 });
 
 /**
