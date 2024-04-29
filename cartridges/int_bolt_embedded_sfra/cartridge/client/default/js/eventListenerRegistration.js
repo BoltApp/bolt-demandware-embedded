@@ -24,7 +24,7 @@ $(document).ready(async function () {
     const boltSFCCSessionLogoutCookie = account.getCookie('bolt_sfcc_session_logout');
 
     if (!isBoltShopperLoggedIn && boltSFCCSessionLogoutCookie !== 'true') {
-        account.detectSessionLogin(loginModalComponent);
+        loginModalComponent.attemptLogin({});
     }
 
     account.setupListeners();

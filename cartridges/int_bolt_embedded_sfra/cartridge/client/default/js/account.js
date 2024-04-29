@@ -10,13 +10,7 @@ var analytics = require('./analytics.js');
  * @returns {Promise} The returned promise to fetch account details
  */
 async function sessionLogin(loginModalComponent) {
-    const authorizeResp = await loginModalComponent.attemptLogin({});
-    if (!authorizeResp) return;
-    const OAuthResp = await authenticateUserWithCode(
-        authorizeResp.authorizationCode,
-        authorizeResp.scope
-    );
-    return getAccountDetails(OAuthResp.accessToken); // eslint-disable-line consistent-return
+    await loginModalComponent.attemptLogin({});
 }
 
 /**
