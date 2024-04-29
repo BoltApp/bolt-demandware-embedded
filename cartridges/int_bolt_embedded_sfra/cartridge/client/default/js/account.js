@@ -3,21 +3,6 @@
 var util = require('./util.js');
 
 /**
- * Auto log the user into their bolt account
- * @param {Object} loginModalComponent - authorization component
- * @returns {Promise} The returned promise to fetch account details
- */
-async function sessionLogin(loginModalComponent) {
-    const authorizeResp = await loginModalComponent.attemptLogin({});
-    if (!authorizeResp) return;
-    const OAuthResp = await authenticateUserWithCode(
-        authorizeResp.authorizationCode,
-        authorizeResp.scope
-    );
-    return getAccountDetails(OAuthResp.accessToken); // eslint-disable-line consistent-return
-}
-
-/**
  * This function uses the authCode and scope returned from authorizeWithEmail
  * after the user enters the 6 digits OTP code
  * It makes a call to Bolt-FetchOAuthToken controller to fetch Oauth token & refresh token
@@ -115,14 +100,6 @@ exports.logout = function () {
             }
         }
     });
-};
-
-/**
- * detect bolt session login
- * @param {Object} loginModalComponent - authorization component
- */
-exports.detectSessionLogin = function (loginModalComponent) {
-    sessionLogin(loginModalComponent);
 };
 
 /**
