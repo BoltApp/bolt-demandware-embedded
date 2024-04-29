@@ -5,15 +5,6 @@ var constants = require('./constant.js');
 var analytics = require('./analytics.js');
 
 /**
- * Auto log the user into their bolt account
- * @param {Object} loginModalComponent - authorization component
- * @returns {Promise} The returned promise to fetch account details
- */
-async function sessionLogin(loginModalComponent) {
-    await loginModalComponent.attemptLogin({});
-}
-
-/**
  * This function uses the authCode and scope returned from authorizeWithEmail
  * after the user enters the 6 digits OTP code
  * It makes a call to Bolt-FetchOAuthToken controller to fetch Oauth token & refresh token
@@ -111,14 +102,6 @@ exports.logout = function () {
             }
         }
     });
-};
-
-/**
- * detect bolt session login
- * @param {Object} loginModalComponent - authorization component
- */
-exports.detectSessionLogin = function (loginModalComponent) {
-    sessionLogin(loginModalComponent);
 };
 
 /**
