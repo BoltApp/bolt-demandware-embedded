@@ -56,7 +56,7 @@ exports.build = function (order, paymentInstrument) {
         if (boltAccountUtils.loginAsBoltUser() && paymentInstrument.custom.boltPaymentMethodId) {
             request.credit_card_id = paymentInstrument.custom.boltPaymentMethodId;
         } else { // use new credit card for Auth
-            request.credit_card = buildCreditCardField(order, paymentInstrument);
+            request.credit_card = this.buildCreditCardField(order, paymentInstrument);
         }
         return {
             authRequest: request,
@@ -78,7 +78,7 @@ exports.build = function (order, paymentInstrument) {
  * @param {dw.order.PaymentInstrument} paymentInstrument SFCC Payment Instrument
  * @returns {Object | null} Credit card field object
  */
-function buildCreditCardField(order, paymentInstrument) {
+exports.buildCreditCardField = function (order, paymentInstrument) {
     var billingAddress = order.getBillingAddress();
     return {
         token: paymentInstrument.getCreditCardToken(),
@@ -99,7 +99,7 @@ function buildCreditCardField(order, paymentInstrument) {
         postal_code: billingAddress.getPostalCode(),
         token_type: constants.BOLT_TOKEN_TYPE
     };
-}
+};
 
 /**
  * Build cart details field
@@ -142,7 +142,7 @@ function buildShipmentsField(order) {
     collections.forEach(shipments, function (shipment) {
         var shippingAddress = shipment.getShippingAddress();
         var shipmentField = {
-            shipping_address: buildShippingAddressField(shippingAddress, order),
+            shipping_address: this.buildShippingAddressField(shippingAddress, order),
             cost: getShipmentCostInCents(shipment),
             service: shipment.getShippingMethod().getDisplayName()
         };
@@ -175,7 +175,7 @@ function getShipmentCostInCents(shipment) {
  * @param {dw.order.Order} order SFCC Order
  * @returns {Object | null} new address object if existed
  */
-function buildShippingAddressField(shippingAddress, order) {
+exports.buildShippingAddressField = function (shippingAddress, order) {
     if (shippingAddress == null || boltAccountUtils.isEmptyAddress(shippingAddress)) {
         return null;
     }
@@ -193,7 +193,7 @@ function buildShippingAddressField(shippingAddress, order) {
         country_code: shippingAddress.getCountryCode() ? shippingAddress.getCountryCode().getValue().toString().toUpperCase() : '',
         country: shippingAddress.getCountryCode() ? shippingAddress.getCountryCode().getDisplayValue() : ''
     };
-}
+};
 
 /**
  * Returns billing address field

@@ -143,6 +143,11 @@ function authorize(orderNumber, paymentInstrument, paymentProcessor) {
         return { error: true, errorCode: errorCode, errorMessage: errorMessage };
     }
 
+    // create Bolt Account
+    if (paymentInstrument.custom.boltCreateAccount) {
+        createBoltAccount(order, paymentInstrument);
+    }
+
     // set payment transaction
     Transaction.wrap(function () {
         order.custom.boltTransactionReference = response.result.transaction && response.result.transaction.reference ? response.result.transaction.reference : '';
@@ -150,12 +155,50 @@ function authorize(orderNumber, paymentInstrument, paymentProcessor) {
     });
 
     // create platform account for SSO if it is enabled
-    var isSSOEnabled = Site.getCurrent().getCustomPreferenceValue('boltEnableSSO');
-    if (isSSOEnabled && paymentInstrument.custom.boltCreateAccount) {
-        createSSOPlatformAccount(response, order);
-    }
+    // var isSSOEnabled = Site.getCurrent().getCustomPreferenceValue('boltEnableSSO');
+    // if (isSSOEnabled && paymentInstrument.custom.boltCreateAccount) {
+    //     createSSOPlatformAccount(response, order);
+    // }
 
     return { error: false };
+}
+
+/**
+ * Create a new Bolt account
+ * @param {dw.order.Order} order - SFCC order object
+ * @param {dw.order.PaymentInstrument} paymentInstrument - SFCC payment instrument object
+*/
+function createBoltAccount(order, paymentInstrument) {
+    var shippingAddresses = [];
+    collections.forEach(order.getShipments(), function (shipment) {
+        shippingAddresses.push(boltPayAuthRequestBuilder.buildShippingAddressField(shipment.getShippingAddress(), order));
+    });
+    var createAccountRequest = {
+        addresses: shippingAddresses,
+        payment_methods: [boltPayAuthRequestBuilder.buildCreditCardField(order, paymentInstrument)],
+        profile: {
+            email: order.getCustomerEmail(),
+            first_name: order.getBillingAddress().getFirstName(),
+            last_name: order.getBillingAddress().getLastName(),
+            phone: order.getBillingAddress().getPhone()
+        }
+    };
+
+    var boltAccountCreationResponse = boltHttpUtils.restAPIClient(
+        constants.HTTP_METHOD_POST,
+        constants.ACCOUNT_DETAILS_URL,
+        JSON.stringify(createAccountRequest),
+        constants.CONTENT_TYPE_JSON
+    );
+    if (boltAccountCreationResponse.status && boltAccountCreationResponse.status === HttpResult.ERROR) {
+        var boltAccountCreationErrorMessage = !empty(boltAccountCreationResponse.errors) && !empty(boltAccountCreationResponse.errors[0].message)
+            ? boltAccountCreationResponse.errors[0].message
+            : '';
+        var boltAccountCreationErrorCode = !empty(boltAccountCreationResponse.errors) && !empty(boltAccountCreationResponse.errors[0].code)
+            ? boltAccountCreationResponse.errors[0].code
+            : '';
+        log.error('Bolt Account Creation failed, error: ' + boltAccountCreationErrorMessage + ' ; Code: ' + boltAccountCreationErrorCode);
+    }
 }
 
 /**
