@@ -28,6 +28,12 @@
              "get",
              "patch"
           ]
+       },
+       {
+         "resource_id": "/products/({ids})",
+         "methods": ["get"],
+         "read_attributes": "(**)",
+         "write_attributes": "(**)"
        }
      ]
     }
