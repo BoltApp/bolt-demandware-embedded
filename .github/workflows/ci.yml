@@ -112,23 +112,11 @@ jobs:
             --data "{\"text\":\":red_circle: A ${GITHUB_JOB} job has failed! ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}\"}" \
             "$SLACK_WEBHOOK"
 
-  # TODO (carried over from CircleCI): modify this to run integration tests
-  # against embedded cartridges. Currently this is for V1 managed checkout tests
-  integration-tests:
-    if: github.ref == 'refs/heads/master'
-    needs: update-qa-sandbox
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Running integration tests against zzgv-002
-        env:
-          CIRCLE_TOKEN: ${{ secrets.CIRCLE_TOKEN }}
-        run: bash .github/scripts/run-integration-tests.sh
-      - name: Notify build cop on master failure
-        if: failure() && github.ref == 'refs/heads/master'
-        env:
-          SLACK_WEBHOOK: ${{ secrets.GREENKEEPER_WEBHOOK }}
-        run: |
-          curl -sf -X POST -H 'Content-Type: application/json' \
-            --data "{\"text\":\":red_circle: A ${GITHUB_JOB} job has failed! ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}\"}" \
-            "$SLACK_WEBHOOK"
+  # NOTE: the CircleCI pipeline had an `integration-tests` job here that
+  # cross-triggered the BoltApp/integration-tests CircleCI pipeline (SFRA
+  # wdio suite, against zzgv-002 — it never covered the embedded cartridge,
+  # per the old TODO). It was deliberately NOT migrated: that repo is
+  # archived (read-only since Oct 2025) and its SFRA suite has been
+  # unmaintained since mid-2023, so the trigger fires into a decommissioned
+  # project. If post-deploy integration coverage is wanted again, it needs
+  # a new owner and a new home first.
