@@ -31,14 +31,14 @@ jobs:
         run: npm run lint
       - name: Unit Test
         run: npm run test:unit
-      - name: Notify build cop on master failure
+      - name: Notify build cop on master failure (Google Chat)
         if: failure() && github.ref == 'refs/heads/master'
         env:
-          SLACK_WEBHOOK: ${{ secrets.GREENKEEPER_WEBHOOK }}
+          GCHAT_WEBHOOK: ${{ secrets.GCHAT_GREENKEEPER_WEBHOOK }}
         run: |
           curl -sf -X POST -H 'Content-Type: application/json' \
-            --data "{\"text\":\":red_circle: A ${GITHUB_JOB} job has failed! ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}\"}" \
-            "$SLACK_WEBHOOK"
+            --data "{\"text\":\"🔴 A ${GITHUB_JOB} job has failed! ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}\"}" \
+            "$GCHAT_WEBHOOK"
 
   update-qa-sandbox:
     if: github.ref == 'refs/heads/master'
@@ -103,14 +103,14 @@ jobs:
             "}" > dw.json
       - name: Upload cartridges to QA sandbox zzgv-018
         run: bash .github/scripts/upload-cartridges.sh
-      - name: Notify build cop on master failure
+      - name: Notify build cop on master failure (Google Chat)
         if: failure() && github.ref == 'refs/heads/master'
         env:
-          SLACK_WEBHOOK: ${{ secrets.GREENKEEPER_WEBHOOK }}
+          GCHAT_WEBHOOK: ${{ secrets.GCHAT_GREENKEEPER_WEBHOOK }}
         run: |
           curl -sf -X POST -H 'Content-Type: application/json' \
-            --data "{\"text\":\":red_circle: A ${GITHUB_JOB} job has failed! ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}\"}" \
-            "$SLACK_WEBHOOK"
+            --data "{\"text\":\"🔴 A ${GITHUB_JOB} job has failed! ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}\"}" \
+            "$GCHAT_WEBHOOK"
 
   # NOTE: the CircleCI pipeline had an `integration-tests` job here that
   # cross-triggered the BoltApp/integration-tests CircleCI pipeline (SFRA
