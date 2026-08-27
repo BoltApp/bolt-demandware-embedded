@@ -11,6 +11,9 @@ jobs:
       credentials:
         username: ${{ secrets.DOCKER_USER }}
         password: ${{ secrets.DOCKER_PASSWORD }}
+      # The image runs as the circleci user; GHA needs root to write its
+      # runner control files under /__w/_temp
+      options: --user root
     steps:
       - uses: actions/checkout@v4
       - name: Restore npm cache
@@ -51,6 +54,9 @@ jobs:
       credentials:
         username: ${{ secrets.DOCKER_USER }}
         password: ${{ secrets.DOCKER_PASSWORD }}
+      # The image runs as the circleci user; GHA needs root to write its
+      # runner control files under /__w/_temp
+      options: --user root
     steps:
       - uses: actions/checkout@v4
       - name: Restore npm cache
