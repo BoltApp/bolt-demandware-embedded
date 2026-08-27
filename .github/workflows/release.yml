@@ -34,6 +34,14 @@ jobs:
           key: npm-v2-${{ hashFiles('package-lock.json') }}
       - name: Install Dependencies
         run: npm install --prefer-offline --no-audit
+      - name: Link SFRA base cartridge (baked into the sfcc-ci image)
+        run: |
+          for p in /home/circleci/storefront-reference-architecture /root/storefront-reference-architecture /storefront-reference-architecture; do
+            if [ -d "$p" ]; then ln -sfn "$p" ../storefront-reference-architecture && echo "linked $p"; exit 0; fi
+          done
+          echo "SFRA not found at known paths; locations found:"
+          find / -maxdepth 4 -name "storefront-reference-architecture" -type d 2>/dev/null | head -5
+          exit 1
       - name: Compile Assets
         run: |
           npm run compile
