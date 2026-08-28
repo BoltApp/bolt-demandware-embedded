@@ -1,0 +1,144 @@
+name: CI
+
+on:
+  push:
+
+jobs:
+  lint-and-unit-test:
+    runs-on: ubuntu-latest
+    container:
+      image: boltdev/sfcc-ci:v1.1.0
+      credentials:
+        username: ${{ secrets.DOCKER_USER }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+      # The image runs as the circleci user; GHA needs root to write its
+      # runner control files under /__w/_temp
+      options: --user root
+    steps:
+      - uses: actions/checkout@v4
+      - name: Restore npm cache
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: npm-v2-${{ hashFiles('package-lock.json') }}
+      - name: Install Dependencies
+        run: npm install --prefer-offline --no-audit
+      - name: Link SFRA base cartridge (baked into the sfcc-ci image)
+        run: |
+          for p in /home/circleci/storefront-reference-architecture /root/storefront-reference-architecture /storefront-reference-architecture; do
+            if [ -d "$p" ]; then ln -sfn "$p" ../storefront-reference-architecture && echo "linked $p"; exit 0; fi
+          done
+          echo "SFRA not found at known paths; locations found:"
+          find / -maxdepth 4 -name "storefront-reference-architecture" -type d 2>/dev/null | head -5
+          exit 1
+      - name: Compile Assets # check for css and js being generated successfully
+        run: |
+          npm run compile
+          npm run compilePPC
+          bash .github/scripts/test-compile-error.sh
+          test -d ./cartridges/int_bolt_embedded_sfra/cartridge/static/default/css && echo "Client CSS generated" || exit 1
+          test -d ./cartridges/int_bolt_embedded_sfra/cartridge/static/default/js && echo "Client JS generated" || exit 1
+      - name: Lint
+        run: npm run lint
+      - name: Unit Test
+        run: npm run test:unit
+      - name: Notify build cop on master failure (Google Chat)
+        if: failure() && github.ref == 'refs/heads/master'
+        env:
+          GCHAT_WEBHOOK: ${{ secrets.GCHAT_GREENKEEPER_WEBHOOK }}
+        run: |
+          curl -sf -X POST -H 'Content-Type: application/json' \
+            --data "{\"text\":\"🔴 A ${GITHUB_JOB} job has failed! ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}\"}" \
+            "$GCHAT_WEBHOOK"
+
+  update-qa-sandbox:
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    concurrency:
+      group: qa-sandbox-deploy
+      cancel-in-progress: false
+    container:
+      image: boltdev/sfcc-ci:v1.1.0
+      credentials:
+        username: ${{ secrets.DOCKER_USER }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+      # The image runs as the circleci user; GHA needs root to write its
+      # runner control files under /__w/_temp
+      options: --user root
+    steps:
+      - uses: actions/checkout@v4
+      - name: Restore npm cache
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: npm-v2-${{ hashFiles('package-lock.json') }}
+      - name: Install Dependencies
+        run: npm install --prefer-offline --no-audit
+      - name: Link SFRA base cartridge (baked into the sfcc-ci image)
+        run: |
+          for p in /home/circleci/storefront-reference-architecture /root/storefront-reference-architecture /storefront-reference-architecture; do
+            if [ -d "$p" ]; then ln -sfn "$p" ../storefront-reference-architecture && echo "linked $p"; exit 0; fi
+          done
+          echo "SFRA not found at known paths; locations found:"
+          find / -maxdepth 4 -name "storefront-reference-architecture" -type d 2>/dev/null | head -5
+          exit 1
+      - name: Compile Assets
+        run: |
+          npm run compile
+          npm run compilePPC
+          bash .github/scripts/test-compile-error.sh
+      - name: Setup dw.json for meta upload
+        env:
+          QA_EMBEDDED_SANDBOX_HOSTNAME: ${{ secrets.QA_EMBEDDED_SANDBOX_HOSTNAME }}
+          SFCCCLIENTID: ${{ secrets.SFCCCLIENTID }}
+          SFCCCLIENTSECRET: ${{ secrets.SFCCCLIENTSECRET }}
+        run: |
+          echo "{" \
+            "\"hostname\":\"${QA_EMBEDDED_SANDBOX_HOSTNAME}\"," \
+            "\"client-id\":\"${SFCCCLIENTID}\"," \
+            "\"client-secret\":\"${SFCCCLIENTSECRET}\"" \
+            "}" > dw.json
+      - name: Upload metadata to QA sandbox zzgv-018
+        env:
+          SFCCCLIENTID: ${{ secrets.SFCCCLIENTID }}
+          SFCCCLIENTSECRET: ${{ secrets.SFCCCLIENTSECRET }}
+        run: |
+          sfcc-ci client:auth ${SFCCCLIENTID} ${SFCCCLIENTSECRET}
+          npm run uploadMetadata
+      - name: Reset dw.json # On meta upload process, adding user/password data to dw.json causes auth issue, it's a SFCC bug
+        run: rm dw.json
+      - name: Setup dw.json for cartridge upload
+        env:
+          QA_EMBEDDED_SANDBOX_HOSTNAME: ${{ secrets.QA_EMBEDDED_SANDBOX_HOSTNAME }}
+          SFCCCLIENTID: ${{ secrets.SFCCCLIENTID }}
+          SFCCCLIENTSECRET: ${{ secrets.SFCCCLIENTSECRET }}
+          SFCC_QA_ACCOUNT: ${{ secrets.SFCC_QA_ACCOUNT }}
+          SFCC_QA_ACCOUNT_PW: ${{ secrets.SFCC_QA_ACCOUNT_PW }}
+        run: |
+          echo "{" \
+            "\"hostname\":\"${QA_EMBEDDED_SANDBOX_HOSTNAME}\"," \
+            "\"client-id\":\"${SFCCCLIENTID}\"," \
+            "\"client-secret\":\"${SFCCCLIENTSECRET}\"," \
+            "\"username\":\"${SFCC_QA_ACCOUNT}\"," \
+            "\"password\":\"${SFCC_QA_ACCOUNT_PW}\"," \
+            "\"code-version\":\"QA\"" \
+            "}" > dw.json
+      - name: Upload cartridges to QA sandbox zzgv-018
+        run: bash .github/scripts/upload-cartridges.sh
+      - name: Notify build cop on master failure (Google Chat)
+        if: failure() && github.ref == 'refs/heads/master'
+        env:
+          GCHAT_WEBHOOK: ${{ secrets.GCHAT_GREENKEEPER_WEBHOOK }}
+        run: |
+          curl -sf -X POST -H 'Content-Type: application/json' \
+            --data "{\"text\":\"🔴 A ${GITHUB_JOB} job has failed! ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}\"}" \
+            "$GCHAT_WEBHOOK"
+
+  # NOTE: the CircleCI pipeline had an `integration-tests` job here that
+  # cross-triggered the BoltApp/integration-tests CircleCI pipeline (SFRA
+  # wdio suite, against zzgv-002 — it never covered the embedded cartridge,
+  # per the old TODO). It was deliberately NOT migrated: that repo is
+  # archived (read-only since Oct 2025) and its SFRA suite has been
+  # unmaintained since mid-2023, so the trigger fires into a decommissioned
+  # project. If post-deploy integration coverage is wanted again, it needs
+  # a new owner and a new home first.
