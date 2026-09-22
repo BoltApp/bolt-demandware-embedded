@@ -48,4 +48,4 @@ Use the provided NPM scripts to compile and upload changes to your Sandbox.
 
 supported locales: `en-US`, `en-CA`, `fr-CA`
 
-For more information: https://help.bolt.com/products/embedded/sfcc-embedded/
+For more information: https://help.boltapp.com/products/embedded/sfcc-embedded/
