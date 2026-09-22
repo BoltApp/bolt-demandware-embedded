@@ -107,7 +107,7 @@ function getOAuthConfiguration() {
 
 /**
  * Exchange for OAuth token, return the JSON encoded result of token exchange endpoint returned value
- * https://help.bolt.com/api-bolt/#tag/OAuth/operation/OAuthToken
+ * https://help.boltapp.com/api-bolt/#tag/OAuth/operation/OAuthToken
  * @param {string} code - the authorization code received
  * @param {string} scope - scope for the oauth workflow, currently only support openid
  * @param {string} clientID - client id for the oauth workflow, should be the same as merchant publishable key

@@ -21,9 +21,9 @@ class Service {
     call(args) {
         if (args && args.endPointUrl) {
             switch (args.endPointUrl) {
-                case "https://api-sandbox.bolt.com/v1/account_err1":
-                case "https://api-sandbox.bolt.com/v1/account_err2":
-                case "https://api-sandbox.bolt.com/v1/account_err3":
+                case "https://api-sandbox.boltapp.com/v1/account_err1":
+                case "https://api-sandbox.boltapp.com/v1/account_err2":
+                case "https://api-sandbox.boltapp.com/v1/account_err3":
                     this.response = {
                         text: '{"ok": false}',
                         statusCode: 400,
@@ -64,20 +64,20 @@ class Service {
             var responseResult;
             if (args && args.endPointUrl) {
                 switch (args.endPointUrl) {
-                    case "https://api-sandbox.bolt.com/v1/account_err1":
+                    case "https://api-sandbox.boltapp.com/v1/account_err1":
                         responseResult = {
                             status: Result.ERROR,
                             ok: false,
                             errorMessage: JSON.stringify({ errors: 'Service execution failed with no error message' })
                         };
                         break;
-                    case "https://api-sandbox.bolt.com/v1/account_err2":
+                    case "https://api-sandbox.boltapp.com/v1/account_err2":
                         responseResult = {
                             status: Result.SERVICE_UNAVAILABLE,
                             ok: false
                         };
                         break;
-                    case "https://api-sandbox.bolt.com/v1/account_err3":
+                    case "https://api-sandbox.boltapp.com/v1/account_err3":
                         responseResult = {
                             status: Result.ERROR,
                             ok: false

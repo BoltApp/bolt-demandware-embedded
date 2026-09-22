@@ -14,7 +14,7 @@ function getBoltAPIKey() {
 
 function getSitePreferences() {
     return {
-        boltApiUrl: 'https://api-sandbox.bolt.com',
+        boltApiUrl: 'https://api-sandbox.boltapp.com',
         boltApiKey: '123456',
         boltMultiPublishableKey: 'abcdefg'
     };

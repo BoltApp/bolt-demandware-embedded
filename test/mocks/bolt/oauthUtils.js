@@ -3,7 +3,7 @@
 function getOAuthConfiguration() {
     return {
         clientID: 'cid123',
-        boltAPIbaseURL: 'https://api.bolt.com',
+        boltAPIbaseURL: 'https://api.boltapp.com',
         providerID: 'pid123'
     };
 }

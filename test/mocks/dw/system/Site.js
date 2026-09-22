@@ -2,8 +2,8 @@ const boltMerchantDivisionID = 'boltMerchantDivisionID';
 const boltMultiPublishableKey = 'publishable_key';
 const boltEnable = true;
 const boltEnvironment = 'sandbox';
-const boltApiURL = 'https://api-sandbox.bolt.com';
-const boltConnectURL = 'https://connect-sandbox.bolt.com';
+const boltApiURL = 'https://api-sandbox.boltapp.com';
+const boltConnectURL = 'https://connect-sandbox.boltapp.com';
 
 function getCurrent() {
     return {

@@ -51,7 +51,11 @@ exports.parseAndValidateJWT = function (token, audience, jwksUrl) {
 
     // 2.2 issuing authority should be bolt
     var iss = payload.iss;
-    if (iss !== 'https://bolt.com' && iss !== BoltPreferences.getBoltApiServiceURL()) {
+    if (iss !== 'https://bolt.com'
+        && iss !== 'https://api.bolt.com'
+        && iss !== 'https://boltapp.com'
+        && iss !== 'https://api.boltapp.com'
+        && iss !== BoltPreferences.getBoltApiServiceURL()) {
         log.error('Invalid issuing authority: ' + token);
         return null;
     }
