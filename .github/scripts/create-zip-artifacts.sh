@@ -10,7 +10,7 @@ create_release() {
   pwd
 
   # Zip the artifact into artifacts directory as v<TAG>.zip
-  zip -r ../artifacts/"$GIT_TAG".zip . -x ".git/*" "node_modules/*" ".circleci/*" ".github/*"
+  zip -r ../artifacts/"$GIT_TAG".zip . -x ".git/*" "node_modules/*" ".github/*"
   cd ../bolt-demandware-embedded || exit
 }
 

@@ -5,7 +5,7 @@ docker-image:
 	# https://github.com/SalesforceCommerceCloud/sfcc-ci/releases (linux version)
 	cp ~/Downloads/storefront-reference-architecture-master.zip .
 	cp ~/Downloads/sfcc-ci-linux .
-	docker build -f .circleci/docker/Dockerfile . --tag $(tag)
+	docker build -f .github/docker/Dockerfile . --tag $(tag)
 	docker push $(tag)
 	rm storefront-reference-architecture-master.zip
 	rm sfcc-ci-linux
